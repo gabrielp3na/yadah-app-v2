@@ -814,7 +814,7 @@
 /* ===== YADAH: NOTIFICACIONES BASE ULTRA COMPACTAS ===== */
 #yadah-base-notifications{
   --base-panel-width:min(360px,92vw);
-  position:fixed;left:calc(-1 * var(--base-panel-width));top:50%;transform:translateY(-50%);
+  position:fixed;left:calc(-1 * var(--base-panel-width));top:var(--base-tab-top,50%);transform:translateY(-50%);
   z-index:3925;width:var(--base-panel-width);max-height:72vh;overflow-y:auto;overflow-x:hidden;
   box-sizing:border-box;padding:10px;background:#05070B;border:1px solid #22d3ee;
   border-left:0;border-radius:0 14px 14px 0;box-shadow:8px 8px 24px rgba(0,0,0,.45);
@@ -822,11 +822,12 @@
 }
 #yadah-base-notifications.open{left:0}
 #yadah-base-notifications::before{content:'🏠 CARRERAS DE BASE';display:block;color:#fff;font-weight:900;font-size:.85rem;padding:3px 4px 7px;border-bottom:1px solid #164e63}
-#yadah-base-tab{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:3926;width:48px;min-height:112px;border:0;border-radius:0 12px 12px 0;background:#05070B;color:#fff;box-shadow:4px 4px 12px rgba(0,0,0,.45);border:1px solid #22d3ee;font-weight:900;cursor:pointer;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px 4px}
+#yadah-base-tab{position:fixed;left:0;top:var(--base-tab-top,50%);transform:translateY(-50%);z-index:3927;width:48px;min-height:112px;border:0;border-radius:0 12px 12px 0;background:rgba(5,7,11,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;box-shadow:4px 4px 12px rgba(0,0,0,.45);border:1px solid #22d3ee;font-weight:900;cursor:grab;touch-action:none;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px 4px}
 #yadah-base-tab-arrow{font-size:30px;line-height:.8}
 .yadah-base-tab-label{font-size:.62rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px}
 #yadah-base-tab-count{min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center}
-#yadah-base-tab.open{left:var(--base-panel-width)}
+#yadah-base-tab.open{left:var(--base-panel-width);background:rgba(5,7,11,.48)}
+#yadah-base-tab.dragging{cursor:grabbing;background:rgba(5,7,11,.42)}
 .yb-notify-card{width:100%;box-sizing:border-box;background:#05070B;border:1px solid #22d3ee;border-radius:9px;padding:8px;box-shadow:0 3px 9px rgba(0,0,0,.3);color:#fff;flex:0 0 auto}
 .yb-notify-card.pending{border-color:#22d3ee}.yb-notify-card.accepted{border-color:#10b981;background:#050806}
 .yb-notify-title{font-weight:900;color:#67e8f9;font-size:.75rem;line-height:1.1}.yb-notify-card.accepted .yb-notify-title{color:#34d399}
@@ -2814,6 +2815,61 @@ function renderClientQueue(){const box=$('client-queue-list');if(!box)return;con
 function render(){ensureDay();renderBasePending();renderBaseActive();const stack=$('yadah-base-stack'),fab=$('yadah-base-fab');if(clientRole()){if(stack)stack.style.display='none';if(fab)fab.style.display='none';renderClientQueue();return}if(fab)fab.style.display=mod()?'flex':'none';if(!stack)return;if(!mod()){stack.style.display='none';return}const visible=state.items.filter(i=>['waiting','assigned','accepted'].includes(i.status));stack.innerHTML='<div class="yb-panel-title">🏠 COLA DE BASE <span style="float:right">'+visible.filter(i=>i.status==='waiting').length+' esperando</span><button type="button" class="yb-add-client" id="yb-add-client">＋ AGREGAR</button></div>';if(!visible.length){stack.innerHTML+='<div class="yb-card"><div class="yb-state">No hay clientes en espera.</div></div>';stack.style.display=basePanelOpen?'flex':'none';return}visible.forEach(i=>{const card=document.createElement('div');card.className='yb-card '+i.status;let action='';if(i.status==='waiting'){action='<button class="assign" data-yb="reassign" data-id="'+i.id+'">ASIGNAR</button>'}else if(i.status==='assigned'){action='<button class="assign" data-yb="reassign" data-id="'+i.id+'">REASIGNAR PENDIENTE</button>'}action+='<button class="cancel" data-yb="cancel" data-id="'+i.id+'">QUITAR DE COLA</button>';card.innerHTML='<div class="yb-line"><div class="yb-place">🏠 '+esc(i.place)+'</div><div class="yb-price">$'+Number(i.price||0).toFixed(2)+'</div></div><div class="yb-state">'+(i.status==='waiting'?'🔵 EN COLA':i.status==='assigned'?'🟡 PENDIENTE · ESPERANDO ACEPTACIÓN':'🟢 ACEPTADA')+(i.driver?' · '+esc(i.driver):'')+'</div>'+action;stack.appendChild(card)});stack.style.display=basePanelOpen?'flex':'none'}
 function toggleBasePanel(){if(!mod())return;const stack=$('yadah-base-stack'),btn=$('yb-open-btn');if(!stack)return;basePanelOpen=!basePanelOpen;stack.style.display=basePanelOpen?'flex':'none';if(btn){btn.classList.toggle('active',basePanelOpen);btn.setAttribute('aria-expanded',String(basePanelOpen))}}
 function bind(){if(bound)return;bound=true;$('yb-open-btn')?.addEventListener('click',toggleBasePanel);$('yadah-base-stack')?.addEventListener('click',e=>{if(e.target.closest('#yb-add-client')){openAdd();return}const b=e.target.closest('[data-yb]');if(!b)return;if(b.dataset.yb==='reassign')openAssign(b.dataset.id);else if(b.dataset.yb==='cancel')cancel(b.dataset.id)});$('yb-close')?.addEventListener('click',closeModal);$('yb-cancel')?.addEventListener('click',closeModal);$('yb-assign-cancel')?.addEventListener('click',closeModal);$('yb-add-queue')?.addEventListener('click',registerClient);$('yb-price')?.addEventListener('change',e=>{$('yb-custom-price').style.display=e.target.value==='__custom__'?'block':'none';if(e.target.value!=='__custom__')$('yb-custom-price').value=''});$('yadah-base-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-base-modal')closeModal()});$('yadah-base-assignment')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id)});$('yadah-base-active')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-finish]');if(!b)return;finishBaseDriver(b.dataset.id)});$('yadah-base-notifications')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action],[data-base-finish]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id);else if(b.dataset.baseFinish)finishBaseDriver(id)})}
+/* ===== YADAH: PESTAÑA BASE MOVIBLE VERTICALMENTE ===== */
+(function(){
+  const tab=$('yadah-base-tab');
+  const box=$('yadah-base-notifications');
+  if(!tab||tab.dataset.dragBound==='1')return;
+  tab.dataset.dragBound='1';
+
+  const defaultTop=window.innerHeight*0.50;
+  const storageKey=()=>`yadah_base_tab_top_${typeof unit==='function'?unit():'default'}`;
+  let saved=null;
+  try{saved=parseFloat(localStorage.getItem(storageKey()));}catch(e){}
+  let top=(Number.isFinite(saved)?saved:defaultTop);
+
+  function clamp(v){
+    const h=window.innerHeight||800;
+    const half=(tab.offsetHeight||112)/2;
+    return Math.max(half+10,Math.min(h-half-10,v));
+  }
+  function applyTop(v,persist){
+    top=clamp(v);
+    const value=top+'px';
+    tab.style.setProperty('--base-tab-top',value);
+    if(box)box.style.setProperty('--base-tab-top',value);
+    if(persist){try{localStorage.setItem(storageKey(),String(Math.round(top)));}catch(e){}}
+  }
+  function refreshClamp(){applyTop(top,false);}
+  applyTop(top,false);
+  window.addEventListener('resize',refreshClamp,{passive:true});
+
+  let dragging=false,startY=0,startTop=0,moved=false,suppressClick=false;
+  tab.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    dragging=true;moved=false;startY=e.clientY;startTop=top;
+    tab.classList.add('dragging');
+    try{tab.setPointerCapture(e.pointerId)}catch(err){}
+    e.preventDefault();
+  });
+  tab.addEventListener('pointermove',e=>{
+    if(!dragging)return;
+    const dy=e.clientY-startY;
+    if(Math.abs(dy)>5)moved=true;
+    applyTop(startTop+dy,false);
+    e.preventDefault();
+  });
+  function endDrag(e){
+    if(!dragging)return;
+    dragging=false;tab.classList.remove('dragging');
+    if(moved){applyTop(top,true);suppressClick=true;setTimeout(()=>suppressClick=false,80);}
+    try{tab.releasePointerCapture(e.pointerId)}catch(err){}
+  }
+  tab.addEventListener('pointerup',endDrag);
+  tab.addEventListener('pointercancel',endDrag);
+  tab.addEventListener('click',e=>{if(suppressClick){e.preventDefault();e.stopPropagation();suppressClick=false;}},true);
+})();
+
 const baseTab=$('yadah-base-tab');
 if(baseTab&&!baseTab.dataset.bound){
   baseTab.dataset.bound='1';
