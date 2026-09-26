@@ -796,4 +796,2047 @@
 #yadah-base-fab{position:absolute;left:12px;right:auto;bottom:168px;z-index:2700;display:none;align-items:flex-end;flex-direction:column;gap:6px}.yb-menu-btn{width:48px;height:48px;padding:0!important;border-radius:50%;font-size:1.35rem!important;display:flex;align-items:center;justify-content:center}.yb-menu-btn.active{background:#0e7490;box-shadow:0 0 0 3px rgba(34,211,238,.2),0 5px 16px rgba(0,0,0,.5)}
 .yb-btn{border:1px solid #22d3ee;background:#082f49;color:#ecfeff;border-radius:10px;padding:9px 11px;font-size:.74rem;font-weight:900;box-shadow:0 4px 12px rgba(0,0,0,.45);cursor:pointer}.yb-btn small{display:block;font-size:.58rem;color:#a5f3fc;margin-top:2px}
 #yadah-base-stack{position:absolute;left:12px;right:auto;top:68px;z-index:2650;display:none;flex-direction:column;gap:7px;pointer-events:none;max-height:42vh;overflow:auto;width:min(360px,calc(100vw - 24px))}
-.yb-panel-title{pointer-
+.yb-panel-title{pointer-events:auto;background:rgba(8,47,73,.97);border:1px solid #22d3ee;border-radius:11px;padding:8px 10px;color:#cffafe;font-size:.72rem;font-weight:900;box-shadow:0 5px 16px rgba(0,0,0,.45)}
+.yb-card{pointer-events:auto;background:rgba(3,7,18,.97);border:1px solid #22d3ee;border-radius:11px;padding:9px 10px;box-shadow:0 5px 16px rgba(0,0,0,.55)}.yb-card.assigned{border-color:#38bdf8}.yb-card.accepted{border-color:#10b981}.yb-line{display:flex;justify-content:space-between;gap:8px;align-items:center}.yb-place{font-size:.86rem;font-weight:900;color:#fff}.yb-price{font-size:.72rem;color:#67e8f9;font-weight:900;white-space:nowrap}.yb-state{font-size:.66rem;color:#22d3ee;font-weight:900;margin-top:4px}.yb-card button{margin-top:7px;width:100%;border:0;border-radius:7px;padding:8px;font-weight:900;cursor:pointer;background:#0284c7;color:#fff}.yb-card button.assign{background:#0891b2}.yb-card button.cancel{background:#374151;color:#e2e8f0}
+#yadah-base-modal{position:absolute;inset:0;z-index:3910;background:transparent;display:none;align-items:flex-start;justify-content:flex-start;padding:72px 12px 12px;pointer-events:none}.yb-modal-card{pointer-events:auto;width:min(390px,calc(100vw - 24px));background:rgba(3,7,18,.97);border:1px solid #22d3ee;border-radius:14px;padding:14px;max-height:70vh;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,.58)}.yb-modal-title{display:flex;justify-content:space-between;align-items:center;color:#67e8f9;font-weight:900;font-size:.98rem;margin-bottom:10px}.yb-close{cursor:pointer;color:#94a3b8;font-size:1.2rem}.yb-label{font-size:.72rem;color:#94a3b8;margin:8px 0 5px;display:block}.yb-select,.yb-input{width:100%;padding:11px 12px;background:#030712;color:#fff;border:1px solid #334155;border-radius:8px;outline:none;font-size:.9rem;box-sizing:border-box}.yb-input{margin-top:8px}.yb-actions{display:flex;gap:8px;margin-top:12px}.yb-actions button{flex:1;padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.yb-submit{background:#0891b2;color:#fff}.yb-direct{width:100%;margin-top:8px;padding:11px;border:1px solid #38bdf8;border-radius:8px;background:#0c4a6e;color:#e0f2fe;font-weight:900;cursor:pointer}.yb-floating-note{font-size:.66rem;color:#67e8f9;background:rgba(8,47,73,.65);border:1px solid #164e63;border-radius:8px;padding:7px 8px;margin-bottom:8px}.yb-draft-summary{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:9px;color:#e2e8f0;font-size:.78rem;margin:8px 0}.yb-draft-summary b{color:#67e8f9}.yb-secondary{background:#374151;color:#e2e8f0}.yb-unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.yb-unit-grid button{border:1px solid #334155;background:#0f172a;color:#e2e8f0;border-radius:8px;padding:9px;font-weight:800;cursor:pointer}
+#yadah-base-assignment{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:3920;width:min(390px,calc(100vw - 24px));display:none;background:#0b1220;border:2px solid #22d3ee;border-radius:15px;padding:15px;box-shadow:0 12px 35px rgba(0,0,0,.65);color:#fff}.yb-assign-title{font-weight:900;color:#67e8f9;font-size:1rem}.yb-assign-place{font-size:1.05rem;font-weight:900;margin:10px 0}.yb-assign-meta{font-size:.72rem;color:#94a3b8}.yb-assign-actions{display:flex;gap:8px;margin-top:12px}.yb-assign-actions button{flex:1;border:0;border-radius:9px;padding:11px;font-weight:900;cursor:pointer}.yb-accept{background:#059669;color:#fff}.yb-reject{background:#374151;color:#e2e8f0}
+#yadah-base-active{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:3919;width:min(390px,calc(100vw - 24px));display:none;background:#071a13;border:2px solid #10b981;border-radius:15px;padding:15px;box-shadow:0 12px 35px rgba(0,0,0,.65);color:#fff}
+.yb-active-title{font-weight:900;color:#34d399;font-size:1rem}.yb-active-place{font-size:1.12rem;font-weight:900;margin:10px 0}.yb-active-meta{font-size:.72rem;color:#a7f3d0}.yb-active-finish{width:100%;margin-top:12px;border:0;border-radius:9px;padding:12px;background:#059669;color:#fff;font-weight:900;font-size:1rem;cursor:pointer}.yb-assignment-list,.yb-active-list{display:flex;flex-direction:column;gap:10px;max-height:70vh;overflow:auto}.yb-assignment-card{background:#0b1220;border:1px solid #22d3ee;border-radius:12px;padding:12px}.yb-assignment-card .yb-assign-title{font-weight:900;color:#67e8f9;font-size:.95rem}.yb-assignment-card .yb-assign-place{font-size:1.05rem;font-weight:900;margin:8px 0}.yb-assignment-card .yb-assign-meta{font-size:.72rem;color:#94a3b8}.yb-active-card{background:#071a13;border:1px solid #10b981;border-radius:12px;padding:12px}.yb-active-card .yb-active-title{font-weight:900;color:#34d399;font-size:1rem}.yb-active-card .yb-active-place{font-size:1.1rem;font-weight:900;margin:8px 0}.yb-active-card .yb-active-meta{font-size:.72rem;color:#a7f3d0}.yb-active-card .yb-active-finish{width:100%;margin-top:10px;border:0;border-radius:9px;padding:12px;background:#059669;color:#fff;font-weight:900;font-size:1rem;cursor:pointer}
+#client-queue-screen{position:fixed;inset:0;z-index:6000;background:#08111f;color:#fff;display:none;flex-direction:column;overflow:hidden}
+.cq-header{padding:18px 16px;background:#0f1b2d;border-bottom:2px solid #38bdf8;text-align:center}
+.cq-brand{font-size:1.2rem;font-weight:900;color:#38bdf8}.cq-subtitle{font-size:.78rem;color:#94a3b8;margin-top:4px}
+#client-queue-list{padding:12px;display:flex;flex-direction:column;gap:8px;overflow:auto;flex:1}
+.cq-card{background:#111c2d;border:1px solid #334155;border-radius:12px;padding:12px;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.cq-row{display:flex;justify-content:space-between;gap:10px;align-items:center}.cq-dest{font-size:1rem;font-weight:900}.cq-time{font-size:.7rem;color:#94a3b8;white-space:nowrap}
+.cq-status{margin-top:7px;font-size:.72rem;font-weight:900;color:#fbbf24}.cq-status.assigned{color:#38bdf8}
+.cq-empty{text-align:center;color:#64748b;padding:40px 20px}.cq-logout{margin:10px 12px 18px;padding:12px;border:0;border-radius:10px;background:#374151;color:#fff;font-weight:900}
+
+/* ===== YADAH: NOTIFICACIONES BASE ULTRA COMPACTAS ===== */
+#yadah-base-notifications{
+  --base-panel-width:min(360px,92vw);
+  position:fixed;left:calc(-1 * var(--base-panel-width));top:50%;transform:translateY(-50%);
+  z-index:3925;width:var(--base-panel-width);max-height:72vh;overflow-y:auto;overflow-x:hidden;
+  box-sizing:border-box;padding:10px;background:rgba(3,7,18,.98);border:1px solid #334155;
+  border-left:0;border-radius:0 14px 14px 0;box-shadow:8px 8px 24px rgba(0,0,0,.45);
+  display:flex;flex-direction:column;gap:7px;transition:left .25s ease;
+}
+#yadah-base-notifications.open{left:0}
+#yadah-base-notifications::before{content:'🏠 CARRERAS DE BASE';display:block;color:#fff;font-weight:900;font-size:.85rem;padding:3px 4px 7px;border-bottom:1px solid #334155}
+#yadah-base-tab{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:3926;width:48px;min-height:112px;border:0;border-radius:0 12px 12px 0;background:#eab308;color:#fff;box-shadow:4px 4px 12px rgba(0,0,0,.35);font-weight:900;cursor:pointer;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px 4px}
+#yadah-base-tab-arrow{font-size:30px;line-height:.8}
+.yadah-base-tab-label{font-size:.62rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px}
+#yadah-base-tab-count{min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center}
+#yadah-base-tab.open{left:var(--base-panel-width)}
+.yb-notify-card{width:100%;box-sizing:border-box;background:#0b1220;border:1px solid #22d3ee;border-radius:9px;padding:8px;box-shadow:0 3px 9px rgba(0,0,0,.3);color:#fff;flex:0 0 auto}
+.yb-notify-card.pending{border-color:#22d3ee}.yb-notify-card.accepted{border-color:#10b981;background:#071a13}
+.yb-notify-title{font-weight:900;color:#67e8f9;font-size:.75rem;line-height:1.1}.yb-notify-card.accepted .yb-notify-title{color:#34d399}
+.yb-notify-place{font-size:.92rem;font-weight:900;margin:5px 0;line-height:1.1;overflow-wrap:anywhere}.yb-notify-meta{font-size:.64rem;color:#94a3b8;line-height:1.15}.yb-notify-card.accepted .yb-notify-meta{color:#a7f3d0}
+.yb-notify-actions{display:flex;gap:5px;margin-top:7px}.yb-notify-actions button{flex:1;border:0;border-radius:6px;padding:7px;font-size:.68rem;font-weight:900;cursor:pointer;min-height:32px}.yb-notify-reject{background:#374151;color:#e2e8f0}.yb-notify-accept{background:#059669;color:#fff}.yb-notify-finish{width:100%;margin-top:6px;border:0;border-radius:6px;padding:7px;background:#059669;color:#fff;font-weight:900;font-size:.7rem;min-height:32px;cursor:pointer}
+.yb-base-empty{padding:20px 8px;text-align:center;color:#94a3b8;font-size:.78rem}
+@media(max-width:799px){#yadah-base-notifications{max-height:62vh;padding:9px}.yb-notify-place{font-size:.86rem}.yb-notify-meta{font-size:.6rem}}
+
+/* ===== YADAH: MODULO DE CARRERAS AISLADO DE LA RADIO ===== */
+#yadah-career-fab{position:absolute;right:12px;bottom:88px;z-index:2700;display:flex;gap:7px;flex-direction:column;align-items:flex-end}
+.yc-btn{border:1px solid #38bdf8;background:#0b1220;color:#e2e8f0;border-radius:10px;padding:9px 11px;font-size:.74rem;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.45);cursor:pointer}
+.yc-btn.primary{background:#0369a1;border-color:#38bdf8;color:#fff}.yc-btn.history{background:#111827}
+#yadah-career-stack{position:absolute;left:12px;right:12px;top:68px;z-index:2650;display:flex;flex-direction:column;gap:7px;pointer-events:none;max-height:42vh;overflow:auto}
+.yc-card{pointer-events:auto;background:rgba(3,7,18,.96);border:1px solid #38bdf8;border-radius:11px;padding:9px 10px;box-shadow:0 5px 16px rgba(0,0,0,.55)}
+.yc-card.pending{border-color:#38bdf8}.yc-card.active{border-color:#f59e0b}.yc-card.done{border-color:#10b981}
+.yc-line{display:flex;justify-content:space-between;gap:8px;align-items:center}.yc-place{font-size:.86rem;font-weight:900;color:#fff}.yc-time{font-size:.68rem;color:#94a3b8;white-space:nowrap}.yc-state{font-size:.67rem;color:#38bdf8;font-weight:800;margin-top:3px}.yc-state.active{color:#f59e0b}.yc-state.done{color:#10b981}
+.yc-card button{margin-top:7px;width:100%;border:0;border-radius:7px;padding:8px;font-weight:900;cursor:pointer;background:#0284c7;color:#fff}.yc-card button.cancel{background:#374151;color:#e2e8f0}.yc-card button.finish{background:#059669}
+#yadah-career-modal{position:fixed;inset:0;z-index:3900;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center}
+.yc-modal-card{width:min(520px,100%);background:#111827;border-top:2px solid #38bdf8;border-radius:16px 16px 0 0;padding:16px;max-height:82vh;overflow:auto}
+.yc-modal-title{display:flex;justify-content:space-between;align-items:center;color:#38bdf8;font-weight:900;font-size:.98rem;margin-bottom:10px}.yc-close{cursor:pointer;color:#94a3b8;font-size:1.2rem}
+.yc-input-row{display:flex;gap:8px;align-items:stretch}.yc-input{width:100%;padding:11px 12px;background:#030712;color:#fff;border:1px solid #334155;border-radius:8px;outline:none;font-size:.9rem;min-width:0}.yc-mic{width:48px;min-width:48px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#e2e8f0;font-size:1.25rem;cursor:pointer}.yc-mic.active{background:#dc2626;border-color:#f87171;animation:ycMicPulse 1s infinite}.yc-mic.unsupported{opacity:.45}.yc-label{font-size:.72rem;color:#94a3b8;margin:8px 0 5px;display:block}.yc-voice-status{font-size:.68rem;color:#38bdf8;min-height:16px;margin-top:5px}.yc-actions{display:flex;gap:8px;margin-top:12px}.yc-actions button{flex:1;padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.yc-submit{background:#0284c7;color:#fff}.yc-secondary{background:#374151;color:#e2e8f0}@keyframes ycMicPulse{50%{transform:scale(1.04)}}
+#yadah-career-history-list{display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow:auto}.yc-history-item{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 10px}.yc-history-main{font-size:.82rem;font-weight:800;color:#fff}.yc-history-meta{font-size:.68rem;color:#94a3b8;margin-top:3px}
+.yc-empty{color:#64748b;font-size:.8rem;text-align:center;padding:14px}
+@media(min-width:800px){#yadah-career-stack{left:16px;right:auto;width:360px;top:72px;max-height:55vh}#yadah-career-fab{right:18px;bottom:102px}}
+
+
+
+/* ===== YADAH: TRIGGER EXCLUSIVO ===== */
+.yb-notify-card .yb-bubble-trigger{
+  cursor:pointer;
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  padding:2px 0;
+  border-radius:5px;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.yb-notify-card .yb-bubble-trigger:active{
+  background:rgba(56,189,248,.10);
+}
+.yb-notify-collapsed-text{
+  font-size:.66rem;
+  font-weight:900;
+  line-height:1.05;
+  overflow-wrap:anywhere;
+}
+/* ===== FIN TRIGGER EXCLUSIVO ===== */
+
+</style>
+</head>
+<body>
+
+  <audio id="radio-speaker" autoplay playsinline controls style="display:none;"></audio>
+
+  <div id="client-tracking-screen">
+    <div class="client-header" id="client-header-title">🚘 Tu vehículo en camino - Yadah Fleet</div>
+    <div class="client-map" id="client-map"></div>
+  </div>
+
+  <div id="fleet-list-drawer">
+    <div class="drawer-header">
+      <span>📋 Flota y Estado en Vivo</span>
+      <span style="cursor:pointer; color:#94a3b8;" onclick="toggleFleetDrawer(false)">✕</span>
+    </div>
+    <div class="fleet-items-container" id="fleet-items-list"></div>
+  </div>
+
+  <div id="gps-lock-banner">
+    <span>⚠️ GPS DENEGADO O APAGADO. La radio está bloqueada hasta activar la ubicación.</span>
+  </div>
+
+  <div id="map-context-menu">
+    <div class="menu-title" id="menu-title-text">📍 Opción de Ubicación</div>
+    <button class="btn-ctx btn-ctx-nav" id="btn-ctx-action" onclick="ctxMainAction()">🚀 ¡Ir a este lugar!</button>
+    <button class="btn-ctx btn-ctx-assign" id="btn-ctx-assign" onclick="ctxAssignAction()" style="display:none;">🎯 Asignar a Móvil & Compartir...</button>
+    <button class="btn-ctx btn-ctx-cancel" onclick="closeContextMenu()">Cancelar</button>
+  </div>
+
+  <div id="sos-alert-banner">
+    <span id="sos-banner-text">🚨 ¡ALERTA SOS ACTIVA!</span>
+    <div style="display:flex; gap:6px;">
+      <button style="background:#38bdf8; color:#030712; border:none; padding:4px 8px; font-weight:800; border-radius:4px; cursor:pointer;" onclick="locateActiveSOS()">Ubicar 🎯</button>
+      <button style="background:#ffffff; color:#dc2626; border:none; padding:4px 8px; font-weight:800; border-radius:4px; cursor:pointer;" onclick="silenceSOS()">Silenciar</button>
+    </div>
+  </div>
+
+  <div id="nav-search-bar">
+    <div class="search-input-box">
+      <input type="text" id="input-destination" placeholder="Escribe el destino, negocio o enlace Google Maps..." oninput="handleSearchInput(this.value)" autocomplete="off" />
+      <button onclick="prepareRouteDestination()">Buscar 🔍</button>
+    </div>
+    <div id="search-suggestions"></div>
+    <div class="nav-route-info" id="nav-route-info">
+      <span id="lbl-route-stats">Destino seleccionado</span>
+      <div class="nav-route-actions">
+        <button class="btn-nav-action btn-nav-start" onclick="startNavigationMatch()">¡Dar Marcha! 🚀</button>
+        <button class="btn-nav-action btn-nav-cancel" onclick="cancelNavigation()">Cancelar ✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="vehicle-history-card">
+    <div class="vh-header">
+      <span id="vh-unit-name">Móvil</span>
+      <span style="cursor:pointer; color:#94a3b8; font-size:1.1rem;" onclick="closeVehicleHistory()">✕</span>
+    </div>
+    <div style="font-size:0.75rem; color:#94a3b8;">Trazar ruta de las últimas 24 horas:</div>
+    <div class="vh-actions">
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory()">Ver Recorrido 🗺️</button>
+      <button class="btn-vh btn-vh-close" onclick="closeVehicleHistory()">Cerrar ✕</button>
+    </div>
+    <div id="vh-status-info" style="font-size:0.7rem; color:#10b981; text-align:center; margin-top:4px;"></div>
+  </div>
+
+  <div id="login-screen">
+    <div class="login-header">
+      <h1>📻 Yadah Radio Flota</h1>
+      <p>Selecciona tu terminal de despacho (Clave requerida)</p>
+    </div>
+    <div class="grid-units">
+      <button class="btn-unit-select modulador" onclick="solicitarAccesoPerfil('Modulador')">
+        <span>🏢</span> Modulador / Base Central
+      </button>
+<button class="btn-unit-select clientes" onclick="solicitarAccesoPerfil('Clientes')"><span>👥</span> Clientes / Cola de Base</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 01')"><span>🚘</span> Móvil 01</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 02')"><span>🚘</span> Móvil 02</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 03')"><span>🚘</span> Móvil 03</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 04')"><span>🚘</span> Móvil 04</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 05')"><span>🚘</span> Móvil 05</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 06')"><span>🚘</span> Móvil 06</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 07')"><span>🚘</span> Móvil 07</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 08')"><span>🚘</span> Móvil 08</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 09')"><span>🚘</span> Móvil 09</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 10')"><span>🚘</span> Móvil 10</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 11')"><span>🚘</span> Móvil 11</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 12')"><span>🚘</span> Móvil 12</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 13')"><span>🚘</span> Móvil 13</button>
+      <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 14')"><span>🚘</span> Móvil 14</button>
+    </div>
+  </div>
+<div id="client-queue-screen" aria-live="polite">
+<div class="cq-header"><div class="cq-brand">👥 Clientes / Cola de Base</div><div class="cq-subtitle">Clientes esperando en la sala</div></div>
+<div id="client-queue-list"></div>
+<button class="cq-logout" type="button" onclick="logoutUnit()">Salir</button>
+</div>
+  <header>
+    <div class="brand">
+      <span>📻</span> Yadah PTT
+    </div>
+    <div class="header-actions">
+      <button class="btn-header" id="btn-toggle-fleet" onclick="toggleFleetDrawer(true)" style="display:none; border-color:#38bdf8; color:#38bdf8;">📋 Flota</button>
+      <button class="btn-header" onclick="toggleHistory(true)">📁 Buzón</button>
+    </div>
+  </header>
+
+  <div id="fleet-summary-bar" onclick="toggleFleetDrawer(true)">
+    <span>🏢 <b>Supervisión Flota:</b></span>
+    <span><span class="badge-stat online" id="stat-online">0 En línea</span></span>
+    <span><span class="badge-stat at-base" id="stat-base">0 En Base</span></span>
+    <span><span class="badge-stat stopped" id="stat-stopped">0 Detenidos</span></span>
+    <span><span class="badge-stat offline" id="stat-offline">14 Apagados</span></span>
+  </div>
+
+  <div id="map-container">
+    <div id="map"></div>
+
+    <button class="btn-sos" id="btn-sos" title="Botón de Pánico SOS" onclick="triggerSOS()">🚨</button>
+
+    <div class="map-floating-controls" id="map-options-wrapper">
+      <button class="map-menu-button" id="btn-map-options" type="button" title="Opciones del mapa" aria-label="Abrir menú de opciones">☰</button>
+      <div class="map-options-menu" id="map-options-menu" aria-label="Opciones">
+        <button class="btn-float-action btn-float-exit" id="btn-float-logout" title="Cambiar Perfil / Cerrar Sesión" onclick="logoutUnit(); closeMapOptions();"><span class="option-icon">🚪</span><span>Salir / cerrar sesión</span></button>
+        <button class="btn-float-action" id="btn-traffic-toggle" title="Tráfico en Vivo"><span class="option-icon">🚦</span><span>Ver tráfico</span></button>
+        <button class="btn-float-action" id="btn-theme-mode" title="Modo Día / Noche"><span class="option-icon">🌙</span><span>Modo noche</span></button>
+        <button class="btn-float-action" id="btn-view-mode" title="Cambiar Vista 1ª Persona / Cenital Plano" style="display:none;"><span class="option-icon">🚘</span><span>Cambiar vista</span></button>
+        <button class="btn-float-action" id="btn-recenter" title="Re-centrar" style="display:none;"><span class="option-icon">🎯</span><span>Recentrar mapa</span></button>
+        <button class="btn-float-action" title="Acercar Zoom" onclick="zoomIn()" style="display:none;"><span class="option-icon">➕</span><span>Acercar</span></button>
+        <button class="btn-float-action" title="Alejar Zoom" onclick="zoomOut()" style="display:none;"><span class="option-icon">➖</span><span>Alejar</span></button>
+        <button class="btn-float-action" title="Pantalla Completa" onclick="toggleFullScreen()" style="display:none;"><span class="option-icon">⛶</span><span>Pantalla completa</span></button>
+        <button class="btn-float-action" id="btn-unlock-base" title="Desbloquear para Mover Base" onclick="toggleBaseUnlock(); closeMapOptions();" style="display:none;"><span class="option-icon">🔒</span><span>Bloquear / mover base</span></button>
+      </div>
+    </div>
+  </div>
+
+  
+<!-- ===== YADAH CARRERAS: UI INDEPENDIENTE DE LA RADIO ===== -->
+<div id="yadah-career-stack" aria-live="polite"></div>
+<div id="yadah-career-fab">
+  <button class="yc-btn primary" id="yc-new-btn" type="button">🚕 Carrera</button>
+  <button class="yc-btn history" id="yc-history-btn" type="button">📋 Carreras</button>
+</div>
+<div id="yadah-career-modal">
+  <div class="yc-modal-card" onclick="event.stopPropagation()">
+    <div class="yc-modal-title"><span id="yc-modal-title">🚕 Nueva carrera</span><span class="yc-close" id="yc-close">✕</span></div>
+    <div id="yc-form-view">
+      <label class="yc-label" for="yc-place-input">¿Dónde quieren el carro?</label>
+      <div class="yc-input-row"><input class="yc-input" id="yc-place-input" maxlength="120" autocomplete="off" placeholder="Ej.: Tabernáculo de las Conchitas"><button class="yc-mic" id="yc-mic" type="button" title="Hablar carrera" aria-label="Hablar carrera">🎙️</button></div><div class="yc-voice-status" id="yc-voice-status" aria-live="polite"></div>
+      <div class="yc-actions"><button class="yc-secondary" id="yc-cancel">Cancelar</button><button class="yc-submit" id="yc-create">Crear carrera</button></div>
+    </div>
+    <div id="yc-history-view" style="display:none">
+      <div id="yadah-career-history-list"></div>
+      <div class="yc-actions"><button class="yc-secondary" id="yc-history-close">Cerrar</button></div>
+    </div>
+  </div>
+</div>
+<!-- ===== YADAH BASE: MODULO INDEPENDIENTE DE CARRERAS POR LLAMADA ===== -->
+<div id="yadah-base-stack" aria-live="polite"></div>
+<div id="yadah-base-fab"><button class="yb-btn yb-menu-btn" id="yb-open-btn" type="button" aria-label="Abrir o cerrar Cola de Base" title="Abrir o cerrar Cola de Base">🏠</button></div>
+<div id="yadah-base-modal"><div class="yb-modal-card" onclick="event.stopPropagation()">
+<div class="yb-modal-title"><span id="yb-modal-title">🏠 Cliente de base</span><span class="yb-close" id="yb-close">✕</span></div>
+<div id="yb-add-view">
+<div class="yb-floating-note">El mapa permanece visible mientras registras la carrera.</div>
+<label class="yb-label" for="yb-destination">Destino</label>
+<input class="yb-input" id="yb-destination" maxlength="120" placeholder="Escribe el destino" autocomplete="off">
+<label class="yb-label" for="yb-price" style="margin-top:10px">Agregar precio</label>
+<select class="yb-select" id="yb-price"><option value="1.00">$1.00</option><option value="1.50">$1.50</option><option value="2.00">$2.00</option><option value="2.50">$2.50</option><option value="3.00">$3.00</option><option value="3.50">$3.50</option><option value="4.00">$4.00</option><option value="__custom__">Otra cantidad…</option></select>
+<input class="yb-input" id="yb-custom-price" type="number" min="0.01" max="999.99" step="0.01" placeholder="Escribe la cantidad, por ejemplo 4.50" style="display:none">
+<div class="yb-actions yb-main-actions"><button class="yb-secondary" id="yb-cancel">Cancelar</button><button class="yb-submit" id="yb-add-queue">🏠 REGISTRAR CLIENTE</button></div>
+
+</div>
+<div id="yb-assign-view" style="display:none"><div class="yb-label">Selecciona el motorista para esta salida</div><div class="yb-draft-summary" id="yb-draft-summary">—</div><div class="yb-unit-grid" id="yb-unit-grid"></div><div class="yb-actions"><button class="yb-secondary" id="yb-assign-cancel">Volver</button></div></div>
+</div></div>
+<div id="yadah-base-assignment" aria-live="assertive" style="display:none"><div class="yb-assignment-list" id="yb-assignment-list"></div></div><div id="yadah-base-active" aria-live="polite" style="display:none"><div class="yb-active-list" id="yb-active-list"></div></div>
+<button id="yadah-base-tab" type="button" aria-label="Abrir carreras asignadas de base"><span id="yadah-base-tab-arrow">›</span><span class="yadah-base-tab-label">BASE</span><span id="yadah-base-tab-count">0</span></button>
+<div id="yadah-base-notifications" aria-live="polite" aria-label="Carreras asignadas de base"></div>
+<div class="controls-panel">
+    <div class="status-bar">
+      <span>Unidad: <b style="color:#38bdf8;" id="lbl-unit">--</b></span>
+      <span>GPS: <b id="lbl-gps-status" class="status-warning">Comprobando...</b></span>
+      <span>Vel: <b class="status-active" id="lbl-speed">0 km/h</b></span>
+      <span>Rumbo: <b class="status-active" id="lbl-heading">0°</b></span>
+    </div>
+
+    <div class="channel-status" id="channel-status">
+      ● CANAL LIBRE
+    </div>
+
+    <button class="btn-ptt" id="btn-ptt">
+      <span>🎙️</span> PULSAR PARA HABLAR (Espacio)
+    </button>
+  </div>
+
+  <div id="history-modal" onclick="toggleHistory(false)">
+    <div class="history-card" onclick="event.stopPropagation()">
+      <div class="history-head">
+        <span>Últimas Transmisiones (24h)</span>
+        <span style="cursor:pointer; color:#94a3b8; font-size:1.1rem; padding:4px;" onclick="toggleHistory(false)">✕</span>
+      </div>
+      <div class="history-list" id="history-list">
+        <p style="color:#64748b; font-size:0.85rem;">No hay transmisiones registradas.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    if (!localStorage.getItem('yadah_sec_ver_2021_v2')) {
+      localStorage.removeItem('yadah_terminal_id');
+      localStorage.setItem('yadah_sec_ver_2021_v2', 'true');
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const trackingUnit = urlParams.get('track');
+
+    if (trackingUnit) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('client-tracking-screen').style.display = 'flex';
+      document.querySelector('header').style.display = 'none';
+      document.getElementById('map-container').style.display = 'none';
+      document.querySelector('.controls-panel').style.display = 'none';
+
+      window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('client-header-title').textContent = `🚘 Siguiendo a: ${trackingUnit}`;
+        const clientMap = new maplibregl.Map({
+          container: 'client-map',
+          style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+          center: [-89.3562, 13.7242],
+          zoom: 16
+        });
+
+        let clientMarker = null;
+
+        const clientMqtt = mqtt.connect('wss://broker.emqx.io:8084/mqtt', { clientId: 'client_' + Math.random().toString(16).substring(2,8) });
+        clientMqtt.on('connect', () => {
+          clientMqtt.subscribe('yadah/radio/flota/gps');
+        });
+
+        clientMqtt.on('message', (top, msg) => {
+          try {
+            const data = JSON.parse(msg.toString());
+            if (data.unit === trackingUnit && data.lat && data.lon) {
+              const coords = [data.lon, data.lat];
+              if (!clientMarker) {
+                const el = document.createElement('div');
+                el.style.fontSize = '2.2rem';
+                el.innerHTML = '🚗';
+                clientMarker = new maplibregl.Marker({ element: el }).setLngLat(coords).addTo(clientMap);
+                clientMap.flyTo({ center: coords, zoom: 17 });
+              } else {
+                clientMarker.setLngLat(coords);
+                clientMap.panTo(coords, { duration: 500 });
+              }
+            }
+          } catch(e){}
+        });
+      });
+    }
+
+    let db = null;
+    const DB_NAME = 'YadahFleetDB';
+    const STORE_NAME = 'gps_points';
+
+    function initDatabase() {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onupgradeneeded = (e) => {
+        const database = e.target.result;
+        if (!database.objectStoreNames.contains(STORE_NAME)) {
+          const store = database.createObjectStore(STORE_NAME, { autoIncrement: true });
+          store.createIndex('unit_time', ['unit', 'timestamp']);
+          store.createIndex('timestamp', 'timestamp');
+        }
+      };
+      request.onsuccess = (e) => {
+        db = e.target.result;
+        cleanOldTelemetry();
+      };
+    }
+
+    function savePointToDB(unit, lon, lat, speed, heading) {
+      if (!db) return;
+      const tx = db.transaction([STORE_NAME], 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      store.add({ unit, lon, lat, speed, heading, timestamp: Date.now() });
+    }
+
+    function cleanOldTelemetry() {
+      if (!db) return;
+      const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+      const tx = db.transaction([STORE_NAME], 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      const index = store.index('timestamp');
+      const req = index.openCursor(IDBKeyRange.upperBound(oneDayAgo));
+      req.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          store.delete(cursor.primaryKey);
+          cursor.continue();
+        }
+      };
+    }
+
+    if (!trackingUnit) initDatabase();
+
+    const INTENTOS_KEY = 'yadah_intentos_perfiles';
+    const BLOQUEO_KEY = 'yadah_bloqueo_perfiles';
+
+    function obtenerIntentosYBloqueos() {
+      try {
+        return {
+          intentos: JSON.parse(localStorage.getItem(INTENTOS_KEY) || '{}'),
+          bloqueos: JSON.parse(localStorage.getItem(BLOQUEO_KEY) || '{}')
+        };
+      } catch (e) {
+        return { intentos: {}, bloqueos: {} };
+      }
+    }
+
+    function guardarIntentosYBloqueos(intentos, bloqueos) {
+      localStorage.setItem(INTENTOS_KEY, JSON.stringify(intentos));
+      localStorage.setItem(BLOQUEO_KEY, JSON.stringify(bloqueos));
+    }
+
+    function solicitarAccesoPerfil(id) {
+      const ahora = Date.now();
+      const { intentos, bloqueos } = obtenerIntentosYBloqueos();
+
+      if (bloqueos[id] && ahora < bloqueos[id]) {
+        const minutosRestantes = Math.ceil((bloqueos[id] - ahora) / 60000);
+        alert(`🔒 El perfil de "${id}" está bloqueado temporalmente por seguridad.\nIntente de nuevo en ${minutosRestantes} minutos.`);
+        return;
+      }
+
+      const passIngresada = prompt(`🔐 Ingrese la contraseña de seguridad para [ ${id} ]:`);
+      if (passIngresada === null) return;
+
+      if (passIngresada === "2021") {
+        intentos[id] = 0;
+        delete bloqueos[id];
+        guardarIntentosYBloqueos(intentos, bloqueos);
+        selectUnit(id);
+      } else {
+        intentos[id] = (intentos[id] || 0) + 1;
+        const restantes = 3 - intentos[id];
+
+        if (intentos[id] >= 3) {
+          bloqueos[id] = ahora + (15 * 60 * 1000);
+          guardarIntentosYBloqueos(intentos, bloqueos);
+          alert(`🚨 Demasiados intentos fallidos en "${id}". Este perfil ha sido bloqueado por 15 minutos.`);
+        } else {
+          guardarIntentosYBloqueos(intentos, bloqueos);
+          alert(`❌ Contraseña incorrecta. Te quedan ${restantes} intentos para este perfil.`);
+        }
+      }
+    }
+
+    let contextMenuCoords = null;
+    let tempContextMarker = null;
+    let contextMenuMode = 'nav';
+
+    function getCustomPOIs() {
+      try { return JSON.parse(localStorage.getItem('yadah_custom_pois') || '[]'); } catch (e) { return []; }
+    }
+
+    function saveAllPOIs(pois, broadcast = true) {
+      localStorage.setItem('yadah_custom_pois', JSON.stringify(pois));
+      renderCustomPoiMarkers();
+      if (broadcast && mqttClient && mqttClient.connected) {
+        mqttClient.publish(TOPIC_POI, JSON.stringify({ action: 'sync', pois: pois }));
+      }
+    }
+
+    function closeContextMenu() {
+      document.getElementById('map-context-menu').style.display = 'none';
+      if (tempContextMarker) { tempContextMarker.remove(); tempContextMarker = null; }
+      contextMenuCoords = null;
+    }
+
+    function ctxMainAction() {
+      if (!contextMenuCoords) return;
+      const { lng, lat } = contextMenuCoords;
+      if (contextMenuMode === 'nav') {
+        closeContextMenu();
+        pendingDestination = { lon: lng, lat: lat, label: 'Punto seleccionado' };
+        lblRouteStats.textContent = `📍 Destino seleccionado. ¿Deseas iniciar marcha?`;
+        navRouteInfo.style.display = 'flex';
+      } else if (contextMenuMode === 'save') {
+        closeContextMenu();
+        const placeName = prompt("📍 Nombre del nuevo punto o negocio local (Visible para toda la flota):");
+        if (placeName && placeName.trim().length > 0) {
+          const pois = getCustomPOIs();
+          pois.unshift({ id: 'poi_' + Date.now(), name: placeName.trim(), lon: lng, lat: lat });
+          saveAllPOIs(pois, true);
+          alert(`✅ ¡Punto "${placeName.trim()}" sincronizado con éxito para todos!`);
+        }
+      }
+    }
+
+    function ctxAssignAction() {
+      if (!contextMenuCoords || !isModulator()) return;
+      const { lng, lat } = contextMenuCoords;
+      closeContextMenu();
+      const unitListStr = ALL_UNITS.map((u, i) => `${i + 1}. ${u}`).join('\n');
+      const choice = prompt(`🎯 Selecciona el número de la unidad a la que deseas asignar este destino:\n\n${unitListStr}`);
+      if (choice) {
+        const index = parseInt(choice.trim()) - 1;
+        if (index >= 0 && index < ALL_UNITS.length) {
+          const targetUnit = ALL_UNITS[index];
+          const taskName = prompt(`📍 Nombre o referencia del destino para ${targetUnit}:`, "Punto asignado por Central");
+          if (taskName && taskName.trim()) {
+            if (mqttClient && mqttClient.connected) {
+              mqttClient.publish(TOPIC_ASSIGN, JSON.stringify({ targetUnit: targetUnit, lon: lng, lat: lat, label: taskName.trim() }));
+              const shareClient = confirm(`✅ ¡Destino enviado a ${targetUnit}!\n\n¿Deseas generar y copiar un ENLACE DE SEGUIMIENTO para enviar al cliente por WhatsApp?`);
+              if (shareClient) {
+                const currentUrl = window.location.href.split('?')[0];
+                const clientLink = `${currentUrl}?track=${encodeURIComponent(targetUnit)}`;
+                navigator.clipboard.writeText(clientLink).then(() => {
+                  alert(`📋 ¡Enlace copiado al portapapeles!\n\n${clientLink}`);
+                }).catch(() => { prompt("Copia este enlace para el cliente:", clientLink); });
+              }
+            } else { alert("⚠️ Error: No hay conexión de red para transmitir la asignación."); }
+          }
+        } else { alert("❌ Opción de unidad no válida."); }
+      }
+    }
+
+    let customPoiMarkers = [];
+    function renderCustomPoiMarkers() {
+      if (!map) return;
+      customPoiMarkers.forEach(m => m.remove());
+      customPoiMarkers = [];
+      const pois = getCustomPOIs();
+      pois.forEach(poi => {
+        const container = document.createElement('div');
+        container.className = 'car-marker-container';
+        const badge = document.createElement('div');
+        badge.className = 'car-badge custom-poi';
+        badge.innerHTML = `📍 <b>${poi.name}</b>`;
+        container.appendChild(badge);
+        const iconEl = document.createElement('div');
+        iconEl.style.fontSize = '1.6rem';
+        iconEl.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.7))';
+        iconEl.innerHTML = '⭐';
+        container.appendChild(iconEl);
+
+        let pressTimer = null;
+        container.addEventListener('click', (e) => {
+          e.stopPropagation();
+          pendingDestination = { lon: poi.lon, lat: poi.lat, label: poi.name };
+          lblRouteStats.textContent = `📍 [Local] Destino: ${poi.name}. ¿Deseas iniciar marcha?`;
+          navRouteInfo.style.display = 'flex';
+        });
+
+        const startPress = () => {
+          pressTimer = setTimeout(() => {
+            const action = prompt(`⚙️ Opciones para "${poi.name}":\n1. Editar Nombre\n2. Mover aquí\n3. Eliminar punto global\n\nEscribe 1, 2 o 3:`, "1");
+            if (action === "1") {
+              const newName = prompt("Nuevo nombre para el punto:", poi.name);
+              if (newName && newName.trim()) { poi.name = newName.trim(); saveAllPOIs(getCustomPOIs(), true); alert("✅ Nombre actualizado para todos."); }
+            } else if (action === "2") {
+              if (myLastCoords) { poi.lon = myLastCoords.lon; poi.lat = myLastCoords.lat; saveAllPOIs(getCustomPOIs(), true); alert("✅ Ubicación corregida para todos."); } else { alert("⚠️ No hay señal GPS disponible."); }
+            } else if (action === "3") {
+              if (confirm(`¿Estás seguro de eliminar el punto "${poi.name}" para toda la flota?`)) {
+                const updated = getCustomPOIs().filter(p => p.id !== poi.id);
+                saveAllPOIs(updated, true);
+                alert("🗑️ Punto eliminado de la red.");
+              }
+            }
+          }, 600);
+        };
+        const cancelPress = () => { if (pressTimer) clearTimeout(pressTimer); };
+        container.addEventListener('mousedown', startPress);
+        container.addEventListener('mouseup', cancelPress);
+        container.addEventListener('touchstart', startPress, { passive: true });
+        container.addEventListener('touchend', cancelPress);
+        const marker = new maplibregl.Marker({ element: container }).setLngLat([poi.lon, poi.lat]).addTo(map);
+        customPoiMarkers.push(marker);
+      });
+    }
+
+    let currentUnit = localStorage.getItem('yadah_terminal_id');
+    const isDriver = () => currentUnit && currentUnit !== 'Modulador' && currentUnit !== 'Clientes';
+ const isClientQueue = () => currentUnit === 'Clientes';
+    const isModulator = () => currentUnit === 'Modulador';
+
+    const loginScreen = document.getElementById('login-screen');
+    const lblUnit = document.getElementById('lbl-unit');
+    const lblSpeed = document.getElementById('lbl-speed');
+    const lblHeading = document.getElementById('lbl-heading');
+    const lblGpsStatus = document.getElementById('lbl-gps-status');
+    const channelStatus = document.getElementById('channel-status');
+    const radioSpeaker = document.getElementById('radio-speaker');
+    const btnViewMode = document.getElementById('btn-view-mode');
+    const btnThemeMode = document.getElementById('btn-theme-mode');
+    const btnTrafficToggle = document.getElementById('btn-traffic-toggle');
+    const btnSos = document.getElementById('btn-sos');
+    const btnToggleFleet = document.getElementById('btn-toggle-fleet');
+    const btnUnlockBase = document.getElementById('btn-unlock-base');
+    const mapContainer = document.getElementById('map-container');
+    const vehicleHistoryCard = document.getElementById('vehicle-history-card');
+    const navSearchBar = document.getElementById('nav-search-bar');
+    const searchSuggestions = document.getElementById('search-suggestions');
+    const navRouteInfo = document.getElementById('nav-route-info');
+    const lblRouteStats = document.getElementById('lbl-route-stats');
+    const fleetSummaryBar = document.getElementById('fleet-summary-bar');
+    const fleetListDrawer = document.getElementById('fleet-list-drawer');
+    const gpsLockBanner = document.getElementById('gps-lock-banner');
+    const btnPtt = document.getElementById('btn-ptt');
+
+    let firstPersonMode = false;
+    let isNightMode = localStorage.getItem('yadah_night_mode') === 'true';
+    let showTraffic = false;
+    let activeHistoryUnit = null;
+    let isSosActive = false;
+    let sirenInterval = null;
+    let activeSosCoords = null;
+    let pendingDestination = null;
+    let gpsPermissionGranted = false;
+    let searchTimeout = null;
+    let baseUnlocked = false;
+    let modulatorActiveAtBase = false;
+    let modulatorActivationTime = null;
+
+    const ALL_UNITS = Array.from({ length: 14 }, (_, i) => `Móvil ${String(i + 1).padStart(2, '0')}`);
+    const fleetStatusMap = {};
+    ALL_UNITS.forEach(id => { fleetStatusMap[id] = { lastSeen: 0, speed: 0, lat: null, lon: null, stoppedSince: null, state: 'offline', arrivalTime: null }; });
+
+    async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
+
+    function parseGoogleMapsLink(inputStr) {
+      const matchGeo = inputStr.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (matchGeo) return { lat: parseFloat(matchGeo[1]), lon: parseFloat(matchGeo[2]) };
+      const matchQuery = inputStr.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (matchQuery) return { lat: parseFloat(matchQuery[1]), lon: parseFloat(matchQuery[2]) };
+      return null;
+    }
+
+    function handleSearchInput(query) {
+      clearTimeout(searchTimeout);
+      if (!query || query.trim().length < 1) { searchSuggestions.style.display = 'none'; searchSuggestions.innerHTML = ''; return; }
+      const parsedGMap = parseGoogleMapsLink(query);
+      if (parsedGMap) {
+        searchSuggestions.innerHTML = `<div class="suggestion-item" onclick="selectSuggestion(${parsedGMap.lon}, ${parsedGMap.lat}, 'Ubicación de Google Maps compartida', false)">📍🔗 <b>Ubicación de Google Maps detectada</b></div>`;
+        searchSuggestions.style.display = 'flex';
+        return;
+      }
+      const qLower = query.toLowerCase();
+      const localPOIs = getCustomPOIs().filter(p => p.name.toLowerCase().includes(qLower));
+      searchTimeout = setTimeout(async () => {
+        try {
+          let externalResults = [];
+          if (query.trim().length >= 2) {
+            let suggestUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=4`;
+            if (myLastCoords) {
+              const delta = 0.5;
+              suggestUrl += `&viewbox=${myLastCoords.lon - delta},${myLastCoords.lat + delta},${myLastCoords.lon + delta},${myLastCoords.lat - delta}&bounded=1`;
+            }
+            const resp = await fetch(suggestUrl);
+            externalResults = await resp.json();
+          }
+          let htmlContent = '';
+          localPOIs.forEach(poi => {
+            htmlContent += `<div class="suggestion-item" onclick="selectSuggestion(${poi.lon}, ${poi.lat}, '${poi.name.replace(/'/g, "")}', true)">📍⭐ <b>[Local] ${poi.name}</b></div>`;
+          });
+          if (externalResults && externalResults.length > 0) {
+            externalResults.forEach(item => {
+              htmlContent += `<div class="suggestion-item" onclick="selectSuggestion(${item.lon}, ${item.lat}, '${item.display_name.replace(/'/g, "")}', false)">📍 <b>${item.display_name.split(',')[0]}</b></div>`;
+            });
+          }
+          if (htmlContent) { searchSuggestions.innerHTML = htmlContent; searchSuggestions.style.display = 'flex'; } else { searchSuggestions.style.display = 'none'; }
+        } catch (e) {}
+      }, 300);
+    }
+
+    function selectSuggestion(lon, lat, displayName, isLocal) {
+      document.getElementById('input-destination').value = displayName.split(',')[0];
+      searchSuggestions.style.display = 'none';
+      pendingDestination = { lon, lat, label: displayName.split(',')[0] };
+      lblRouteStats.textContent = `${isLocal ? '📍 [Local]' : '📍'} Destino: ${pendingDestination.label}. ¿Deseas iniciar marcha?`;
+      navRouteInfo.style.display = 'flex';
+    }
+
+    async function prepareRouteDestination() {
+      searchSuggestions.style.display = 'none';
+      const query = document.getElementById('input-destination').value.trim();
+      if (!query) return;
+      const parsedGMap = parseGoogleMapsLink(query);
+      if (parsedGMap) { selectSuggestion(parsedGMap.lon, parsedGMap.lat, 'Ubicación de Google Maps', false); return; }
+      const foundLocal = getCustomPOIs().find(p => p.name.toLowerCase() === query.toLowerCase());
+      if (foundLocal) { selectSuggestion(foundLocal.lon, foundLocal.lat, foundLocal.name, true); return; }
+      try {
+        lblRouteStats.textContent = 'Buscando lugar...';
+        navRouteInfo.style.display = 'flex';
+        let searchUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
+        if (myLastCoords) {
+          const delta = 0.5;
+          searchUrl += `&viewbox=${myLastCoords.lon - delta},${myLastCoords.lat + delta},${myLastCoords.lon + delta},${myLastCoords.lat - delta}&bounded=1`;
+        }
+        const resp = await fetch(searchUrl);
+        const results = await resp.json();
+        if (results && results.length > 0) {
+          pendingDestination = { lon: parseFloat(results[0].lon), lat: parseFloat(results[0].lat), label: results[0].display_name.split(',')[0] };
+          lblRouteStats.textContent = `📍 Destino: ${pendingDestination.label}. ¿Deseas iniciar marcha?`;
+        } else { alert("Lugar no encontrado."); navRouteInfo.style.display = 'none'; }
+      } catch (err) {}
+    }
+
+    function startNavigationMatch() { if(window.__yadahBaseNoNavigation){if(navRouteInfo)navRouteInfo.style.display='none';pendingDestination=null;return;} 
+      if (!pendingDestination) { alert("Primero selecciona un destino."); return; }
+      firstPersonMode = true;
+      updateViewButtonUI();
+      requestRouteToDestination(pendingDestination.lon, pendingDestination.lat, pendingDestination.label);
+    }
+
+    function updateGpsLockState(allowed) {
+      gpsPermissionGranted = allowed;
+      if (isModulator()) {
+        if (lblGpsStatus) { lblGpsStatus.textContent = 'Base Central'; lblGpsStatus.className = 'status-active'; }
+        if (btnPtt) { btnPtt.classList.remove('gps-disabled'); btnPtt.innerHTML = '<span>🎙️</span> PULSAR PARA HABLAR (Espacio)'; }
+        if (gpsLockBanner) gpsLockBanner.style.display = 'none';
+        return;
+      }
+      if (allowed) {
+        if (lblGpsStatus) { lblGpsStatus.textContent = 'Activo'; lblGpsStatus.className = 'status-active'; }
+        if (btnPtt) { btnPtt.classList.remove('gps-disabled'); btnPtt.innerHTML = '<span>🎙️</span> PULSAR PARA HABLAR (Espacio)'; }
+        if (gpsLockBanner) gpsLockBanner.style.display = 'none';
+      } else {
+        if (lblGpsStatus) { lblGpsStatus.textContent = 'Denegado/Apagado'; lblGpsStatus.className = 'status-warning'; }
+        if (btnPtt) { btnPtt.classList.add('gps-disabled'); btnPtt.innerHTML = '<span>🚫</span> GPS REQUERIDO'; }
+        if (gpsLockBanner) gpsLockBanner.style.display = 'flex';
+      }
+    }
+
+function checkAuth(){
+  if(currentUnit==='Clientes'){
+    if(loginScreen)loginScreen.style.display='none';
+    if(document.getElementById('client-queue-screen'))document.getElementById('client-queue-screen').style.display='flex';
+    if(document.querySelector('header'))document.querySelector('header').style.display='none';
+    if(mapContainer)mapContainer.style.display='none';
+    if(document.querySelector('.controls-panel'))document.querySelector('.controls-panel').style.display='none';
+    if(fleetListDrawer)fleetListDrawer.style.display='none';
+    if(gpsLockBanner)gpsLockBanner.style.display='none';
+    if(lblUnit)lblUnit.textContent='Clientes';
+    return;
+  }
+  if(document.getElementById('client-queue-screen'))document.getElementById('client-queue-screen').style.display='none';
+  if(currentUnit){
+    if(loginScreen)loginScreen.style.display='none';
+    if(document.querySelector('header'))document.querySelector('header').style.display='';
+    if(mapContainer)mapContainer.style.display='';
+    if(document.querySelector('.controls-panel'))document.querySelector('.controls-panel').style.display='';
+    if(lblUnit)lblUnit.textContent=currentUnit;
+    firstPersonMode=isDriver();
+    if(btnSos)btnSos.style.display=isDriver()?'flex':'none';
+    if(navSearchBar)navSearchBar.style.display=isDriver()?'flex':'none';
+    if(btnToggleFleet)btnToggleFleet.style.display=isModulator()?'block':'none';
+    if(fleetSummaryBar)fleetSummaryBar.style.display=isModulator()?'flex':'none';
+    if(btnUnlockBase)btnUnlockBase.style.display=isModulator()?'flex':'none';
+    if(!isModulator()&&vehicleHistoryCard)vehicleHistoryCard.style.display='none';
+    updateViewButtonUI();applyNightModeTheme();
+    if(btnTrafficToggle)btnTrafficToggle.classList.toggle('active',showTraffic);
+    requestWakeLock();connectNetwork();initializeRadio();applyCameraPerspective();
+  }else{
+    if(loginScreen)loginScreen.style.display='flex';
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function selectUnit(id) {
+      currentUnit = id;
+      deviceId = `${currentUnit}_${Math.random().toString(16).slice(2, 10)}_${Date.now().toString(16)}`;
+      radioInitialized = false;
+      localStorage.setItem('yadah_terminal_id', id);
+      checkAuth(); unlockAudioHardware();
+    }
+
+    function logoutUnit() {
+      if (typeof closeAllRadioPeers === 'function') closeAllRadioPeers();
+      radioInitialized = false;
+      if (mqttClient && mqttClient.connected && currentUnit) {
+        mqttClient.publish('yadah/radio/flota/status', JSON.stringify({ unit: currentUnit, status: 'offline' }), { retain: true });
+        mqttClient.end(true); mqttClient = null;
+      }
+      Object.keys(fleetMarkers).forEach(k => { if (k !== 'BASE_PERMANENTE') { fleetMarkers[k].marker.remove(); delete fleetMarkers[k]; } });
+      localStorage.removeItem('yadah_terminal_id'); currentUnit = null; if(document.getElementById('client-queue-screen'))document.getElementById('client-queue-screen').style.display='none'; if(document.querySelector('header'))document.querySelector('header').style.display=''; if(mapContainer)mapContainer.style.display=''; if(document.querySelector('.controls-panel'))document.querySelector('.controls-panel').style.display='';
+      silenceSOS(); cancelNavigation(); closeVehicleHistory(); toggleFleetDrawer(false); closeContextMenu();
+      baseUnlocked = false; if (btnUnlockBase) { btnUnlockBase.textContent = '🔒'; btnUnlockBase.classList.remove('unlocked'); }
+      if (loginScreen) loginScreen.style.display = 'flex';
+      if (lblUnit) lblUnit.textContent = '--';
+      if (fleetSummaryBar) fleetSummaryBar.style.display = 'none';
+      if (btnToggleFleet) btnToggleFleet.style.display = 'none';
+      if (btnUnlockBase) btnUnlockBase.style.display = 'none';
+      if (navSearchBar) navSearchBar.style.display = 'none';
+      if (btnSos) btnSos.style.display = 'none';
+    }
+
+    function toggleBaseUnlock() {
+      if (!isModulator()) return;
+      if (!baseUnlocked) {
+        const pass = prompt("🔐 Contraseña para mover Base Central:");
+        if (pass === "1234") { baseUnlocked = true; if (btnUnlockBase) { btnUnlockBase.textContent = '🔓'; btnUnlockBase.classList.add('unlocked'); } alert("✅ Haz clic en el mapa para ubicar la base."); }
+        else if (pass !== null) alert("❌ Contraseña incorrecta.");
+      } else { baseUnlocked = false; if (btnUnlockBase) { btnUnlockBase.textContent = '🔒'; btnUnlockBase.classList.remove('unlocked'); } alert("🔒 Base bloqueada."); }
+    }
+
+    function updateViewButtonUI() { if (btnViewMode) { btnViewMode.textContent = firstPersonMode ? '🚘' : '🗺️'; btnViewMode.classList.toggle('active', firstPersonMode); } }
+    function applyNightModeTheme() {
+      if (isNightMode) { if (mapContainer) mapContainer.classList.add('map-night-mode'); if (btnThemeMode) { btnThemeMode.textContent = '☀️'; btnThemeMode.classList.add('active'); } }
+      else { if (mapContainer) mapContainer.classList.remove('map-night-mode'); if (btnThemeMode) { btnThemeMode.textContent = '🌙'; btnThemeMode.classList.remove('active'); } }
+      localStorage.setItem('yadah_night_mode', isNightMode);
+    }
+    if (btnThemeMode) btnThemeMode.addEventListener('click', () => { isNightMode = !isNightMode; applyNightModeTheme(); });
+    if (btnTrafficToggle) btnTrafficToggle.addEventListener('click', () => { showTraffic = !showTraffic; btnTrafficToggle.classList.toggle('active', showTraffic); if (map && map.getLayer('google-traffic-layer')) map.setLayoutProperty('google-traffic-layer', 'visibility', showTraffic ? 'visible' : 'none'); });
+
+    function zoomIn() { if (map) map.zoomIn({ duration: 300 }); }
+    function zoomOut() { if (map) map.zoomOut({ duration: 300 }); }
+    function toggleFullScreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(()=>{}); } else if (document.exitFullscreen) document.exitFullscreen(); }
+
+    function formatTimeAgo(ms) {
+      const sec = Math.floor(ms / 1000); if (sec < 60) return `${sec}s`;
+      const min = Math.floor(sec / 60); if (min < 60) return `${min}m`;
+      return `${Math.floor(min / 60)}h ${min % 60}m`;
+    }
+
+    function toggleFleetDrawer(show) { if (fleetListDrawer) fleetListDrawer.style.display = show ? 'flex' : 'none'; if (show) renderFleetList(); }
+    function renderFleetList() {
+      const container = document.getElementById('fleet-items-list'); if (!container) return;
+      const now = Date.now();
+      container.innerHTML = ALL_UNITS.map(unitId => {
+        const data = fleetStatusMap[unitId] || {};
+        let statusBadge = '<span class="badge-stat offline">Apagado</span>';
+        let detailTxt = 'Sin conexión';
+        if (data.state === 'at-base') { statusBadge = '<span class="badge-stat at-base">En Base 🏢</span>'; detailTxt = `Llegada: <b>${data.arrivalTime ? new Date(data.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</b>`; }
+        else if (data.state === 'online') { statusBadge = '<span class="badge-stat online">En Marcha</span>'; detailTxt = `Vel: <b>${Math.round(data.speed)} km/h</b>`; }
+        else if (data.state === 'stopped') { statusBadge = '<span class="badge-stat stopped">Detenido</span>'; detailTxt = `Hace: <b>${data.stoppedSince ? formatTimeAgo(now - data.stoppedSince) : '0s'}</b>`; }
+        return `<div class="unit-card-row" onclick="openVehicleHistoryFromList('${unitId}')"><div class="unit-card-info"><b>🚘 ${unitId}</b><div>${detailTxt}</div></div><div>${statusBadge}</div></div>`;
+      }).join('');
+    }
+
+    function openVehicleHistoryFromList(unitId) {
+      if (!isModulator()) return;
+      if (confirm(`Opciones para ${unitId}:\n¿Copiar enlace de seguimiento para el cliente?`)) {
+        toggleFleetDrawer(false);
+        const clientLink = `${window.location.href.split('?')[0]}?track=${encodeURIComponent(unitId)}`;
+        navigator.clipboard.writeText(clientLink).then(() => alert(`📋 ¡Enlace copiado!\n${clientLink}`));
+        return;
+      }
+      toggleFleetDrawer(false); activeHistoryUnit = unitId;
+      document.getElementById('vh-unit-name').textContent = unitId;
+      if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'flex';
+    }
+
+    let audioCtx = null;
+    function unlockAudioHardware() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (radioSpeaker) { radioSpeaker.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"; radioSpeaker.play().catch(()=>{}); }
+      } catch (e) {}
+    }
+    window.addEventListener('touchstart', unlockAudioHardware, { passive: true });
+    window.addEventListener('click', unlockAudioHardware, { passive: true });
+
+    function playBeep(freq = 880, duration = 0.08) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.frequency.value = freq; gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playSiren() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(1100, audioCtx.currentTime + 0.3);
+        osc.frequency.linearRampToValueAtTime(600, audioCtx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.65);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.65);
+      } catch (e) {}
+    }
+
+    let defaultBaseCoords = [-89.356200, 13.724208];
+    const savedBaseCoords = localStorage.getItem('yadah_base_coords');
+    if (savedBaseCoords) { try { defaultBaseCoords = JSON.parse(savedBaseCoords); } catch(e){} }
+
+    const map = !trackingUnit ? new maplibregl.Map({
+      container: 'map', maxPitch: 85, pitchWithRotate: true, dragRotate: true,
+      style: {
+        version: 8,
+        sources: {
+          'google-base': { type: 'raster', tiles: ['https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'], tileSize: 256 },
+          'google-traffic': { type: 'raster', tiles: ['https://mt0.google.com/vt/lyrs=m,traffic&x={x}&y={y}&z={z}'], tileSize: 256 }
+        },
+        layers: [
+          { id: 'google-base-layer', type: 'raster', source: 'google-base', minzoom: 0, maxzoom: 22 },
+          { id: 'google-traffic-layer', type: 'raster', source: 'google-traffic', minzoom: 0, maxzoom: 22, layout: { visibility: 'visible' } }
+        ]
+      },
+      center: defaultBaseCoords, zoom: 16.5, pitch: 0, bearing: 0
+    }) : null;
+
+    let permanentBaseMarker = null; let baseBadgeEl = null;
+    function addPermanentBaseMarker() {
+      if (!map) return;
+      const container = document.createElement('div'); container.className = 'car-marker-container';
+      baseBadgeEl = document.createElement('div'); baseBadgeEl.className = 'car-badge base-station';
+      baseBadgeEl.innerHTML = `<div><strong>🏢 Base Central</strong></div><div style="font-size:0.6rem; color:#38bdf8;" id="base-status-txt">Inactiva</div>`;
+      container.appendChild(baseBadgeEl);
+      const rotator = document.createElement('div'); rotator.className = 'car-svg-rotator'; rotator.id = 'base-icon-rotator';
+      rotator.innerHTML = `<div class="base-icon">🏢</div>`; container.appendChild(rotator);
+      permanentBaseMarker = new maplibregl.Marker({ element: container }).setLngLat(defaultBaseCoords).addTo(map);
+    }
+    if (map) map.on('load', () => {
+      ensureLayersExist();
+      if (map.getLayer('google-traffic-layer')) map.setLayoutProperty('google-traffic-layer', 'visibility', showTraffic ? 'visible' : 'none');
+      addPermanentBaseMarker();
+      renderCustomPoiMarkers();
+    });
+
+    let lastTapTime = 0; let doubleTapHoldTimer = null; let singleTapHoldTimer = null;
+    if (map) {
+      map.on('touchstart', (e) => {
+        if (e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length > 1) { clearTimeout(singleTapHoldTimer); clearTimeout(doubleTapHoldTimer); return; }
+        const currentTime = new Date().getTime(); const tapLength = currentTime - lastTapTime; closeContextMenu();
+        if (tapLength < 350 && tapLength > 0) {
+          clearTimeout(singleTapHoldTimer); const lngLat = e.lngLat;
+          doubleTapHoldTimer = setTimeout(() => { if (lngLat) triggerContextMenu(lngLat, 'save'); }, 600);
+          lastTapTime = 0;
+        } else {
+          lastTapTime = currentTime; const lngLat = e.lngLat;
+          singleTapHoldTimer = setTimeout(() => { if (lngLat && lastTapTime !== 0) triggerContextMenu(lngLat, 'nav'); }, 650);
+        }
+      });
+      map.on('touchmove', () => { clearTimeout(singleTapHoldTimer); clearTimeout(doubleTapHoldTimer); lastTapTime = 0; });
+      map.on('contextmenu', (e) => { e.preventDefault(); triggerContextMenu(e.lngLat, 'save'); });
+      map.on('click', (e) => {
+        if (isModulator() && baseUnlocked) {
+          defaultBaseCoords = [e.lngLat.lng, e.lngLat.lat];
+          localStorage.setItem('yadah_base_coords', JSON.stringify(defaultBaseCoords));
+          if (permanentBaseMarker) permanentBaseMarker.setLngLat(defaultBaseCoords);
+          if (mqttClient && mqttClient.connected) mqttClient.publish(TOPIC_BASE, JSON.stringify({ coords: defaultBaseCoords }), { retain: true });
+          baseUnlocked = false; if (btnUnlockBase) { btnUnlockBase.textContent = '🔒'; btnUnlockBase.classList.remove('unlocked'); }
+          alert(`📍 ¡Base Central reubicada y sincronizada!`);
+        }
+      });
+    }
+
+    function triggerContextMenu(lngLat, mode) {
+      if (isModulator() && baseUnlocked) return;
+      contextMenuCoords = lngLat; contextMenuMode = mode;
+      const titleEl = document.getElementById('menu-title-text'); const actionBtn = document.getElementById('btn-ctx-action'); const assignBtn = document.getElementById('btn-ctx-assign');
+      if (mode === 'nav') { if (titleEl) titleEl.textContent = '📍 Destino Seleccionado'; if (actionBtn) { actionBtn.textContent = '🚀 ¡Ir a este lugar!'; actionBtn.style.background = '#10b981'; } }
+      else { if (titleEl) titleEl.textContent = '⭐ Nuevo Punto Local'; if (actionBtn) { actionBtn.textContent = '📍 Guardar este punto'; actionBtn.style.background = '#f59e0b'; } }
+      if (isModulator() && assignBtn) { assignBtn.style.display = 'block'; assignBtn.textContent = '🎯 Asignar a Móvil & Compartir...'; } else if (assignBtn) assignBtn.style.display = 'none';
+      if (tempContextMarker) tempContextMarker.remove();
+      const el = document.createElement('div'); el.style.fontSize = '2rem'; el.innerHTML = mode === 'nav' ? '🏁' : '📍';
+      tempContextMarker = new maplibregl.Marker({ element: el }).setLngLat([lngLat.lng, lngLat.lat]).addTo(map);
+      const ctxMenuEl = document.getElementById('map-context-menu'); if (ctxMenuEl) ctxMenuEl.style.display = 'flex';
+      playBeep(700, 0.05);
+    }
+
+    function ensureLayersExist() {
+      if (!map) return;
+      if (!map.getSource('route-trails')) map.addSource('route-trails', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      if (!map.getLayer('route-trails-layer')) map.addLayer({ id: 'route-trails-layer', type: 'line', source: 'route-trails', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0284c7', 'line-width': 6, 'line-opacity': 0.85 } });
+      if (!map.getSource('nav-active-route')) map.addSource('nav-active-route', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
+      if (!map.getLayer('nav-active-route-casing')) map.addLayer({ id: 'nav-active-route-casing', type: 'line', source: 'nav-active-route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0369a1', 'line-width': 10, 'line-opacity': 0.9 } });
+      if (!map.getLayer('nav-active-route-layer')) map.addLayer({ id: 'nav-active-route-layer', type: 'line', source: 'nav-active-route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#38bdf8', 'line-width': 6, 'line-opacity': 1.0 } });
+    }
+
+    let destinationMarker = null;
+    async function requestRouteToDestination(destLon, destLat, label = 'Destino') {
+      if (window.__yadahBaseNoNavigation) { if (navRouteInfo) navRouteInfo.style.display='none'; pendingDestination=null; return; }
+      if (!myLastCoords) { alert("Esperando señal de GPS..."); return; }
+      if (destinationMarker) destinationMarker.remove();
+      const el = document.createElement('div'); el.style.fontSize = '2.2rem'; el.innerHTML = '🏁';
+      destinationMarker = new maplibregl.Marker({ element: el }).setLngLat([destLon, destLat]).addTo(map);
+      try {
+        if (lblRouteStats) lblRouteStats.textContent = 'Calculando trayecto...'; if (navRouteInfo) navRouteInfo.style.display = 'flex';
+        const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${myLastCoords.lon},${myLastCoords.lat};${destLon},${destLat}?overview=full&geometries=geojson`);
+        const data = await res.json();
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          if (lblRouteStats) lblRouteStats.innerHTML = `🏁 <b>${label}</b><br>${(route.distance / 1000).toFixed(1)} km (~${Math.round(route.duration / 60)} min). En marcha 🚀`;
+          ensureLayersExist();
+          map.getSource('nav-active-route').setData({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: route.geometry, properties: {} }] });
+          if (mqttClient && mqttClient.connected && currentUnit) {
+            mqttClient.publish('yadah/radio/flota/navigation', JSON.stringify({ unit: currentUnit, geometry: route.geometry, label: label }));
+          }
+        }
+      } catch (e) {}
+    }
+
+    function cancelNavigation() {
+      pendingDestination = null; if (destinationMarker) { destinationMarker.remove(); destinationMarker = null; }
+      if (navRouteInfo) navRouteInfo.style.display = 'none';
+      if (document.getElementById('input-destination')) document.getElementById('input-destination').value = '';
+      if (map && map.getSource('nav-active-route')) map.getSource('nav-active-route').setData({ type: 'FeatureCollection', features: [] });
+      if (mqttClient && mqttClient.connected && currentUnit) mqttClient.publish('yadah/radio/flota/navigation', JSON.stringify({ unit: currentUnit, canceled: true }));
+    }
+
+    function closeVehicleHistory() { activeHistoryUnit = null; if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'none'; if (map && map.getSource('route-trails')) map.getSource('route-trails').setData({ type: 'FeatureCollection', features: [] }); }
+    function applyVehicleHistory() {
+      if (!isModulator() || !db || !activeHistoryUnit || !map) return;
+      const startTime = Date.now() - (24 * 60 * 60 * 1000);
+      const tx = db.transaction([STORE_NAME], 'readonly'); const store = tx.objectStore(STORE_NAME); const req = store.openCursor();
+      const historyCoords = [];
+      req.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) { const val = cursor.value; if (val.unit === activeHistoryUnit && val.timestamp >= startTime) historyCoords.push([val.lon, val.lat]); cursor.continue(); }
+        else {
+          ensureLayersExist();
+          if (map.getSource('route-trails')) map.getSource('route-trails').setData({ type: 'FeatureCollection', features: historyCoords.length >= 2 ? [{ type: 'Feature', geometry: { type: 'LineString', coordinates: historyCoords }, properties: {} }] : [] });
+          const statusDiv = document.getElementById('vh-status-info');
+          if (statusDiv) {
+            statusDiv.textContent = historyCoords.length < 2 ? 'Sin historial en 24h.' : `¡Mostrando ${historyCoords.length} puntos!`;
+            statusDiv.style.color = historyCoords.length < 2 ? '#ef4444' : '#10b981';
+            if (historyCoords.length >= 2) map.flyTo({ center: historyCoords[historyCoords.length - 1], zoom: 16, pitch: 0, bearing: 0 });
+          }
+        }
+      };
+    }
+
+    function createMarkerElement(unitName) {
+      const container = document.createElement('div'); container.className = 'car-marker-container';
+      const badge = document.createElement('div'); badge.className = 'car-badge';
+      badge.innerHTML = `<div><strong>${unitName}</strong></div><div class="unit-speed-txt" style="font-size:0.6rem; color:#38bdf8;">Detenido</div>`;
+      container.appendChild(badge);
+      const rotator = document.createElement('div'); rotator.className = 'car-svg-rotator';
+      rotator.innerHTML = `<svg viewBox="0 0 48 48" width="44" height="44"><ellipse cx="24" cy="24" rx="14" ry="21" fill="rgba(0,0,0,0.5)"/><rect x="13" y="6" width="22" height="36" rx="8" fill="#111827" stroke="#38bdf8" stroke-width="2"/><path d="M16 15 L32 15 L29 20 L19 20 Z" fill="#38bdf8"/><rect x="16" y="21" width="16" height="12" rx="2" fill="#1f2937"/><path d="M18 34 L30 34 L29 37 L19 37 Z" fill="#38bdf8" opacity="0.8"/><circle cx="16" cy="7" r="2" fill="#a5f3fc"/><circle cx="32" cy="7" r="2" fill="#a5f3fc"/></svg>`;
+      container.appendChild(rotator);
+      return { container, rotator, badge };
+    }
+
+    const fleetMarkers = {}; let myLastCoords = null; let myHeading = 0; let mySpeed = 0;
+    let targetPos = null; let currentDisplayPos = null; let targetHeading = 0; let currentDisplayHeading = 0;
+
+    function getDistanceFromBase(lat, lon) {
+      const R = 6371e3; const φ1 = lat * Math.PI/180; const φ2 = defaultBaseCoords[1] * Math.PI/180;
+      const Δφ = (defaultBaseCoords[1] - lat) * Math.PI/180; const Δλ = (defaultBaseCoords[0] - lon) * Math.PI/180;
+      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+    function updateModulatorState(modLat, modLon) {
+      const dist = getDistanceFromBase(modLat, modLon);
+      const wasActive = modulatorActiveAtBase;
+      if (dist <= 18) { modulatorActiveAtBase = true; if (!wasActive) modulatorActivationTime = Date.now(); }
+      else { modulatorActiveAtBase = false; modulatorActivationTime = null; }
+      if (baseBadgeEl) {
+        const iconRotator = document.getElementById('base-icon-rotator');
+        if (modulatorActiveAtBase) {
+          baseBadgeEl.innerHTML = `<div><strong>🏢 Base Central</strong></div><div style="font-size:0.6rem; color:#10b981;">Activa desde ${modulatorActivationTime ? new Date(modulatorActivationTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>`;
+          if (iconRotator) iconRotator.classList.add('base-active-glow');
+        } else {
+          baseBadgeEl.innerHTML = `<div><strong>🏢 Base Central</strong></div><div style="font-size:0.6rem; color:#94a3b8;">Inactiva</div>`;
+          if (iconRotator) iconRotator.classList.remove('base-active-glow');
+        }
+      }
+    }
+
+    function updateVehicleOnMap(unitId, lon, lat, heading, speed = 0, isSos = false) {
+      if (!lon || !lat || isNaN(lon) || isNaN(lat) || !map) return;
+      const now = Date.now();
+      if (!fleetStatusMap[unitId]) fleetStatusMap[unitId] = {};
+      const u = fleetStatusMap[unitId]; u.lastSeen = now; u.speed = speed; u.lat = lat; u.lon = lon;
+      if (getDistanceFromBase(lat, lon) <= 18) { if (u.state !== 'at-base') { u.state = 'at-base'; u.arrivalTime = now; } }
+      else { if (speed > 3) { u.state = 'online'; u.stoppedSince = null; u.arrivalTime = null; } else { u.state = 'stopped'; if (!u.stoppedSince) u.stoppedSince = now; } }
+      let speedTxt = u.state === 'at-base' ? `En Base (${u.arrivalTime ? new Date(u.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''})` : u.state === 'online' ? `${Math.round(speed)} km/h` : `Detenido hace ${formatTimeAgo(now - u.stoppedSince)}`;
+      if (!fleetMarkers[unitId]) {
+        const { container, rotator, badge } = createMarkerElement(unitId);
+        fleetMarkers[unitId] = { marker: new maplibregl.Marker({ element: container }).setLngLat([lon, lat]).addTo(map), rotator, badge, container };
+      } else { fleetMarkers[unitId].marker.setLngLat([lon, lat]); }
+      const speedDiv = fleetMarkers[unitId].badge.querySelector('.unit-speed-txt');
+      if (speedDiv) speedDiv.textContent = speedTxt;
+      if (heading !== undefined && heading !== null) fleetMarkers[unitId].rotator.style.transform = `rotate(${heading}deg)`;
+      fleetMarkers[unitId].container.classList.toggle('sos-active', isSos);
+      savePointToDB(unitId, lon, lat, speed, heading);
+      refreshFleetStatsCounters();
+    }
+
+    function smoothAnimationLoop() {
+      if (isDriver() && targetPos && currentDisplayPos && map) {
+        currentDisplayPos.lon += (targetPos.lon - currentDisplayPos.lon) * 0.15;
+        currentDisplayPos.lat += (targetPos.lat - currentDisplayPos.lat) * 0.15;
+        let diff = targetHeading - currentDisplayHeading;
+        while (diff < -180) diff += 360; while (diff > 180) diff -= 360;
+        currentDisplayHeading += diff * 0.15;
+        const myId = `${currentUnit} (Tú)`;
+        if (fleetMarkers[myId]) {
+          fleetMarkers[myId].marker.setLngLat([currentDisplayPos.lon, currentDisplayPos.lat]);
+          fleetMarkers[myId].rotator.style.transform = `rotate(${currentDisplayHeading}deg)`;
+        }
+        if (firstPersonMode) {
+          map.jumpTo({ center: [currentDisplayPos.lon, currentDisplayPos.lat], bearing: currentDisplayHeading, pitch: 75, zoom: 17.2, offset: [0, window.innerHeight * 0.35 || 220] });
+        }
+      }
+      requestAnimationFrame(smoothAnimationLoop);
+    }
+    requestAnimationFrame(smoothAnimationLoop);
+
+    setInterval(() => {
+      const now = Date.now();
+      ALL_UNITS.forEach(unitId => {
+        const u = fleetStatusMap[unitId];
+        if (u && u.lastSeen > 0 && (now - u.lastSeen) / 1000 > 50 && u.state !== 'offline') {
+          u.state = 'offline'; if (fleetMarkers[unitId]) { fleetMarkers[unitId].marker.remove(); delete fleetMarkers[unitId]; }
+        }
+      });
+      refreshFleetStatsCounters();
+      if (fleetListDrawer && fleetListDrawer.style.display === 'flex') renderFleetList();
+    }, 4000);
+
+    function refreshFleetStatsCounters() {
+      let online = 0, atBase = 0, stopped = 0, offline = 0;
+      ALL_UNITS.forEach(id => {
+        const st = fleetStatusMap[id].state;
+        if (st === 'at-base') atBase++; else if (st === 'online') online++; else if (st === 'stopped') stopped++; else offline++;
+      });
+      if (document.getElementById('stat-online')) document.getElementById('stat-online').textContent = `${online} En línea`;
+      if (document.getElementById('stat-base')) document.getElementById('stat-base').textContent = `${atBase} En Base`;
+      if (document.getElementById('stat-stopped')) document.getElementById('stat-stopped').textContent = `${stopped} Detenidos`;
+      if (document.getElementById('stat-offline')) document.getElementById('stat-offline').textContent = `${offline} Apagados`;
+    }
+
+    if (btnViewMode) btnViewMode.addEventListener('click', () => { firstPersonMode = !firstPersonMode; updateViewButtonUI(); applyCameraPerspective(); });
+
+    function applyCameraPerspective() {
+      if (!map) return;
+      if (isModulator()) { map.easeTo({ center: defaultBaseCoords, zoom: 16.5, pitch: 0, bearing: 0, offset: [0, 0], duration: 600 }); return; }
+      if (!myLastCoords) return;
+      if (firstPersonMode) {
+        map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], bearing: myHeading, pitch: 75, zoom: 17.2, offset: [0, window.innerHeight * 0.35 || 220], duration: 600 });
+      } else { map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], zoom: 16.0, pitch: 0, bearing: 0, offset: [0, 0], duration: 600 }); }
+    }
+
+    let mqttClient = null;
+    const TOPIC_GPS = 'yadah/radio/flota/gps';
+    const TOPIC_ALERT = 'yadah/radio/flota/alert'; const TOPIC_PANIC = 'yadah/radio/flota/panic';
+    const TOPIC_NAV = 'yadah/radio/flota/navigation'; const TOPIC_STATUS = 'yadah/radio/flota/status';
+    const TOPIC_BASE = 'yadah/radio/flota/base'; const TOPIC_MODULATOR = 'yadah/radio/flota/modulator_gps';
+    const TOPIC_POI = 'yadah/radio/flota/poi'; const TOPIC_ASSIGN = 'yadah/radio/flota/assignment';
+
+    function triggerSOS() {
+      isSosActive = !isSosActive; if (btnSos) btnSos.classList.toggle('active', isSosActive);
+      if (mqttClient && mqttClient.connected && currentUnit) mqttClient.publish(TOPIC_PANIC, JSON.stringify({ unit: currentUnit, active: isSosActive, coords: myLastCoords }));
+      if (isSosActive) alert("¡ALERTA DE PÁNICO ACTIVADA!");
+    }
+    function locateActiveSOS() { if (activeSosCoords && activeSosCoords.lon && activeSosCoords.lat && map) map.flyTo({ center: [activeSosCoords.lon, activeSosCoords.lat], zoom: 17.5, pitch: 45 }); }
+    function silenceSOS() {
+      const banner = document.getElementById('sos-alert-banner'); if (banner) banner.style.display = 'none';
+      if (sirenInterval) { clearInterval(sirenInterval); sirenInterval = null; }
+      activeSosCoords = null;
+    }
+
+    function connectNetwork() {
+      if (mqttClient && mqttClient.connected) return;
+      const opts = { clientId: 'yadah_' + Math.random().toString(16).substring(2, 9), clean: true, reconnectPeriod: 2000 };
+      if (isDriver()) opts.will = { topic: TOPIC_STATUS, payload: JSON.stringify({ unit: currentUnit, status: 'offline' }), qos: 1, retain: true };
+      mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', opts);
+      mqttClient.on('connect', () => {
+        mqttClient.subscribe([TOPIC_GPS, TOPIC_ALERT, TOPIC_PANIC, TOPIC_NAV, TOPIC_STATUS, TOPIC_BASE, TOPIC_MODULATOR, TOPIC_POI, TOPIC_ASSIGN, RADIO_SIGNAL_TOPIC]);
+        if (typeof initializeRadio === 'function') initializeRadio();
+        if (isDriver()) mqttClient.publish(TOPIC_STATUS, JSON.stringify({ unit: currentUnit, status: 'online' }), { retain: true });
+      });
+      mqttClient.on('message', (topic, message) => {
+        try {
+          const text = message.toString();
+          if (topic === RADIO_SIGNAL_TOPIC) {
+            receiveRadioSignal(message);
+          } else if (topic === TOPIC_ASSIGN) {
+            const assignData = JSON.parse(text);
+            if (isDriver() && assignData.targetUnit === currentUnit) {
+              playBeep(880, 0.1);
+              if (assignData.baseQueueId || assignData.source === 'base' || assignData.source === 'base_direct') {
+                window.__yadahBaseNoNavigation = true;
+                pendingDestination = null;
+                if (navRouteInfo) navRouteInfo.style.display = 'none';
+                if (lblRouteStats) lblRouteStats.textContent = 'Destino seleccionado';
+                window.__yadahPendingBaseAssignments = window.__yadahPendingBaseAssignments || {}; if (assignData.baseQueueId) window.__yadahPendingBaseAssignments[assignData.baseQueueId] = assignData; renderBasePending();
+                const box = document.getElementById('yadah-base-assignment');
+                const place = document.getElementById('yb-assignment-place');
+                const meta = document.getElementById('yb-assignment-meta');
+                if (place) place.textContent = assignData.label || 'Destino de base';
+                if (meta) meta.textContent = `🏠 BASE · ${assignData.price ? '$' + Number(assignData.price).toFixed(2) : 'Tarifa registrada'}`;
+                if (box) box.style.display = 'none';
+        if (typeof renderBaseNotifications === 'function') renderBaseNotifications();
+              } else {
+                window.__yadahBaseNoNavigation = false;
+                alert(`🎯 ¡Misión asignada: ${assignData.label}!`);
+                pendingDestination = { lon: assignData.lon, lat: assignData.lat, label: assignData.label };
+                if (lblRouteStats) lblRouteStats.textContent = `📍 [Asignado] ${assignData.label}. ¿Iniciar marcha?`;
+                if (navRouteInfo) navRouteInfo.style.display = 'flex';
+              }
+            }
+          } else if (topic === TOPIC_POI) {
+            const d = JSON.parse(text); if (d && d.action === 'sync' && d.pois) { localStorage.setItem('yadah_custom_pois', JSON.stringify(d.pois)); renderCustomPoiMarkers(); }
+          } else if (topic === TOPIC_BASE) {
+            const d = JSON.parse(text); if (d.coords) { defaultBaseCoords = d.coords; localStorage.setItem('yadah_base_coords', JSON.stringify(defaultBaseCoords)); if (permanentBaseMarker) permanentBaseMarker.setLngLat(defaultBaseCoords); }
+          } else if (topic === TOPIC_MODULATOR) {
+            const d = JSON.parse(text); if (d && d.lat && d.lon) updateModulatorState(d.lat, d.lon);
+          } else if (topic === TOPIC_GPS) {
+            const d = JSON.parse(text); if (d.unit && d.unit !== currentUnit) updateVehicleOnMap(d.unit, d.lon, d.lat, d.heading, d.speed, d.isSos);
+          } else if (topic === TOPIC_STATUS) {
+            const d = JSON.parse(text); if (d.unit && d.unit !== currentUnit && d.status === 'offline') {
+              if (fleetStatusMap[d.unit]) fleetStatusMap[d.unit].state = 'offline';
+              if (fleetMarkers[d.unit]) { fleetMarkers[d.unit].marker.remove(); delete fleetMarkers[d.unit]; }
+              refreshFleetStatsCounters();
+            }
+          } else if (topic === TOPIC_NAV) {
+            const nav = JSON.parse(text);
+            if (isModulator() && map) {
+              ensureLayersExist();
+              if (nav.canceled) map.getSource('nav-active-route').setData({ type: 'FeatureCollection', features: [] });
+              else if (nav.geometry) map.getSource('nav-active-route').setData({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: nav.geometry, properties: {} }] });
+            }
+          } else if (topic === TOPIC_PANIC) {
+            const panic = JSON.parse(text);
+            if (panic.unit !== currentUnit) {
+              if (panic.active) {
+                activeSosCoords = panic.coords;
+                const banner = document.getElementById('sos-alert-banner');
+                if (document.getElementById('sos-banner-text')) document.getElementById('sos-banner-text').textContent = `🚨 ¡EMERGENCIA: ${panic.unit}!`;
+                if (banner) banner.style.display = 'flex';
+                if (!sirenInterval) { playSiren(); sirenInterval = setInterval(playSiren, 1200); }
+                if (isModulator() && panic.coords && map) map.flyTo({ center: [panic.coords.lon, panic.coords.lat], zoom: 16.5, pitch: 0 });
+              } else { silenceSOS(); }
+            }
+          } else if (topic === TOPIC_ALERT) {
+            const alertData = JSON.parse(text);
+            if (alertData.sender !== currentUnit && channelStatus) {
+              if (alertData.live === true) {
+                channelStatus.className = 'channel-status receiving';
+                channelStatus.textContent = `▼ TRANSMITIENDO: ${alertData.sender}`;
+                playBeep(660, 0.06);
+                clearTimeout(window.yadahRemoteTalkTimer);
+                window.yadahRemoteTalkTimer = setTimeout(() => {
+                  if (channelStatus && !radioTalking) {
+                    channelStatus.className = 'channel-status';
+                    channelStatus.textContent = '● CANAL LIBRE';
+                  }
+                }, 5000);
+              } else if (alertData.live === false) {
+                clearTimeout(window.yadahRemoteTalkTimer);
+                if (!radioTalking) {
+                  channelStatus.className = 'channel-status';
+                  channelStatus.textContent = '● CANAL LIBRE';
+                }
+              }
+            }
+          }
+        } catch (e) {}
+      });
+    }
+
+    function calculateBearing(startLat, startLng, destLat, destLng) {
+      const y = Math.sin((destLng - startLng) * Math.PI / 180) * Math.cos(destLat * Math.PI / 180);
+      const x = Math.cos(startLat * Math.PI / 180) * Math.sin(destLat * Math.PI / 180) - Math.sin(startLat * Math.PI / 180) * Math.cos(destLat * Math.PI / 180) * Math.cos((destLng - startLng) * Math.PI / 180);
+      return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    let initialCentering = false;
+    if (!trackingUnit && navigator.geolocation) {
+      navigator.geolocation.watchPosition(
+        (pos) => {
+          updateGpsLockState(true);
+          const lat = pos.coords.latitude; const lon = pos.coords.longitude; const now = Date.now();
+          let heading = pos.coords.heading; let speedKmh = 0;
+          if (pos.coords.speed !== null && !isNaN(pos.coords.speed) && pos.coords.speed > 0.8) speedKmh = pos.coords.speed * 3.6;
+          else if (myLastCoords) {
+            const dist = Math.hypot(lat - myLastCoords.lat, lon - myLastCoords.lon) * 111139;
+            const timeSec = (now - myLastCoords.timestamp) / 1000;
+            if (timeSec > 0 && dist > 2.5) speedKmh = (dist / timeSec) * 3.6;
+          }
+          if (heading === null || isNaN(heading)) {
+            if (myLastCoords && Math.hypot(lat - myLastCoords.lat, lon - myLastCoords.lon) > 0.00002) myHeading = Math.round(calculateBearing(myLastCoords.lat, myLastCoords.lon, lat, lon));
+          } else { myHeading = Math.round(heading); }
+          mySpeed = Math.round(speedKmh); myLastCoords = { lat, lon, timestamp: now };
+          if (lblHeading) lblHeading.textContent = `${myHeading}°`;
+          if (lblSpeed) lblSpeed.textContent = `${mySpeed} km/h`;
+
+          if (isModulator()) {
+            updateModulatorState(lat, lon);
+            if (mqttClient && mqttClient.connected) mqttClient.publish(TOPIC_MODULATOR, JSON.stringify({ lat, lon, timestamp: now }));
+          } else {
+            targetPos = { lon, lat }; targetHeading = myHeading;
+            if (!currentDisplayPos) { currentDisplayPos = { lon, lat }; currentDisplayHeading = myHeading; }
+            updateVehicleOnMap(`${currentUnit} (Tú)`, lon, lat, myHeading, mySpeed, isSosActive);
+            if (mqttClient && mqttClient.connected) mqttClient.publish(TOPIC_GPS, JSON.stringify({ unit: currentUnit, lat, lon, heading: myHeading, speed: mySpeed, isSos: isSosActive }));
+          }
+          if (!initialCentering) { applyCameraPerspective(); initialCentering = true; }
+        },
+        () => updateGpsLockState(false),
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+      );
+    } else if (!trackingUnit) { updateGpsLockState(false); }
+
+    // Menú compacto de opciones del mapa: mantiene los IDs existentes para no alterar radio/WebRTC.
+    function closeMapOptions() {
+      const menu = document.getElementById('map-options-menu');
+      const trigger = document.getElementById('btn-map-options');
+      if (menu) menu.classList.remove('open');
+      if (trigger) trigger.classList.remove('active');
+    }
+    function toggleMapOptions() {
+      const menu = document.getElementById('map-options-menu');
+      const trigger = document.getElementById('btn-map-options');
+      if (!menu) return;
+      const open = menu.classList.toggle('open');
+      if (trigger) trigger.classList.toggle('active', open);
+    }
+    const mapOptionsTrigger = document.getElementById('btn-map-options');
+    if (mapOptionsTrigger) mapOptionsTrigger.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleMapOptions();
+    });
+    const mapOptionsWrapper = document.getElementById('map-options-wrapper');
+    if (mapOptionsWrapper) mapOptionsWrapper.addEventListener('click', (event) => event.stopPropagation());
+    document.addEventListener('click', closeMapOptions);
+    document.querySelectorAll('#map-options-menu .btn-float-action').forEach((button) => {
+      button.addEventListener('click', () => setTimeout(closeMapOptions, 0));
+    });
+
+    if (!trackingUnit && document.getElementById('btn-recenter')) document.getElementById('btn-recenter').addEventListener('click', applyCameraPerspective);
+
+    // ==========================================
+    // MÓDULO DE RADIO WEBRTC EN TIEMPO REAL (VERSIÓN UNIFICADA CORREGIDA)
+    // ==========================================
+    const RADIO_SIGNAL_TOPIC = 'yadah/radio/webrtc/signaling/v10';
+    const ROOM_NAME = 'yadah-radio-flota-3d';
+    const STUN_SERVERS = [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' }
+    ];
+
+    let deviceId = `${currentUnit || 'guest'}_${Math.random().toString(16).slice(2, 10)}_${Date.now().toString(16)}`;
+    let radioLocalStream = null;
+    let radioLocalTrack = null;
+    let radioTalking = false;
+    let radioButtonPressed = false;
+    let radioTalkSession = 0;
+    let radioInitialized = false;
+    const radioPeers = new Map();
+    const radioCandidateQueues = new Map();
+    const radioAudioElements = new Map();
+    let radioAudioUnlocked = false;
+
+    function unlockRadioAudio() {
+      radioAudioUnlocked = true;
+      const mainSpeaker = document.getElementById('radio-speaker');
+      if (mainSpeaker) {
+        try {
+          mainSpeaker.muted = false;
+          mainSpeaker.play().catch(() => {});
+        } catch (e) {}
+      }
+      for (const audio of radioAudioElements.values()) {
+        try {
+          audio.muted = false;
+          audio.play().catch(() => {});
+        } catch (e) {}
+      }
+    }
+
+    function initializeRadio() {
+      if (radioInitialized || !mqttClient || !mqttClient.connected || !currentUnit) return;
+      radioInitialized = true;
+      if (typeof mqtt === 'undefined') {
+        if (channelStatus) {
+          channelStatus.className = 'channel-status blocked';
+          channelStatus.textContent = '📻 MQTT NO DISPONIBLE';
+        }
+        return;
+      }
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.subscribe(RADIO_SIGNAL_TOPIC);
+        sendRadioSignal({ type: 'hello' });
+      }
+    }
+
+    function sendRadioSignal(data) {
+      if (!mqttClient || !mqttClient.connected || !currentUnit) return;
+      mqttClient.publish(RADIO_SIGNAL_TOPIC, JSON.stringify({
+        room: ROOM_NAME,
+        sender: currentUnit,
+        deviceId,
+        timestamp: Date.now(),
+        ...data
+      }));
+    }
+
+    async function getRadioMicrophone() {
+      if (radioLocalTrack && radioLocalTrack.readyState === 'live') {
+        radioLocalTrack.enabled = true;
+        return true;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return false;
+      try {
+        radioLocalStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            channelCount: 1
+          }
+        });
+        radioLocalTrack = radioLocalStream.getAudioTracks()[0] || null;
+        if (!radioLocalTrack) return false;
+        radioLocalTrack.enabled = true;
+
+        await attachRadioTrackToPeers();
+        return true;
+      } catch (error) {
+        console.warn('No se pudo acceder al micrófono:', error);
+        return false;
+      }
+    }
+
+    async function attachRadioTrackToPeers() {
+      if (!radioLocalTrack || radioLocalTrack.readyState !== 'live' || !radioLocalStream) return false;
+      let attached = false;
+
+      for (const [peerId, pc] of radioPeers.entries()) {
+        try {
+          let sender = pc.getSenders().find(item => item && item.track && item.track.kind === 'audio');
+          if (!sender && typeof pc.getTransceivers === 'function') {
+            const transceiver = pc.getTransceivers().find(item => item && item.sender && item.sender.kind === 'audio');
+            sender = transceiver ? transceiver.sender : null;
+          }
+
+          if (!sender) {
+            sender = pc.addTrack(radioLocalTrack, radioLocalStream);
+          } else if (sender.track !== radioLocalTrack) {
+            await sender.replaceTrack(radioLocalTrack);
+          }
+
+          if (pc.signalingState === 'stable' && pc.connectionState !== 'closed') {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            sendRadioSignal({ type: 'renegotiate-offer', target: peerId, offer: pc.localDescription });
+          }
+
+          attached = true;
+        } catch (error) {
+          console.warn('No se pudo conectar el micrófono al peer:', error);
+        }
+      }
+      return attached;
+    }
+
+    async function startRadioTalking(event) {
+      if (event) event.preventDefault();
+      if (isDriver() && !gpsPermissionGranted) {
+        if (channelStatus) {
+          channelStatus.className = 'channel-status blocked';
+          channelStatus.textContent = '🚫 GPS BLOQUEADO';
+        }
+        playBeep(220, 0.15);
+        return;
+      }
+      if (radioTalking) return;
+
+      radioButtonPressed = true;
+      const session = ++radioTalkSession;
+      const microphoneReady = await getRadioMicrophone();
+
+      if (!radioButtonPressed || session !== radioTalkSession) {
+        if (radioLocalTrack) radioLocalTrack.enabled = false;
+        return;
+      }
+      if (!microphoneReady || !radioLocalTrack) {
+        radioButtonPressed = false;
+        if (channelStatus) channelStatus.textContent = '🎙️ MICRÓFONO NO DISPONIBLE';
+        return;
+      }
+
+      await attachRadioTrackToPeers();
+      radioLocalTrack.enabled = true;
+      radioTalking = true;
+      if (btnPtt) btnPtt.classList.add('active');
+      if (channelStatus) {
+        channelStatus.className = 'channel-status transmitting';
+        channelStatus.textContent = '▲ TRANSMITIENDO EN VIVO...';
+      }
+      if (navigator.vibrate) navigator.vibrate(50);
+      playBeep(920, 0.04);
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.publish(TOPIC_ALERT, JSON.stringify({ sender: currentUnit, live: true }));
+      }
+    }
+
+    function stopRadioTalking(event) {
+      if (event) event.preventDefault();
+      radioButtonPressed = false;
+      radioTalkSession++;
+      const wasRadioTalking = radioTalking;
+
+      if (radioLocalTrack) radioLocalTrack.enabled = false;
+      radioTalking = false;
+      if (btnPtt) btnPtt.classList.remove('active');
+      if (channelStatus) {
+        channelStatus.className = 'channel-status';
+        channelStatus.textContent = '● CANAL LIBRE';
+      }
+      if (!wasRadioTalking) return;
+      playBeep(600, 0.04);
+      if (mqttClient && mqttClient.connected && currentUnit) {
+        mqttClient.publish(TOPIC_ALERT, JSON.stringify({ sender: currentUnit, live: false }));
+      }
+    }
+
+    function queueRadioCandidate(targetDevId, candidate) {
+      if (!radioCandidateQueues.has(targetDevId)) radioCandidateQueues.set(targetDevId, []);
+      radioCandidateQueues.get(targetDevId).push(candidate);
+    }
+
+    async function flushRadioCandidates(targetDevId, pc) {
+      const queue = radioCandidateQueues.get(targetDevId) || [];
+      radioCandidateQueues.delete(targetDevId);
+      for (const candidate of queue) {
+        try { await pc.addIceCandidate(candidate); } catch (error) {}
+      }
+    }
+
+    async function receiveRadioSignal(message) {
+      try {
+        const data = JSON.parse(message.toString());
+        if (!data || data.room !== ROOM_NAME || data.deviceId === deviceId) return;
+        if (data.target && data.target !== deviceId) return;
+        if (!data.sender || !data.deviceId) return;
+
+        const targetDevId = data.deviceId;
+        let pc = radioPeers.get(targetDevId);
+
+        if (data.type === 'hello') {
+          if (deviceId < targetDevId) {
+            pc = await createRadioPeer(targetDevId, true);
+            if (pc.signalingState === 'stable') {
+              const offer = await pc.createOffer();
+              await pc.setLocalDescription(offer);
+              sendRadioSignal({ type: 'offer', target: targetDevId, offer: pc.localDescription });
+            }
+          }
+        } else if (data.type === 'offer' || data.type === 'renegotiate-offer') {
+          if (!pc) pc = await createRadioPeer(targetDevId, false);
+          if (pc.signalingState !== 'stable') return;
+          await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
+          await flushRadioCandidates(targetDevId, pc);
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+          sendRadioSignal({ type: 'answer', target: targetDevId, answer: pc.localDescription });
+        } else if (data.type === 'answer') {
+          if (pc && pc.signalingState === 'have-local-offer') {
+            await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+            await flushRadioCandidates(targetDevId, pc);
+          }
+        } else if (data.type === 'candidate') {
+          const candidate = new RTCIceCandidate(data.candidate);
+          if (pc && pc.remoteDescription && pc.remoteDescription.type) {
+            try { await pc.addIceCandidate(candidate); } catch (error) {}
+          } else {
+            queueRadioCandidate(targetDevId, candidate);
+          }
+        } else if (data.type === 'bye') {
+          closeRadioPeer(targetDevId);
+        }
+      } catch (error) {
+        console.warn('Señal WebRTC inválida:', error);
+      }
+    }
+
+    async function createRadioPeer(targetDevId, isInitiator) {
+      if (radioPeers.has(targetDevId)) return radioPeers.get(targetDevId);
+
+      const pc = new RTCPeerConnection({ iceServers: STUN_SERVERS });
+      radioPeers.set(targetDevId, pc);
+
+      try { pc.addTransceiver('audio', { direction: 'sendrecv' }); } catch (error) {}
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate) {
+          sendRadioSignal({ type: 'candidate', target: targetDevId, candidate: event.candidate });
+        }
+      };
+
+      pc.ontrack = (event) => {
+        const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
+        if (!stream) return;
+
+        // Conectamos directamente al altavoz principal #radio-speaker del DOM
+        const mainSpeaker = document.getElementById('radio-speaker');
+        if (mainSpeaker) {
+          mainSpeaker.srcObject = stream;
+          mainSpeaker.muted = false;
+          mainSpeaker.volume = 1.0;
+          mainSpeaker.play().catch(() => {});
+        }
+
+        if (channelStatus && !radioTalking) {
+          channelStatus.className = 'channel-status receiving';
+          channelStatus.textContent = '▼ RADIO EN VIVO';
+        }
+      };
+
+      pc.onconnectionstatechange = () => {
+        if (['failed', 'closed', 'disconnected'].includes(pc.connectionState)) {
+          closeRadioPeer(targetDevId);
+        }
+      };
+
+      if (radioLocalTrack && radioLocalTrack.readyState === 'live') {
+        try {
+          let sender = pc.getSenders().find(item => item && item.kind === 'audio');
+          if (!sender) sender = pc.addTrack(radioLocalTrack, radioLocalStream);
+          else if (sender.track !== radioLocalTrack) await sender.replaceTrack(radioLocalTrack);
+        } catch (error) {}
+      }
+
+      return pc;
+    }
+
+    function closeRadioPeer(targetDevId) {
+      const pc = radioPeers.get(targetDevId);
+      if (pc) {
+        try { pc.close(); } catch (error) {}
+        radioPeers.delete(targetDevId);
+      }
+      const audio = radioAudioElements.get(targetDevId);
+      if (audio) {
+        audio.srcObject = null;
+        audio.remove();
+        radioAudioElements.delete(targetDevId);
+      }
+      radioCandidateQueues.delete(targetDevId);
+      if (channelStatus && !radioTalking) {
+        channelStatus.className = 'channel-status';
+        channelStatus.textContent = '● CANAL LIBRE';
+      }
+    }
+
+    function closeAllRadioPeers() {
+      for (const targetDevId of Array.from(radioPeers.keys())) closeRadioPeer(targetDevId);
+      if (radioLocalStream) {
+        radioLocalStream.getTracks().forEach(track => track.stop());
+        radioLocalStream = null;
+        radioLocalTrack = null;
+      }
+      radioTalking = false;
+      radioButtonPressed = false;
+    }
+
+    function bindRadioPTT() {
+      if (!btnPtt || btnPtt.dataset.webrtcBound === 'true') return;
+      btnPtt.dataset.webrtcBound = 'true';
+      let pressed = false;
+
+      const release = (event) => {
+        if (!pressed) return;
+        pressed = false;
+        stopRadioTalking(event);
+      };
+
+      btnPtt.addEventListener('pointerdown', (event) => {
+        unlockRadioAudio();
+        event.preventDefault();
+        if (pressed) return;
+        pressed = true;
+        btnPtt.setPointerCapture?.(event.pointerId);
+        startRadioTalking(event);
+      });
+      btnPtt.addEventListener('pointerup', release);
+      btnPtt.addEventListener('pointercancel', release);
+      btnPtt.addEventListener('lostpointercapture', release);
+      document.addEventListener('pointerup', release, true);
+      document.addEventListener('pointercancel', release, true);
+
+      window.addEventListener('pointerdown', unlockRadioAudio, { once: false, passive: true });
+      window.addEventListener('touchstart', unlockAudioHardware, { once: false, passive: true });
+      window.addEventListener('click', unlockAudioHardware, { once: false, passive: true });
+
+      window.addEventListener('keydown', (event) => {
+        unlockRadioAudio();
+        const tag = document.activeElement && document.activeElement.tagName;
+        if (event.code === 'Space' && !event.repeat && !['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) {
+          pressed = true;
+          startRadioTalking(event);
+        }
+      });
+      window.addEventListener('keyup', (event) => {
+        if (event.code === 'Space') release(event);
+      });
+      window.addEventListener('blur', () => release(null));
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) release(null);
+      });
+    }
+
+    let cachedAudios = [];
+    function getStoredAudios() {
+      try {
+        const stored = JSON.parse(localStorage.getItem('yadah_audio_history') || '[]');
+        cachedAudios = stored.filter(item => item && item.timestamp > Date.now() - 86400000).slice(0, 25);
+      } catch (error) {
+        cachedAudios = [];
+      }
+      return cachedAudios;
+    }
+    function toggleHistory(show) {
+      const modal = document.getElementById('history-modal');
+      if (modal) modal.style.display = show ? 'flex' : 'none';
+    }
+    function renderHistory() {}
+    function playAudioByIndex(index) {}
+
+    bindRadioPTT();
+
+    if (!trackingUnit) checkAuth();
+  </script>
+
+<script>
+/* ======================================================================
+   YADAH CARRERAS v1
+   Este bloque NO modifica las funciones WebRTC/PTT existentes.
+   Usa su propio topic MQTT y sus propios elementos/variables.
+   ====================================================================== */
+(function(){
+  'use strict';
+  const YC_TOPIC = 'yadah/radio/flota/carreras/state';
+  const YC_STORAGE = 'yadah_carreras_state_v1';
+  let ycMqtt = null;
+  let ycState = { version:1, day:'', careers:[] };
+  let ycLastSerialized = '';
+  let ycInitialized = false;
+
+  const $ = id => document.getElementById(id);
+  const now = () => Date.now();
+  const dayKey = ts => new Date(ts).toLocaleDateString('en-CA');
+  const unitName = () => (typeof currentUnit !== 'undefined' && currentUnit) ? currentUnit : 'Sin unidad';
+  const isMod = () => unitName() === 'Modulador';
+  const isDriverRole = () => !!unitName() && !isMod();
+  const uid = () => (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('yc_'+Date.now()+'_'+Math.random().toString(16).slice(2));
+
+  function freshState(){ return {version:1, day:dayKey(now()), careers:[]}; }
+  function normalizeState(st){
+    const base=freshState();
+    if(!st || typeof st!=='object') return base;
+    const day=typeof st.day==='string'?st.day:base.day;
+    // Solo mantenemos el día actual en la cola/historial de este prototipo.
+    if(day!==base.day) return base;
+    const careers=Array.isArray(st.careers)?st.careers:[];
+    return {version:1,day,careers:careers.filter(c=>c && c.id && c.day===base.day)};
+  }
+  function loadLocal(){
+    try{ ycState=normalizeState(JSON.parse(localStorage.getItem(YC_STORAGE)||'null')); }
+    catch(e){ ycState=freshState(); }
+  }
+  function saveLocal(){ try{ localStorage.setItem(YC_STORAGE,JSON.stringify(ycState)); }catch(e){} }
+  function serialize(){ return JSON.stringify(ycState); }
+  function publishState(){
+    const payload=serialize();
+    ycLastSerialized=payload;
+    saveLocal();
+    if(ycMqtt && ycMqtt.connected){
+      ycMqtt.publish(YC_TOPIC,payload,{qos:0,retain:true});
+    }
+    render();
+  }
+  function connect(){
+    try{
+      ycMqtt=mqtt.connect('wss://broker.emqx.io:8084/mqtt',{clientId:'yadah_carreras_'+Math.random().toString(16).slice(2,10),clean:true});
+      ycMqtt.on('connect',()=>{ ycMqtt.subscribe(YC_TOPIC,{qos:0}); publishState(); });
+      ycMqtt.on('message',(topic,msg)=>{
+        if(topic!==YC_TOPIC) return;
+        try{
+          const incoming=normalizeState(JSON.parse(msg.toString()));
+          const raw=JSON.stringify(incoming);
+          if(raw===ycLastSerialized) return;
+          ycState=incoming; ycLastSerialized=raw; saveLocal(); render();
+        }catch(e){ console.warn('Carreras: mensaje inválido',e); }
+      });
+      ycMqtt.on('error',e=>console.warn('Carreras MQTT:',e));
+    }catch(e){ console.warn('Carreras: no se pudo conectar',e); }
+  }
+  function ensureDay(){
+    const d=dayKey(now());
+    if(ycState.day!==d){ ycState=freshState(); saveLocal(); }
+  }
+  function createCareer(place){
+    place=(place||'').trim(); if(!place) return alert('Escribe el lugar de la carrera.');
+    ensureDay();
+    ycState.careers.unshift({id:uid(),day:ycState.day,place,createdAt:now(),createdBy:unitName(),status:'pending',driver:null,acceptedAt:null,startedAt:null,finishedAt:null});
+    publishState(); closeModal();
+  }
+  function findCareer(id){ return ycState.careers.find(c=>c.id===id); }
+  function acceptCareer(id){
+    const c=findCareer(id); if(!c || c.status!=='pending') return;
+    if(!confirm('¿Tomar esta carrera?\n\n'+c.place)) return;
+    c.status='active'; c.driver=unitName(); c.acceptedAt=now(); c.startedAt=now();
+    publishState();
+  }
+  function finishCareer(id){
+    const c=findCareer(id); if(!c || c.status!=='active' || c.driver!==unitName()) return;
+    if(!confirm('¿Finalizar esta carrera?\n\n'+c.place)) return;
+    c.status='done'; c.finishedAt=now(); publishState();
+  }
+  function cancelCareer(id){
+    const c=findCareer(id); if(!c || c.status==='done') return;
+    if(!(isMod() || c.createdBy===unitName() || c.driver===unitName())) return;
+    if(!confirm('¿Cancelar esta carrera?\n\n'+c.place)) return;
+    c.status='cancelled'; c.finishedAt=now(); publishState();
+  }
+  function fmtTime(ts){ return new Date(ts).toLocaleTimeString('es-SV',{hour:'2-digit',minute:'2-digit'}); }
+  function esc(s){ return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+  function render(){
+    ensureDay();
+    const stack=$('yadah-career-stack'); if(!stack) return;
+    const active=ycState.careers.filter(c=>c.status==='pending'||c.status==='active');
+    stack.innerHTML='';
+    if(!active.length){ stack.style.display='none'; return; }
+    stack.style.display='flex';
+    active.forEach(c=>{
+      const card=document.createElement('div'); card.className='yc-card '+c.status;
+      let action='';
+      if(c.status==='pending'){
+        // La carrera queda disponible para cualquier motorista. El modulador también puede verla.
+        action=isDriverRole()?`<button data-yc-action="accept" data-id="${c.id}">ACEPTAR</button>`:`<button class="cancel" data-yc-action="cancel" data-id="${c.id}">Cancelar carrera</button>`;
+      }else{
+        const owner=c.driver||'Unidad';
+        action=`<div class="yc-state active">🟡 OCUPADO — ${esc(owner)}</div>`;
+        if(c.driver===unitName() || isMod()) action+=`<button class="finish" data-yc-action="finish" data-id="${c.id}">${c.driver===unitName()?'FINALIZAR CARRERA':'Marcar finalizada'}</button>`;
+      }
+      card.innerHTML=`<div class="yc-line"><div class="yc-place">🚕 ${esc(c.place)}</div><div class="yc-time">${fmtTime(c.createdAt)}</div></div>${c.status==='pending'?'<div class="yc-state">🔵 PENDIENTE</div>':''}${action}`;
+      stack.appendChild(card);
+    });
+  }
+  let ycRecognition = null;
+  let ycListening = false;
+  function setVoiceStatus(text){ const el=$('yc-voice-status'); if(el) el.textContent=text||''; }
+  function stopCareerVoice(){
+    ycListening=false;
+    try{ if(ycRecognition) ycRecognition.stop(); }catch(e){}
+    const b=$('yc-mic'); if(b) b.classList.remove('active');
+  }
+  function cleanVoiceText(text){
+    return String(text||'').replace(/\b(cambio|cambió)\b[.!]?\s*$/i,'').replace(/^\s+|\s+$/g,'');
+  }
+  function startCareerVoice(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){ alert('El reconocimiento de voz no está disponible en este navegador. Puedes escribir el lugar.'); return; }
+    if(ycListening){ stopCareerVoice(); return; }
+    const input=$('yc-place-input');
+    ycRecognition=new SR();
+    ycRecognition.lang='es-SV'; ycRecognition.continuous=true; ycRecognition.interimResults=true; ycRecognition.maxAlternatives=1;
+    ycListening=true; $('yc-mic')?.classList.add('active'); setVoiceStatus('🎙️ Escuchando… di el lugar y termina diciendo “cambio”.');
+    ycRecognition.onresult=(event)=>{
+      let finalText=''; let interim='';
+      for(let i=event.resultIndex;i<event.results.length;i++){
+        const t=event.results[i][0]?.transcript||'';
+        if(event.results[i].isFinal) finalText+=t+' '; else interim+=t;
+      }
+      if(finalText){
+        const cleaned=cleanVoiceText(finalText);
+        input.value=(input.value+' '+cleaned).trim();
+        if(/\b(cambio|cambió)\b/i.test(finalText)){ stopCareerVoice(); setVoiceStatus('✅ Voz recibida. Creando carrera…'); createCareer(input.value); return; }
+      }
+      if(interim) setVoiceStatus('🎙️ '+interim.trim());
+    };
+    ycRecognition.onerror=(event)=>{ stopCareerVoice(); setVoiceStatus(event.error==='not-allowed'?'⚠️ Permiso de micrófono denegado.':'⚠️ No se pudo reconocer la voz.'); };
+    ycRecognition.onend=()=>{ if(ycListening){ ycListening=false; $('yc-mic')?.classList.remove('active'); if(!$('yc-voice-status')?.textContent) setVoiceStatus(''); } };
+    try{ ycRecognition.start(); }catch(e){ stopCareerVoice(); setVoiceStatus('⚠️ No se pudo iniciar el micrófono.'); }
+  }
+  function openNew(){
+    stopCareerVoice(); $('yc-modal-title').textContent='🚕 Nueva carrera'; $('yc-form-view').style.display='block'; $('yc-history-view').style.display='none'; $('yc-place-input').value=''; setVoiceStatus(''); $('yadah-career-modal').style.display='flex';
+  }
+  function openHistory(){
+    $('yc-modal-title').textContent='📋 Historial de carreras'; $('yc-form-view').style.display='none'; $('yc-history-view').style.display='block';
+    const list=$('yadah-career-history-list'); const done=ycState.careers.filter(c=>c.status==='done'||c.status==='cancelled');
+    list.innerHTML=done.length?done.map(c=>`<div class="yc-history-item"><div class="yc-history-main">${c.status==='done'?'✅':'❌'} ${esc(c.place)}</div><div class="yc-history-meta">Creada ${fmtTime(c.createdAt)} · ${c.driver?esc(c.driver):'Sin asignar'} · ${c.finishedAt?'Finalizada '+fmtTime(c.finishedAt):'Cancelada'}</div></div>`).join(''):'<div class="yc-empty">No hay carreras finalizadas o canceladas hoy.</div>';
+    $('yadah-career-modal').style.display='flex';
+  }
+  function closeModal(){ stopCareerVoice(); $('yadah-career-modal').style.display='none'; }
+  function bind(){
+    $('yc-new-btn')?.addEventListener('click',openNew); $('yc-history-btn')?.addEventListener('click',openHistory); $('yc-close')?.addEventListener('click',closeModal); $('yc-cancel')?.addEventListener('click',closeModal); $('yc-history-close')?.addEventListener('click',closeModal); $('yc-create')?.addEventListener('click',()=>createCareer($('yc-place-input').value));
+    $('yc-place-input')?.addEventListener('keydown',e=>{if(e.key==='Enter')createCareer(e.target.value);});
+    $('yc-mic')?.addEventListener('click',startCareerVoice);
+    $('yadah-career-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-career-modal')closeModal();});
+    $('yadah-career-stack')?.addEventListener('click',e=>{const b=e.target.closest('[data-yc-action]');if(!b)return; const id=b.dataset.id; if(b.dataset.ycAction==='accept')acceptCareer(id); else if(b.dataset.ycAction==='finish')finishCareer(id); else if(b.dataset.ycAction==='cancel')cancelCareer(id);});
+  }
+  function init(){ if(ycInitialized)return; ycInitialized=true; loadLocal(); ensureDay(); bind(); render(); connect(); }
+  // Esperamos a que el HTML y el código original hayan cargado. No sobrescribimos ningún handler de radio.
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+  window.YadahCareers={createCareer,acceptCareer,finishCareer,cancelCareer,render};
+})();
+</script>
+<script>
+/* YADAH COLA DE BASE v1: independiente del módulo 📞 CARRERAS POR LLAMADA. */
+(function(){'use strict';
+const TOPIC='yadah/radio/flota/base_queue/v1',STORAGE='yadah_base_queue_v2';let baseNotifyTimer=null,baseNotifySignature='';let state={version:2,day:'',items:[]},client=null,lastRaw='',bound=false,basePanelOpen=false;
+const $=id=>document.getElementById(id),now=()=>Date.now(),dayKey=ts=>new Date(ts).toLocaleDateString('en-CA'),unit=()=>typeof currentUnit!=='undefined'&&currentUnit?currentUnit:'Sin unidad',mod=()=>unit()==='Modulador',clientRole=()=>unit()==='Clientes',uid=()=>window.crypto&&crypto.randomUUID?crypto.randomUUID():'yb_'+Date.now()+'_'+Math.random().toString(16).slice(2);
+function fresh(){return{version:2,day:dayKey(now()),items:[]}}function normalize(x){const b=fresh();if(!x||typeof x!=='object'||x.day!==b.day)return b;return{version:2,day:b.day,items:Array.isArray(x.items)?x.items.filter(i=>i&&i.id&&i.day===b.day):[]}}function load(){try{state=normalize(JSON.parse(localStorage.getItem(STORAGE)||'null'))}catch(e){state=fresh()}}function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch(e){}}
+function publish(){const raw=JSON.stringify(state);lastRaw=raw;save();if(client&&client.connected)client.publish(TOPIC,raw,{qos:0,retain:true});render()}function connect(){try{client=mqtt.connect('wss://broker.emqx.io:8084/mqtt',{clientId:'yadah_base_queue_'+Math.random().toString(16).slice(2,10),clean:true,reconnectPeriod:2000});client.on('connect',()=>{client.subscribe(TOPIC,{qos:0});if(mod())publish();else render()});client.on('message',(topic,msg)=>{if(topic!==TOPIC)return;try{const incoming=normalize(JSON.parse(msg.toString())),raw=JSON.stringify(incoming);if(raw===lastRaw)return;state=incoming;lastRaw=raw;save();render()}catch(e){console.warn('Cola base: mensaje inválido',e)}});client.on('error',e=>console.warn('Cola base MQTT:',e))}catch(e){console.warn('Cola base: no se pudo conectar',e)}}
+function ensureDay(){const d=dayKey(now());if(state.day!==d){state=fresh();save()}}function getBaseForm(){const dest=$('yb-destination'),priceSel=$('yb-price'),customPrice=$('yb-custom-price');const place=(dest?.value||'').trim();if(!place){alert('Escribe el destino.');return null}let price=priceSel&&priceSel.value==='__custom__'?Number(customPrice?.value||0):Number(priceSel?.value||0);if(!Number.isFinite(price)||price<=0){alert('Agrega un precio válido.');return null}price=Math.round(price*100)/100;return{place,price}}function find(id){return state.items.find(i=>i.id===id)}
+function vehicleAtBase(){try{const arr=Object.entries(fleetStatusMap||{}).filter(([u,v])=>u&&u!=='Modulador'&&v&&v.state==='at-base');arr.sort((a,b)=>(Number(a[1].arrivalTime||Infinity)-Number(b[1].arrivalTime||Infinity)));return arr.length?arr[0][0]:null}catch(e){return null}}function sendAssignment(item,target){if(typeof mqttClient!=='undefined'&&mqttClient&&mqttClient.connected)mqttClient.publish('yadah/radio/flota/assignment',JSON.stringify({targetUnit:target,lon:defaultBaseCoords[0],lat:defaultBaseCoords[1],label:item.place,price:item.price,source:'base',baseQueueId:item.id}))}
+function registerClient(){ensureDay();const data=getBaseForm();if(!data)return;const target=vehicleAtBase();const item={id:uid(),day:state.day,place:data.place,price:data.price,createdAt:now(),createdBy:unit(),status:target?'assigned':'waiting',driver:target||null,assignedAt:target?now():null,acceptedAt:null,finishedAt:null};state.items.push(item);publish();if(target){sendAssignment(item,target);alert('🚕 Cliente asignado a '+target+'.\n\nEl servicio seguirá PENDIENTE hasta que el motorista lo Acepte.')}closeModal()}
+function showDriverSelector(title,summary,callback){$('yb-modal-title').textContent=title;$('yb-add-view').style.display='none';$('yb-assign-view').style.display='block';$('yb-draft-summary').innerHTML=summary;const grid=$('yb-unit-grid');grid.innerHTML='';const units=typeof ALL_UNITS!=='undefined'?ALL_UNITS:[];units.filter(u=>u&&u!=='Modulador').forEach(u=>{const b=document.createElement('button');b.textContent='🚕 '+u;b.onclick=()=>callback(u);grid.appendChild(b)});$('yadah-base-modal').style.display='flex'}
+function openAssign(id){if(!mod())return;const item=find(id);if(!item||!['waiting','assigned'].includes(item.status))return;showDriverSelector('🔄 Reasignar pendiente',`Destino: <b>${esc(item.place)}</b><br>Precio: <b>$${Number(item.price).toFixed(2)}</b>`,u=>reassign(id,u))}function reassign(id,target){const item=find(id);if(!item||!['waiting','assigned'].includes(item.status))return;item.status='assigned';item.driver=target;item.assignedAt=now();item.acceptedAt=null;publish();sendAssignment(item,target);closeModal()}
+function cancel(id){const item=find(id);if(!item||!mod())return;if(!confirm('¿Quitar este cliente de la cola de base?\n\n'+item.place))return;item.status='cancelled';item.finishedAt=now();publish()}function openAdd(){if(!mod())return;$('yb-modal-title').textContent='🏠 Registrar cliente de base';$('yb-add-view').style.display='block';$('yb-assign-view').style.display='none';$('yb-destination').value='';$('yb-price').value='1.00';$('yb-custom-price').style.display='none';$('yb-custom-price').value='';$('yadah-base-modal').style.display='flex'}function closeModal(){if($('yadah-base-modal'))$('yadah-base-modal').style.display='none'}
+function finishBaseDriver(id){const item=find(id);if(!item||item.driver!==unit()||item.status!=='accepted')return;if(!confirm('¿Finalizar este servicio de BASE?\n\n'+item.place))return;item.status='done';item.finishedAt=now();if(window.__yadahPendingBaseAssignments)delete window.__yadahPendingBaseAssignments[id];publish();renderBaseNotifications();alert('✅ Servicio finalizado.')}function renderBaseNotifications(){
+  const box=$('yadah-base-notifications'),tab=$('yadah-base-tab'),countEl=$('yadah-base-tab-count');
+  if(!box||!tab)return;
+
+  if(mod()||clientRole()){
+    clearTimeout(baseNotifyTimer);
+    box.classList.remove('open');
+    tab.classList.remove('open');
+    box.style.display='none';
+    tab.style.display='none';
+    baseNotifySignature='';
+    return;
+  }
+
+  window.__yadahPendingBaseAssignments=window.__yadahPendingBaseAssignments||{};
+  const map=new Map();
+
+  state.items
+    .filter(i=>i&&i.driver===unit()&&['assigned','accepted'].includes(i.status))
+    .forEach(i=>map.set(i.id,i));
+
+  Object.keys(window.__yadahPendingBaseAssignments).forEach(id=>{
+    const a=window.__yadahPendingBaseAssignments[id];
+    if(a&&a.baseQueueId&&!map.has(a.baseQueueId)){
+      map.set(a.baseQueueId,{
+        id:a.baseQueueId,
+        place:a.label||'Destino de base',
+        price:a.price||0,
+        driver:unit(),
+        status:'assigned',
+        assignedAt:a.assignedAt||now()
+      });
+    }
+  });
+
+  const items=Array.from(map.values()).sort(
+    (a,b)=>Number(a.assignedAt||a.acceptedAt||0)-Number(b.assignedAt||b.acceptedAt||0)
+  );
+
+  if(!items.length){
+    clearTimeout(baseNotifyTimer);
+    baseNotifySignature='';
+    box.classList.remove('open');
+    tab.classList.remove('open');
+    box.style.display='none';
+    tab.style.display='none';
+    box.innerHTML='';
+    if(countEl)countEl.style.display='none';
+    return;
+  }
+
+  const signature=items.map(i=>i.id).sort().join('|');
+  const isNewSet=signature!==baseNotifySignature;
+  baseNotifySignature=signature;
+
+  box.innerHTML='';
+  items.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='yb-notify-card '+(item.status==='assigned'?'pending':'accepted');
+    card.dataset.id=item.id;
+
+    if(item.status==='assigned'){
+      card.innerHTML=`<div class="yb-notify-title">🏠 SERVICIO DE BASE PENDIENTE</div>
+      <div class="yb-notify-place">${esc(item.place||'Destino de base')}</div>
+      <div class="yb-notify-meta">🏠 BASE · ${item.price?'$'+Number(item.price).toFixed(2):'Tarifa registrada'} · ESPERANDO ACEPTACIÓN</div>
+      <div class="yb-notify-actions">
+        <button class="yb-notify-reject" data-base-action="reject" data-id="${esc(item.id)}">RECHAZAR</button>
+        <button class="yb-notify-accept" data-base-action="accept" data-id="${esc(item.id)}">ACEPTAR</button>
+      </div>`;
+    }else{
+      card.innerHTML=`<div class="yb-notify-title">🚕 SERVICIO DE BASE ACEPTADO</div>
+      <div class="yb-notify-place">${esc(item.place||'Destino de base')}</div>
+      <div class="yb-notify-meta">🏠 BASE · ${item.price?'$'+Number(item.price).toFixed(2):'Tarifa registrada'} · ACEPTADO</div>
+      <button class="yb-notify-finish" data-base-finish="1" data-id="${esc(item.id)}">✅ FINALIZAR SERVICIO</button>`;
+    }
+    box.appendChild(card);
+  });
+
+  box.style.display='flex';
+  tab.style.display='flex';
+  if(countEl){
+    countEl.textContent=String(items.length);
+    countEl.style.display='flex';
+  }
+
+  if(isNewSet){
+    box.classList.add('open');
+    tab.classList.add('open');
+    const ar=$('yadah-base-tab-arrow');
+    if(ar)ar.textContent='‹';
+
+    clearTimeout(baseNotifyTimer);
+    baseNotifyTimer=setTimeout(()=>{
+      const current=$('yadah-base-notifications');
+      const currentTab=$('yadah-base-tab');
+      if(current)current.classList.remove('open');
+      if(currentTab)currentTab.classList.remove('open');
+      const arrow=$('yadah-base-tab-arrow');
+      if(arrow)arrow.textContent='›';
+    },15000);
+  }
+}
+function renderBasePending(){renderBaseNotifications()}
+function renderBaseActive(){renderBaseNotifications()}
+function acceptDriver(id){const a=window.__yadahPendingBaseAssignments&&window.__yadahPendingBaseAssignments[id];const item=find(id);if(!item||item.driver!==unit()||item.status!=='assigned')return;item.status='accepted';item.acceptedAt=now();window.__yadahBaseNoNavigation=true;pendingDestination=null;if(navRouteInfo)navRouteInfo.style.display='none';if(lblRouteStats)lblRouteStats.textContent='Destino seleccionado';try{if(destinationMarker){destinationMarker.remove();destinationMarker=null;}}catch(e){}if(window.__yadahPendingBaseAssignments)delete window.__yadahPendingBaseAssignments[id];publish();renderBasePending();renderBaseActive();alert(`✅ Servicio aceptado.\nDestino: ${item.place||a?.label||'Destino de base'}\n\nEl servicio queda activo hasta que pulses FINALIZAR.`)}function rejectDriver(id){const item=find(id);if(!item||item.driver!==unit()||item.status!=='assigned')return;item.status='waiting';item.driver=null;item.assignedAt=null;item.acceptedAt=null;if(window.__yadahPendingBaseAssignments)delete window.__yadahPendingBaseAssignments[id];window.__yadahBaseNoNavigation=true;pendingDestination=null;if(navRouteInfo)navRouteInfo.style.display='none';if(lblRouteStats)lblRouteStats.textContent='Destino seleccionado';publish();renderBasePending()}function fmtTime(ts){return new Date(ts).toLocaleTimeString('es-SV',{hour:'2-digit',minute:'2-digit'})}function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function renderClientQueue(){const box=$('client-queue-list');if(!box)return;const visible=state.items.filter(i=>['waiting','assigned'].includes(i.status)).sort((a,b)=>Number(a.createdAt)-Number(b.createdAt));box.innerHTML='';if(!visible.length){box.innerHTML='<div class="cq-empty">No hay clientes esperando en la sala.</div>';return}visible.forEach(i=>{const card=document.createElement('div');card.className='cq-card';const assigned=i.status==='assigned'&&i.driver?` · ASIGNADO A ${esc(i.driver)}`:'';card.innerHTML=`<div class="cq-row"><div class="cq-dest">🏠 ${esc(i.place)}</div><div class="cq-time">${fmtTime(i.createdAt)}</div></div><div class="cq-status ${i.status==='assigned'?'assigned':''}">🟡 PENDIENTE${assigned}</div>`;box.appendChild(card)})}
+function render(){ensureDay();renderBasePending();renderBaseActive();const stack=$('yadah-base-stack'),fab=$('yadah-base-fab');if(clientRole()){if(stack)stack.style.display='none';if(fab)fab.style.display='none';renderClientQueue();return}if(fab)fab.style.display=mod()?'flex':'none';if(!stack)return;if(!mod()){stack.style.display='none';return}const visible=state.items.filter(i=>['waiting','assigned','accepted'].includes(i.status));stack.innerHTML='<div class="yb-panel-title">🏠 COLA DE BASE <span style="float:right">'+visible.filter(i=>i.status==='waiting').length+' esperando</span><button type="button" class="yb-add-client" id="yb-add-client">＋ AGREGAR</button></div>';if(!visible.length){stack.innerHTML+='<div class="yb-card"><div class="yb-state">No hay clientes en espera.</div></div>';stack.style.display=basePanelOpen?'flex':'none';return}visible.forEach(i=>{const card=document.createElement('div');card.className='yb-card '+i.status;let action='';if(i.status==='waiting'){action='<button class="assign" data-yb="reassign" data-id="'+i.id+'">ASIGNAR</button>'}else if(i.status==='assigned'){action='<button class="assign" data-yb="reassign" data-id="'+i.id+'">REASIGNAR PENDIENTE</button>'}action+='<button class="cancel" data-yb="cancel" data-id="'+i.id+'">QUITAR DE COLA</button>';card.innerHTML='<div class="yb-line"><div class="yb-place">🏠 '+esc(i.place)+'</div><div class="yb-price">$'+Number(i.price||0).toFixed(2)+'</div></div><div class="yb-state">'+(i.status==='waiting'?'🔵 EN COLA':i.status==='assigned'?'🟡 PENDIENTE · ESPERANDO ACEPTACIÓN':'🟢 ACEPTADA')+(i.driver?' · '+esc(i.driver):'')+'</div>'+action;stack.appendChild(card)});stack.style.display=basePanelOpen?'flex':'none'}
+function toggleBasePanel(){if(!mod())return;const stack=$('yadah-base-stack'),btn=$('yb-open-btn');if(!stack)return;basePanelOpen=!basePanelOpen;stack.style.display=basePanelOpen?'flex':'none';if(btn){btn.classList.toggle('active',basePanelOpen);btn.setAttribute('aria-expanded',String(basePanelOpen))}}
+function bind(){if(bound)return;bound=true;$('yb-open-btn')?.addEventListener('click',toggleBasePanel);$('yadah-base-stack')?.addEventListener('click',e=>{if(e.target.closest('#yb-add-client')){openAdd();return}const b=e.target.closest('[data-yb]');if(!b)return;if(b.dataset.yb==='reassign')openAssign(b.dataset.id);else if(b.dataset.yb==='cancel')cancel(b.dataset.id)});$('yb-close')?.addEventListener('click',closeModal);$('yb-cancel')?.addEventListener('click',closeModal);$('yb-assign-cancel')?.addEventListener('click',closeModal);$('yb-add-queue')?.addEventListener('click',registerClient);$('yb-price')?.addEventListener('change',e=>{$('yb-custom-price').style.display=e.target.value==='__custom__'?'block':'none';if(e.target.value!=='__custom__')$('yb-custom-price').value=''});$('yadah-base-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-base-modal')closeModal()});$('yadah-base-assignment')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id)});$('yadah-base-active')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-finish]');if(!b)return;finishBaseDriver(b.dataset.id)});$('yadah-base-notifications')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action],[data-base-finish]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id);else if(b.dataset.baseFinish)finishBaseDriver(id)})}
+const baseTab=$('yadah-base-tab');
+if(baseTab&&!baseTab.dataset.bound){
+  baseTab.dataset.bound='1';
+  baseTab.addEventListener('click',e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const box=$('yadah-base-notifications');
+    if(!box)return;
+    const open=!box.classList.contains('open');
+    clearTimeout(baseNotifyTimer);
+    box.classList.toggle('open',open);
+    baseTab.classList.toggle('open',open);
+    const ar=$('yadah-base-tab-arrow');
+    if(ar)ar.textContent=open?'‹':'›';
+  });
+}
+function init(){load();ensureDay();bind();render();connect();setInterval(()=>{render()},1500)}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+
+
+
+
+})();
+
+</script>
+</body>
+</html>
