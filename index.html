@@ -265,7 +265,7 @@
     #yadah-base-tab-count{min-width:16px;height:16px;border-radius:8px;background:#dc2626;color:#fff;font-size:.55rem;display:none;align-items:center;justify-content:center}
     #yadah-base-tab.open{right:min(270px,75vw);left:auto;background:rgba(11, 15, 25, 0.75)}
 
-    /* ===== PESTAÑA IZQUIERDA: CARRERAS LIBRES ===== */
+    /* ===== PESTAÑA IZQUIERDA: CARRERAS LIBRES (LLAMADAS) ===== */
     #yadah-career-notifications{
       --career-panel-width:min(270px,75vw);
       position:fixed;left:calc(-1 * var(--career-panel-width));top:var(--career-tab-top,50%);transform:translateY(-50%);
@@ -279,7 +279,7 @@
     
     #yadah-career-tab{
       position:fixed;left:0;top:var(--career-tab-top,50%);transform:translateY(-50%);
-      z-index:3927;width:38px;min-height:90px; border:0; border-radius:0 10px 10px 0;
+      z-index:3927;width:38px;min-height:90px; border:0; border-radius:0 10px 10px 0px;
       background:rgba(11, 15, 25, 0.85); backdrop-filter:blur(5px); color:#f8fafc; box-shadow:3px 3px 10px rgba(0,0,0,.4);
       border:1px solid rgba(56,189,248,.5); font-weight:900; cursor:grab; touch-action:none; display:none;
       align-items:center; justify-content:center; flex-direction:column; gap:2px; padding:6px 2px;
@@ -310,13 +310,13 @@
     <div class="brand"><span>📻</span> Yadah PTT</div>
   </header>
 
-  <!-- MAPA PRINCIPAL -->
+  <!-- MAPA PRINCIPAL RESTAURADO -->
   <div id="map-container">
     <div id="map"></div>
     <button class="btn-sos" id="btn-sos" title="Botón de Pánico SOS">🚨</button>
   </div>
 
-  <!-- PESTAÑA IZQUIERDA: CARRERAS LIBRES -->
+  <!-- PESTAÑA IZQUIERDA: CARRERAS LIBRES (LLAMADAS) -->
   <button id="yadah-career-tab" type="button"><span id="yadah-career-tab-arrow">›</span><span class="yadah-career-tab-label">CARRERAS</span><span id="yadah-career-tab-count">0</span></button>
   <div id="yadah-career-notifications"></div>
 
@@ -366,7 +366,7 @@
       zoom: 16
     });
 
-    // Control de Pestañas
+    // Control de Pestaña Izquierda (Carreras Libres)
     const careerTab = document.getElementById('yadah-career-tab');
     if(careerTab){
       careerTab.addEventListener('click', e => {
@@ -380,6 +380,7 @@
       });
     }
 
+    // Control de Pestaña Derecha (Base)
     const baseTab = document.getElementById('yadah-base-tab');
     if(baseTab){
       baseTab.addEventListener('click', e => {
