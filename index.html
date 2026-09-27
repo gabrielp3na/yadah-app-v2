@@ -809,64 +809,81 @@
     .cq-status{margin-top:7px;font-size:.72rem;font-weight:900;color:#fbbf24}.cq-status.assigned{color:#38bdf8}
     .cq-empty{text-align:center;color:#64748b;padding:40px 20px}.cq-logout{margin:10px 12px 18px;padding:12px;border:0;border-radius:10px;background:#374151;color:#fff;font-weight:900}
 
-    /* ===== YADAH: NOTIFICACIONES BASE DERECHA (TRANSPARENTE, PEQUEÑA Y BOTONES OSCUROS) ===== */
+    /* ===== YADAH: NOTIFICACIONES BASE MÁS PEQUEÑAS, TRANSPARENTES Y DIFERENCIADAS ===== */
     #yadah-base-notifications{
       --base-panel-width:min(270px,75vw);
-      position:fixed;right:calc(-1 * var(--base-panel-width));left:auto;top:var(--base-tab-top,50%);transform:translateY(-50%);
+      position:fixed;left:calc(-1 * var(--base-panel-width));top:var(--base-tab-top,50%);transform:translateY(-50%);
       z-index:3925;width:var(--base-panel-width);max-height:42vh;overflow-y:auto;overflow-x:hidden;
       box-sizing:border-box;padding:5px;
-      background:rgba(5, 7, 11, 0.6);
+      background:rgba(5, 7, 11, 0.45);
       backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-      border:1px solid rgba(56, 189, 248, 0.5);
-      border-right:0;border-radius:10px 0 0 10px;box-shadow:-4px 4px 16px rgba(0,0,0,.4);
-      display:flex;flex-direction:column;gap:5px;transition:right .25s ease;
+      border:1px solid rgba(34, 211, 238, 0.45);
+      border-left:0;border-radius:0 10px 10px 0;box-shadow:4px 4px 16px rgba(0,0,0,.3);
+      display:flex;flex-direction:column;gap:4px;transition:left .25s ease;
     }
-    #yadah-base-notifications.open{right:0;left:auto}
-    #yadah-base-notifications::before{content:'🏠 CARRERAS DE BASE';display:block;color:#f8fafc;font-weight:900;font-size:.7rem;padding:2px 2px 4px;border-bottom:1px solid rgba(56, 189, 248, 0.3);text-align:right}
+    #yadah-base-notifications.open{left:0}
+    #yadah-base-notifications::before{content:'🏠 CARRERAS DE BASE';display:block;color:#fff;font-weight:900;font-size:.7rem;padding:2px 2px 4px;border-bottom:1px solid rgba(22, 78, 99, 0.4)}
     
     #yadah-base-tab{
-      position:fixed;right:0;left:auto;top:var(--base-tab-top,50%);transform:translateY(-50%);
+      position:fixed;left:0;top:var(--base-tab-top,50%);transform:translateY(-50%);
       z-index:3927;width:38px;min-height:90px;
-      border:0;border-radius:10px 0 0 10px;
-      background:rgba(11, 15, 25, 0.85);
+      border:0;border-radius:0 10px 10px 0;
+      background:rgba(5,7,11,.35);
       backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
-      color:#f8fafc;box-shadow:-3px 3px 10px rgba(0,0,0,.4);
-      border:1px solid rgba(56,189,248,.5);
+      color:#fff;box-shadow:3px 3px 10px rgba(0,0,0,.3);
+      border:1px solid rgba(34,211,238,.45);
       font-weight:900;cursor:grab;touch-action:none;display:none;
       align-items:center;justify-content:center;flex-direction:column;gap:2px;padding:6px 2px;
     }
     #yadah-base-tab-arrow{font-size:22px;line-height:.8}
     .yadah-base-tab-label{font-size:.54rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px}
     #yadah-base-tab-count{min-width:16px;height:16px;border-radius:8px;background:#dc2626;color:#fff;font-size:.55rem;display:none;align-items:center;justify-content:center}
-    #yadah-base-tab.open{right:min(270px,75vw);left:auto;background:rgba(11, 15, 25, 0.75)}
-    #yadah-base-tab.dragging{cursor:grabbing;background:rgba(11,15,25,.65)}
+    #yadah-base-tab.open{left:min(270px,75vw);background:rgba(5,7,11,.25)}
+    #yadah-base-tab.dragging{cursor:grabbing;background:rgba(5,7,11,.2)}
     
     .yb-notify-card{
-      width:100%;box-sizing:border-box;
-      background:rgba(11, 23, 42, 0.90);
-      backdrop-filter:blur(4px);
-      border-radius:8px;padding:6px;box-shadow:0 2px 8px rgba(0,0,0,.3);
-      color:#f8fafc;flex:0 0 auto;transition:all 0.2s ease;
+      width:100%;box-sizing:border-box;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      border-radius:7px;padding:5px;box-shadow:0 2px 6px rgba(0,0,0,.2);color:#fff;flex:0 0 auto;
+      transition:all 0.2s ease;
     }
-    .yb-notify-card.pending{border:1.5px solid #38bdf8;}
-    .yb-notify-card.accepted{border:1.5px solid #38bdf8;background:rgba(8, 18, 35, 0.95);}
     
-    .yb-notify-title{font-weight:900;color:#38bdf8;font-size:.64rem;line-height:1.05}
-    .yb-notify-place{font-size:.76rem;font-weight:900;margin:3px 0;color:#f8fafc;line-height:1.05;overflow-wrap:anywhere}
-    .yb-notify-meta{font-size:.54rem;color:#94a3b8;line-height:1.1}
+    /* Pendiente: Borde celeste brillante y fondo oscuro translúcido */
+    .yb-notify-card.pending{
+      background:rgba(5,7,11,0.5);
+      border:1.5px solid #22d3ee;
+    }
+    .yb-notify-card.pending .yb-notify-title{
+      color:#67e8f9;
+      font-size:.62rem;
+      line-height:1.02;
+    }
     
-    .yb-notify-actions{display:flex;gap:4px;margin-top:5px}
-    .yb-notify-actions button{flex:1;border:0;border-radius:6px;padding:5px;font-size:.6rem;font-weight:900;cursor:pointer;min-height:27px}
+    /* Aceptado: Borde y fondo azul corporativo distinguible */
+    .yb-notify-card.accepted{
+      background:rgba(11,22,44,0.65);
+      border:1.5px solid #38bdf8;
+    }
+    .yb-notify-card.accepted .yb-notify-title{
+      color:#38bdf8;
+      font-size:.62rem;
+      line-height:1.02;
+    }
     
-    .yb-notify-reject{background:#1f2937;color:#9ca3af;border:1px solid #374151}
-    .yb-notify-accept{background:#030712;color:#ffffff;border:1px solid #38bdf8}
+    .yb-notify-place{font-size:.74rem;font-weight:900;margin:3px 0;line-height:1.02;overflow-wrap:anywhere}
+    .yb-notify-meta{font-size:.52rem;color:#94a3b8;line-height:1.05}
+    .yb-notify-card.accepted .yb-notify-meta{color:#bae6fd}
+    
+    .yb-notify-actions{display:flex;gap:4px;margin-top:4px}
+    .yb-notify-actions button{flex:1;border:0;border-radius:5px;padding:4px;font-size:.58rem;font-weight:900;cursor:pointer;min-height:24px}
+    .yb-notify-reject{background:#374151;color:#e2e8f0}
+    .yb-notify-accept{background:#0284c7;color:#fff}
     
     .yb-notify-finish{
-      width:100%;margin-top:5px;border:0;border-radius:6px;padding:6px;
-      background:#030712;color:#ffffff;border:1px solid #38bdf8;
-      font-weight:900;font-size:.64rem;min-height:28px;cursor:pointer;
+      width:100%;margin-top:4px;border:0;border-radius:5px;padding:5px;
+      background:#0284c7;color:#fff;font-weight:900;font-size:.6rem;
+      min-height:25px;cursor:pointer;
     }
-    .yb-notify-finish:active{background:#111827}
+    .yb-notify-finish:active{background:#0369a1}
     
     .yb-base-empty{padding:10px 5px;text-align:center;color:#94a3b8;font-size:.68rem}
     @media(max-width:799px){#yadah-base-notifications{max-height:38vh;padding:5px}.yb-notify-place{font-size:.72rem}.yb-notify-meta{font-size:.5rem}}
@@ -1066,7 +1083,7 @@
   <div id="yadah-base-assignment" aria-live="assertive" style="display:none"><div class="yb-assignment-list" id="yb-assignment-list"></div></div>
   <div id="yadah-base-active" aria-live="polite" style="display:none"><div class="yb-active-list" id="yb-active-list"></div></div>
   
-  <button id="yadah-base-tab" type="button" aria-label="Abrir carreras asignadas de base"><span id="yadah-base-tab-arrow">‹</span><span class="yadah-base-tab-label">BASE</span><span id="yadah-base-tab-count">0</span></button>
+  <button id="yadah-base-tab" type="button" aria-label="Abrir carreras asignadas de base"><span id="yadah-base-tab-arrow">›</span><span class="yadah-base-tab-label">BASE</span><span id="yadah-base-tab-count">0</span></button>
   <div id="yadah-base-notifications" aria-live="polite" aria-label="Carreras asignadas de base"></div>
 
   <div class="controls-panel">
@@ -1991,7 +2008,7 @@
                 if (place) place.textContent = assignData.label || 'Destino de base';
                 if (meta) meta.textContent = `🏠 BASE · ${assignData.price ? '$' + Number(assignData.price).toFixed(2) : 'Tarifa registrada'}`;
                 if (box) box.style.display = 'none';
-                if (typeof renderBaseNotifications === 'function') renderBaseNotifications();
+        if (typeof renderBaseNotifications === 'function') renderBaseNotifications();
               } else {
                 window.__yadahBaseNoNavigation = false;
                 alert(`🎯 ¡Misión asignada: ${assignData.label}!`);
@@ -2102,6 +2119,7 @@
       );
     } else if (!trackingUnit) { updateGpsLockState(false); }
 
+    // Menú compacto de opciones del mapa: mantiene los IDs existentes para no alterar radio/WebRTC.
     function closeMapOptions() {
       const menu = document.getElementById('map-options-menu');
       const trigger = document.getElementById('btn-map-options');
@@ -2127,10 +2145,10 @@
       button.addEventListener('click', () => setTimeout(closeMapOptions, 0));
     });
 
-    if (!trackingUnit && document.getElementById('btn-recenter')) document.getElementById('btn-recenter'].addEventListener('click', applyCameraPerspective);
+    if (!trackingUnit && document.getElementById('btn-recenter')) document.getElementById('btn-recenter').addEventListener('click', applyCameraPerspective);
 
     // ==========================================
-    // MÓDULO DE RADIO WEBRTC EN TIEMPO REAL
+    // MÓDULO DE RADIO WEBRTC EN TIEMPO REAL (VERSIÓN UNIFICADA CORREGIDA)
     // ==========================================
     const RADIO_SIGNAL_TOPIC = 'yadah/radio/webrtc/signaling/v10';
     const ROOM_NAME = 'yadah-radio-flota-3d';
@@ -2217,6 +2235,7 @@
         await attachRadioTrackToPeers();
         return true;
       } catch (error) {
+        console.warn('No se pudo acceder al micrófono:', error);
         return false;
       }
     }
@@ -2246,7 +2265,9 @@
           }
 
           attached = true;
-        } catch (error) {}
+        } catch (error) {
+          console.warn('No se pudo conectar el micrófono al peer:', error);
+        }
       }
       return attached;
     }
@@ -2367,7 +2388,9 @@
         } else if (data.type === 'bye') {
           closeRadioPeer(targetDevId);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.warn('Señal WebRTC inválida:', error);
+      }
     }
 
     async function createRadioPeer(targetDevId, isInitiator) {
@@ -2388,6 +2411,7 @@
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
 
+        // Conectamos directamente al altavoz principal #radio-speaker del DOM
         const mainSpeaker = document.getElementById('radio-speaker');
         if (mainSpeaker) {
           mainSpeaker.srcObject = stream;
@@ -2495,16 +2519,30 @@
       });
     }
 
+    let cachedAudios = [];
+    function getStoredAudios() {
+      try {
+        const stored = JSON.parse(localStorage.getItem('yadah_audio_history') || '[]');
+        cachedAudios = stored.filter(item => item && item.timestamp > Date.now() - 86400000).slice(0, 25);
+      } catch (error) {
+        cachedAudios = [];
+      }
+      return cachedAudios;
+    }
     function toggleHistory(show) {
       const modal = document.getElementById('history-modal');
       if (modal) modal.style.display = show ? 'flex' : 'none';
     }
+    function renderHistory() {}
+    function playAudioByIndex(index) {}
 
     bindRadioPTT();
+
+    if (!trackingUnit) checkAuth();
   </script>
 
-  <script>
-  /* ======================================================================
+<script>
+/* ======================================================================
      YADAH CARRERAS v1
      ====================================================================== */
   (function(){
@@ -2799,7 +2837,7 @@
   function toggleBasePanel(){if(!mod())return;const stack=$('yadah-base-stack'),btn=$('yb-open-btn');if(!stack)return;basePanelOpen=!basePanelOpen;stack.style.display=basePanelOpen?'flex':'none';if(btn){btn.classList.toggle('active',basePanelOpen);btn.setAttribute('aria-expanded',String(basePanelOpen))}}
   function bind(){if(bound)return;bound=true;$('yb-open-btn')?.addEventListener('click',toggleBasePanel);$('yadah-base-stack')?.addEventListener('click',e=>{if(e.target.closest('#yb-add-client')){openAdd();return}const b=e.target.closest('[data-yb]');if(!b)return;if(b.dataset.yb==='reassign')openAssign(b.dataset.id);else if(b.dataset.yb==='cancel')cancel(b.dataset.id)});$('yb-close')?.addEventListener('click',closeModal);$('yb-cancel')?.addEventListener('click',closeModal);$('yb-assign-cancel')?.addEventListener('click',closeModal);$('yb-add-queue')?.addEventListener('click',registerClient);$('yb-price')?.addEventListener('change',e=>{$('yb-custom-price').style.display=e.target.value==='__custom__'?'block':'none';if(e.target.value!=='__custom__')$('yb-custom-price').value=''});$('yadah-base-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-base-modal')closeModal()});$('yadah-base-assignment')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id)});$('yadah-base-active')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-finish]');if(!b)return;finishBaseDriver(b.dataset.id)});$('yadah-base-notifications')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action],[data-base-finish]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id);else if(b.dataset.baseFinish)finishBaseDriver(id)})}
   
-  /* ===== YADAH: PESTAÑA BASE MOVIBLE DERECHA ===== */
+  /* ===== YADAH: PESTAÑA BASE MOVIBLE VERTICALMENTE ===== */
   (function(){
     const tab=$('yadah-base-tab');
     const box=$('yadah-base-notifications');
@@ -2814,7 +2852,7 @@
 
     function clamp(v){
       const h=window.innerHeight||800;
-      const half=(tab.offsetHeight||90)/2;
+      const half=(tab.offsetHeight||112)/2;
       return Math.max(half+10,Math.min(h-half-10,v));
     }
     function applyTop(v,persist){
@@ -2867,7 +2905,7 @@
       box.classList.toggle('open',open);
       baseTab.classList.toggle('open',open);
       const ar=$('yadah-base-tab-arrow');
-      if(ar)ar.textContent=open?'›':'‹';
+      if(ar)ar.textContent=open?'‹':'›';
     });
   }
 
@@ -2880,7 +2918,7 @@
       box.classList.remove('open');
       tab.classList.remove('open');
       const ar = $('yadah-base-tab-arrow');
-      if(ar) ar.textContent = '‹';
+      if(ar) ar.textContent = '›';
     }
   });
 
