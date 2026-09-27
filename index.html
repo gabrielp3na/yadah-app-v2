@@ -2501,8 +2501,6 @@
     }
 
     bindRadioPTT();
-
-    if (!trackingUnit) checkAuth();
   </script>
 
   <script>
@@ -2869,7 +2867,7 @@
       box.classList.toggle('open',open);
       baseTab.classList.toggle('open',open);
       const ar=$('yadah-base-tab-arrow');
-      if(ar)ar.textContent=open?'‹':'›';
+      if(ar)ar.textContent=open?'›':'‹';
     });
   }
 
