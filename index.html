@@ -2566,7 +2566,7 @@
     }
     function speakNewCareer(place){
       try{ if(!('speechSynthesis' in window)) return; const text=('Nuevo pedido en '+String(place||'').trim()).trim(); if(!text) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='es-SV'; u.rate=0.95; u.pitch=1; window.speechSynthesis.speak(u); }catch(e){}
-    }
+    }      let yadahReminderTimer=null;     let yadahReminderLastAvailable=false;     let yadahReminderNextAt=0;     function speakPendingCareers(){       try{         if(!isDriverRole() || !('speechSynthesis' in window)) return;         const pending=(ycState.careers||[]).filter(c=>c&&c.status==='pending');         if(!pending.length) return;         const places=pending.slice().reverse().map(c=>String(c.place||'').trim()).filter(Boolean);         if(!places.length) return;         const text='Carreras pendientes: '+places.join('. ')+'.';         window.speechSynthesis.cancel();         const u=new SpeechSynthesisUtterance(text); u.lang='es-SV'; u.rate=0.92; u.pitch=1;         window.speechSynthesis.speak(u);       }catch(e){}     }     function yadahIsBusy(){       try{         const callBusy=(ycState.careers||[]).some(c=>c&&c.status==='active'&&c.driver===unitName());         const baseBusy=typeof window.YadahBaseQueueStatus==='function' && window.YadahBaseQueueStatus().busy;         return !!(callBusy||baseBusy);       }catch(e){return false}     }     function runPendingCareerReminders(){       if(!isDriverRole()) return;       const pending=(ycState.careers||[]).some(c=>c&&c.status==='pending');       if(!pending){ yadahReminderLastAvailable=false; yadahReminderNextAt=0; return; }       const busy=yadahIsBusy();       const available=!busy;       const nowMs=Date.now();       if(available && !yadahReminderLastAvailable){         speakPendingCareers(); yadahReminderNextAt=nowMs+30000;       }else if(nowMs>=yadahReminderNextAt){         speakPendingCareers(); yadahReminderNextAt=nowMs+(available?30000:120000);       }       yadahReminderLastAvailable=available;     }     function startPendingCareerReminders(){       clearInterval(yadahReminderTimer);       yadahReminderTimer=setInterval(runPendingCareerReminders,1000);       runPendingCareerReminders();     } 
     function createCareer(place){
       place=(place||'').trim(); if(!place) return alert('Escribe el lugar de la carrera.');
       ensureDay();
@@ -2667,7 +2667,7 @@
       $('yadah-career-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-career-modal')closeModal();});
       $('yadah-career-stack')?.addEventListener('click',e=>{const b=e.target.closest('[data-yc-action]');if(!b)return; const id=b.dataset.id; if(b.dataset.ycAction==='accept')acceptCareer(id); else if(b.dataset.ycAction==='finish')finishCareer(id); else if(b.dataset.ycAction==='cancel')cancelCareer(id);}); $('yadah-career-tab')?.addEventListener('click',()=>{ycPanelOpen=!ycPanelOpen; const stack=$('yadah-career-stack'); const tab=$('yadah-career-tab'); if(stack) stack.classList.toggle('closed',!ycPanelOpen); if(tab) tab.classList.toggle('open',ycPanelOpen);});
     }
-    function init(){ if(ycInitialized)return; ycInitialized=true; loadLocal(); ensureDay(); bind(); render(); connect(); }
+    function init(){ if(ycInitialized)return; ycInitialized=true; loadLocal(); ensureDay(); bind(); render(); connect(); startPendingCareerReminders(); }
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
     window.YadahCareers={createCareer,acceptCareer,finishCareer,cancelCareer,render};
   })();
@@ -2884,7 +2884,7 @@
     }
   });
 
-  function init(){load();ensureDay();bind();render();connect();setInterval(()=>{render()},1500)}
+   window.YadahBaseQueueStatus=function(){try{const mine=state.items.filter(i=>i&&i.driver===unit()&&['assigned','accepted'].includes(i.status));return{busy:mine.some(i=>i.status==='accepted'),assigned:mine.some(i=>i.status==='assigned')}}catch(e){return{busy:false,assigned:false}}};   function init(){load();ensureDay();bind();render();connect();setInterval(()=>{render()},1500)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   })();
   </script>
