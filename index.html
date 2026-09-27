@@ -2555,7 +2555,7 @@
             const incoming=normalizeState(JSON.parse(msg.toString()));
             const raw=JSON.stringify(incoming);
             if(raw===ycLastSerialized) return;
-            ycState=incoming; ycLastSerialized=raw; saveLocal(); render();
+            const previousIds=new Set((ycState.careers||[]).map(c=>c.id)); const firstSync=!ycLastSerialized; ycState=incoming; ycLastSerialized=raw; if(!firstSync && isDriverRole()){ const nuevos=(incoming.careers||[]).filter(c=>c && c.status==='pending' && !previousIds.has(c.id)).reverse(); nuevos.forEach(c=>speakNewCareer(c.place)); } saveLocal(); render();
           }catch(e){}
         });
       }catch(e){}
@@ -2563,6 +2563,9 @@
     function ensureDay(){
       const d=dayKey(now());
       if(ycState.day!==d){ ycState=freshState(); saveLocal(); }
+    }
+    function speakNewCareer(place){
+      try{ if(!('speechSynthesis' in window)) return; const text=('Nuevo pedido en '+String(place||'').trim()).trim(); if(!text) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='es-SV'; u.rate=0.95; u.pitch=1; window.speechSynthesis.speak(u); }catch(e){}
     }
     function createCareer(place){
       place=(place||'').trim(); if(!place) return alert('Escribe el lugar de la carrera.');
