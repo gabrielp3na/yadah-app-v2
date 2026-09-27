@@ -1745,7 +1745,7 @@
     function ensureLayersExist() {
       if (!map) return;
       if (!map.getSource('route-trails')) map.addSource('route-trails', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
-      if (!map.getLayer('route-trails-layer')) map.addLayer({ id: 'route-trails-layer', type: 'line', source: 'route-trails', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0284c7', 'line-width': 6, 'line-opacity': 0.85 } });
+      if (!map.getLayer('route-trails-layer')) map.addLayer({ id: 'route-trails-layer', type: 'line', source: 'route-trails', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0284c7', 'line-width': 6, 'line-opacity': 0.85 } }); if (!map.getLayer('route-trails-arrows')) map.addLayer({ id:'route-trails-arrows', type:'symbol', source:'route-trails', layout:{'symbol-placement':'line','symbol-spacing':70,'text-field':'➤','text-size':16,'text-allow-overlap':true,'text-ignore-placement':true}, paint:{'text-color':'#ffffff','text-halo-color':'#0369a1','text-halo-width':1.2} });
       if (!map.getSource('nav-active-route')) map.addSource('nav-active-route', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
       if (!map.getLayer('nav-active-route-casing')) map.addLayer({ id: 'nav-active-route-casing', type: 'line', source: 'nav-active-route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0369a1', 'line-width': 10, 'line-opacity': 0.9 } });
       if (!map.getLayer('nav-active-route-layer')) map.addLayer({ id: 'nav-active-route-layer', type: 'line', source: 'nav-active-route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#38bdf8', 'line-width': 6, 'line-opacity': 1.0 } });
@@ -1783,27 +1783,32 @@
     }
 
     function closeVehicleHistory() { activeHistoryUnit = null; if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'none'; if (map && map.getSource('route-trails')) map.getSource('route-trails').setData({ type: 'FeatureCollection', features: [] }); }
-    function applyVehicleHistory() {
-      if (!isModulator() || !db || !activeHistoryUnit || !map) return;
-      const startTime = Date.now() - (24 * 60 * 60 * 1000);
-      const tx = db.transaction([STORE_NAME], 'readonly'); const store = tx.objectStore(STORE_NAME); const req = store.openCursor();
-      const historyPoints = [];
-      req.onsuccess = (e) => {
-        const cursor = e.target.result;
-        if (cursor) { const val = cursor.value; if (val.unit === activeHistoryUnit && val.timestamp >= startTime && Number.isFinite(Number(val.lon)) && Number.isFinite(Number(val.lat))) historyPoints.push({ timestamp: Number(val.timestamp), lon: Number(val.lon), lat: Number(val.lat) }); cursor.continue(); }
-        else {
-          ensureLayersExist();
-          if (map.getSource('route-trails')) map.getSource('route-trails').setData({ type: 'FeatureCollection', features: historyCoords.length >= 2 ? [{ type: 'Feature', geometry: { type: 'LineString', coordinates: historyCoords }, properties: {} }] : [] });
-          const statusDiv = document.getElementById('vh-status-info');
-          if (statusDiv) {
-            statusDiv.textContent = historyCoords.length < 2 ? 'Sin historial en 24h.' : `¡Mostrando ${historyCoords.length} puntos!`;
-            statusDiv.style.color = historyCoords.length < 2 ? '#ef4444' : '#0284c7';
-            if (historyCoords.length >= 2) map.flyTo({ center: historyCoords[historyCoords.length - 1], zoom: 16, pitch: 0, bearing: 0 });
-          }
-        }
-      };
-    }
-
+function applyVehicleHistory() {
+ if (!isModulator() || !db || !activeHistoryUnit || !map) return;
+ const startTime = Date.now() - (24 * 60 * 60 * 1000);
+ const tx = db.transaction([STORE_NAME], 'readonly'); const store = tx.objectStore(STORE_NAME); const req = store.openCursor();
+ const historyPoints = [];
+ req.onsuccess = (e) => {
+  const cursor = e.target.result;
+  if (cursor) {
+   const val = cursor.value;
+   const ts = Number(val.timestamp), lon = Number(val.lon), lat = Number(val.lat);
+   if (val.unit === activeHistoryUnit && ts >= startTime && Number.isFinite(ts) && Number.isFinite(lon) && Number.isFinite(lat)) historyPoints.push({ timestamp: ts, lon, lat });
+   cursor.continue();
+  } else {
+   historyPoints.sort((a,b) => a.timestamp - b.timestamp);
+   const historyCoords = historyPoints.map(p => [p.lon, p.lat]);
+   ensureLayersExist();
+   if (map.getSource('route-trails')) map.getSource('route-trails').setData({ type:'FeatureCollection', features: historyCoords.length >= 2 ? [{ type:'Feature', geometry:{ type:'LineString', coordinates:historyCoords }, properties:{} }] : [] });
+   const statusDiv = document.getElementById('vh-status-info');
+   if (statusDiv) {
+    statusDiv.textContent = historyCoords.length < 2 ? 'Sin historial en 24h.' : `¡Mostrando ${historyCoords.length} puntos en orden cronológico!`;
+    statusDiv.style.color = historyCoords.length < 2 ? '#ef4444' : '#0284c7';
+    if (historyCoords.length >= 2) map.flyTo({ center:historyCoords[historyCoords.length-1], zoom:16, pitch:0, bearing:0 });
+   }
+  }
+ };
+ }
     function createMarkerElement(unitName) {
       const container = document.createElement('div'); container.className = 'car-marker-container';
       const badge = document.createElement('div'); badge.className = 'car-badge';
