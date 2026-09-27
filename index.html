@@ -868,28 +868,28 @@
     }
     .yb-notify-finish:active{background:#111827}
 
-    /* ===== YADAH: CARRERAS DERECHA (TAMAÑO COMPACTO Y BOTONES OSCUROS) ===== */
+    /* ===== YADAH: CARRERAS LIBRES IZQUIERDA (PESTAÑA Y PANEL) ===== */
     #yadah-career-notifications{
       --career-panel-width:min(270px,75vw);
-      position:fixed;right:calc(-1 * var(--career-panel-width));left:auto;top:var(--career-tab-top,45%);transform:translateY(-50%);
+      position:fixed;left:calc(-1 * var(--career-panel-width));top:var(--career-tab-top,35%);transform:translateY(-50%);
       z-index:3925;width:var(--career-panel-width);max-height:42vh;overflow-y:auto;overflow-x:hidden;
       box-sizing:border-box;padding:5px;
       background:rgba(5, 7, 11, 0.6);
       backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
       border:1px solid rgba(56, 189, 248, 0.5);
-      border-right:0;border-radius:10px 0 0 10px;box-shadow:-4px 4px 16px rgba(0,0,0,.4);
-      display:flex;flex-direction:column;gap:5px;transition:right .25s ease;
+      border-left:0;border-radius:0 10px 10px 0;box-shadow:4px 4px 16px rgba(0,0,0,.4);
+      display:flex;flex-direction:column;gap:5px;transition:left .25s ease;
     }
-    #yadah-career-notifications.open{right:0;left:auto}
-    #yadah-career-notifications::before{content:'🚕 CARRERAS LIBRES';display:block;color:#f8fafc;font-weight:900;font-size:.7rem;padding:2px 2px 4px;border-bottom:1px solid rgba(56, 189, 248, 0.3);text-align:right}
+    #yadah-career-notifications.open{left:0}
+    #yadah-career-notifications::before{content:'🚕 CARRERAS LIBRES';display:block;color:#f8fafc;font-weight:900;font-size:.7rem;padding:2px 2px 4px;border-bottom:1px solid rgba(56, 189, 248, 0.3);text-align:left}
     
     #yadah-career-tab{
-      position:fixed;right:0;left:auto;top:var(--career-tab-top,45%);transform:translateY(-50%);
+      position:fixed;left:0;top:var(--career-tab-top,35%);transform:translateY(-50%);
       z-index:3927;width:38px;min-height:90px;
-      border:0;border-radius:10px 0 0 10px;
+      border:0;border-radius:0 10px 10px 0;
       background:rgba(11, 15, 25, 0.85);
       backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
-      color:#f8fafc;box-shadow:-3px 3px 10px rgba(0,0,0,.4);
+      color:#f8fafc;box-shadow:3px 3px 10px rgba(0,0,0,.4);
       border:1px solid rgba(56,189,248,.5);
       font-weight:900;cursor:grab;touch-action:none;display:none;
       align-items:center;justify-content:center;flex-direction:column;gap:2px;padding:6px 2px;
@@ -897,7 +897,7 @@
     #yadah-career-tab-arrow{font-size:22px;line-height:.8}
     .yadah-career-tab-label{font-size:.54rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px}
     #yadah-career-tab-count{min-width:16px;height:16px;border-radius:8px;background:#dc2626;color:#fff;font-size:.55rem;display:none;align-items:center;justify-content:center}
-    #yadah-career-tab.open{right:min(270px,75vw);left:auto;background:rgba(11, 15, 25, 0.75)}
+    #yadah-career-tab.open{left:min(270px,75vw);background:rgba(11, 15, 25, 0.75)}
     #yadah-career-tab.dragging{cursor:grabbing;background:rgba(11,15,25,.65)}
 
     #yadah-career-fab{position:absolute;right:12px;bottom:88px;z-index:2700;display:flex;gap:7px;flex-direction:column;align-items:flex-end}
@@ -1077,8 +1077,8 @@
     </div>
   </div>
 
-  <!-- ===== YADAH CARRERAS: PESTAÑA DERECHA ===== -->
-  <button id="yadah-career-tab" type="button" aria-label="Abrir carreras libres"><span id="yadah-career-tab-arrow">‹</span><span class="yadah-career-tab-label">CARRERAS</span><span id="yadah-career-tab-count">0</span></button>
+  <!-- ===== YADAH CARRERAS LIBRES: PESTAÑA IZQUIERDA ===== -->
+  <button id="yadah-career-tab" type="button" aria-label="Abrir carreras libres"><span id="yadah-career-tab-arrow">›</span><span class="yadah-career-tab-label">CARRERAS</span><span id="yadah-career-tab-count">0</span></button>
   <div id="yadah-career-notifications" aria-live="polite" aria-label="Carreras libres"></div>
 
   <div id="yadah-career-fab">
@@ -2561,7 +2561,7 @@
 
   <script>
   /* ======================================================================
-     YADAH CARRERAS v1 - PESTAÑA DERECHA
+     YADAH CARRERAS LIBRES v1 - PESTAÑA DERECHA
      ====================================================================== */
   (function(){
     'use strict';
@@ -2711,7 +2711,7 @@
         box.classList.add('open');
         tab.classList.add('open');
         const ar=$('yadah-career-tab-arrow');
-        if(ar) ar.textContent='›';
+        if(ar) ar.textContent='‹';
 
         clearTimeout(careerNotifyTimer);
         careerNotifyTimer=setTimeout(()=>{
@@ -2720,7 +2720,7 @@
           if(current) current.classList.remove('open');
           if(currentTab) currentTab.classList.remove('open');
           const arrow=$('yadah-career-tab-arrow');
-          if(arrow) arrow.textContent='‹';
+          if(arrow) arrow.textContent='›';
         },15000);
       }
     }
@@ -2791,7 +2791,7 @@
         box.classList.toggle('open',open);
         careerTab.classList.toggle('open',open);
         const ar=$('yadah-career-tab-arrow');
-        if(ar) ar.textContent=open?'‹':'›';
+        if(ar) ar.textContent=open?'›':'‹';
       });
     }
 
@@ -2803,7 +2803,7 @@
         box.classList.remove('open');
         tab.classList.remove('open');
         const ar = $('yadah-career-tab-arrow');
-        if(ar) ar.textContent = '›';
+        if(ar) ar.textContent = '‹';
       }
     });
 
