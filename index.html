@@ -871,15 +871,71 @@
     .yb-base-empty{padding:10px 5px;text-align:center;color:#94a3b8;font-size:.68rem}
     @media(max-width:799px){#yadah-base-notifications{max-height:38vh;padding:5px}.yb-notify-place{font-size:.72rem}.yb-notify-meta{font-size:.5rem}}
 
-    /* ===== YADAH: MODULO DE CARRERAS AISLADO DE LA RADIO ===== */
+    /* ===== YADAH: CARRERAS (PESTAÑA IZQUIERDA Y ESTILO UNIFICADO) ===== */
+    #yadah-career-notifications{
+      --career-panel-width:min(270px,75vw);
+      position:fixed;left:calc(-1 * var(--career-panel-width));top:var(--career-tab-top,40%);transform:translateY(-50%);
+      z-index:3925;width:var(--career-panel-width);max-height:42vh;overflow-y:auto;overflow-x:hidden;
+      box-sizing:border-box;padding:5px;
+      background:rgba(5, 7, 11, 0.6);
+      backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+      border:1px solid rgba(56, 189, 248, 0.5);
+      border-left:0;border-radius:0 10px 10px 0;box-shadow:4px 4px 16px rgba(0,0,0,.4);
+      display:flex;flex-direction:column;gap:5px;transition:left .25s ease;
+    }
+    #yadah-career-notifications.open{left:0}
+    #yadah-career-notifications::before{content:'🚕 CARRERAS LIBRES';display:block;color:#f8fafc;font-weight:900;font-size:.7rem;padding:2px 2px 4px;border-bottom:1px solid rgba(56, 189, 248, 0.3);text-align:left}
+    
+    #yadah-career-tab{
+      position:fixed;left:0;top:var(--career-tab-top,40%);transform:translateY(-50%);
+      z-index:3927;width:38px;min-height:90px;
+      border:0;border-radius:0 10px 10px 0;
+      background:rgba(11, 15, 25, 0.85);
+      backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+      color:#f8fafc;box-shadow:3px 3px 10px rgba(0,0,0,.4);
+      border:1px solid rgba(56,189,248,.5);
+      font-weight:900;cursor:grab;touch-action:none;display:none;
+      align-items:center;justify-content:center;flex-direction:column;gap:2px;padding:6px 2px;
+    }
+    #yadah-career-tab-arrow{font-size:22px;line-height:.8}
+    .yadah-career-tab-label{font-size:.54rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px}
+    #yadah-career-tab-count{min-width:16px;height:16px;border-radius:8px;background:#dc2626;color:#fff;font-size:.55rem;display:none;align-items:center;justify-content:center}
+    #yadah-career-tab.open{left:min(270px,75vw);background:rgba(11, 15, 25, 0.75)}
+    #yadah-career-tab.dragging{cursor:grabbing;background:rgba(11,15,25,.65)}
+
+    /* Ajuste para el stack y fab de carreras si se usan como respaldo */
     #yadah-career-fab{position:absolute;right:12px;bottom:88px;z-index:2700;display:flex;gap:7px;flex-direction:column;align-items:flex-end}
     .yc-btn{border:1px solid #38bdf8;background:#0b1220;color:#e2e8f0;border-radius:10px;padding:9px 11px;font-size:.74rem;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.45);cursor:pointer}
     .yc-btn.primary{background:#0369a1;border-color:#38bdf8;color:#fff}.yc-btn.history{background:#111827}
-    #yadah-career-stack{position:absolute;left:12px;right:12px;top:68px;z-index:2650;display:flex;flex-direction:column;gap:7px;pointer-events:none;max-height:42vh;overflow:auto}
-    .yc-card{pointer-events:auto;background:rgba(3,7,18,.96);border:1px solid #38bdf8;border-radius:11px;padding:9px 10px;box-shadow:0 5px 16px rgba(0,0,0,.55)}
-    .yc-card.pending{border-color:#38bdf8}.yc-card.active{border-color:#f59e0b}.yc-card.done{border-color:#38bdf8}
-    .yc-line{display:flex;justify-content:space-between;gap:8px;align-items:center}.yc-place{font-size:.86rem;font-weight:900;color:#fff}.yc-time{font-size:.68rem;color:#94a3b8;white-space:nowrap}.yc-state{font-size:.67rem;color:#38bdf8;font-weight:800;margin-top:3px}.yc-state.active{color:#f59e0b}.yc-state.done{color:#38bdf8}
-    .yc-card button{margin-top:7px;width:100%;border:0;border-radius:7px;padding:8px;font-weight:900;cursor:pointer;background:#0284c7;color:#fff}.yc-card button.cancel{background:#374151;color:#e2e8f0}.yc-card button.finish{background:#0284c7}
+    #yadah-career-stack{position:absolute;left:12px;right:12px;top:68px;z-index:2650;display:none;flex-direction:column;gap:7px;pointer-events:none;max-height:42vh;overflow:auto}
+    
+    .yc-card{
+      pointer-events:auto;width:100%;box-sizing:border-box;
+      background:rgba(11, 23, 42, 0.90);
+      backdrop-filter:blur(4px);
+      border-radius:8px;padding:6px;box-shadow:0 2px 8px rgba(0,0,0,.3);
+      color:#f8fafc;flex:0 0 auto;transition:all 0.2s ease;
+      border:1.5px solid #38bdf8;
+    }
+    .yc-card.pending{border-color:#38bdf8;}
+    .yc-card.active{border-color:#f59e0b;background:rgba(28,20,5,0.95);}
+    .yc-card.done{border-color:#38bdf8;background:rgba(8,18,35,0.95);}
+    
+    .yc-line{display:flex;justify-content:space-between;gap:8px;align-items:center}
+    .yc-place{font-size:.76rem;font-weight:900;margin:3px 0;color:#f8fafc;line-height:1.05;overflow-wrap:anywhere}
+    .yc-time{font-size:.54rem;color:#94a3b8;white-space:nowrap}
+    .yc-state{font-size:.64rem;color:#38bdf8;font-weight:900;line-height:1.05}
+    .yc-state.active{color:#f59e0b}
+    .yc-state.done{color:#38bdf8}
+    
+    .yc-card button{
+      margin-top:5px;width:100%;border:0;border-radius:6px;padding:6px;
+      background:#030712;color:#ffffff;border:1px solid #38bdf8;
+      font-weight:900;font-size:.64rem;min-height:28px;cursor:pointer;
+    }
+    .yc-card button.cancel{background:#1f2937;color:#9ca3af;border:1px solid #374151}
+    .yc-card button.finish{background:#030712;color:#ffffff;border:1px solid #38bdf8}
+
     #yadah-career-modal{position:fixed;inset:0;z-index:3900;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center}
     .yc-modal-card{width:min(520px,100%);background:#111827;border-top:2px solid #38bdf8;border-radius:16px 16px 0 0;padding:16px;max-height:82vh;overflow:auto}
     .yc-modal-title{display:flex;justify-content:space-between;align-items:center;color:#38bdf8;font-weight:900;font-size:.98rem;margin-bottom:10px}.yc-close{cursor:pointer;color:#94a3b8;font-size:1.2rem}
@@ -1025,8 +1081,10 @@
     </div>
   </div>
 
-  <!-- ===== YADAH CARRERAS: UI INDEPENDIENTE DE LA RADIO ===== -->
-  <div id="yadah-career-stack" aria-live="polite"></div>
+  <!-- ===== YADAH CARRERAS: UI IZQUIERDA ( PESTAÑA COMPACTA ) ===== -->
+  <button id="yadah-career-tab" type="button" aria-label="Abrir carreras libres"><span id="yadah-career-tab-arrow">‹</span><span class="yadah-career-tab-label">CARRERAS</span><span id="yadah-career-tab-count">0</span></button>
+  <div id="yadah-career-notifications" aria-live="polite" aria-label="Carreras libres"></div>
+  
   <div id="yadah-career-fab">
     <button class="yc-btn primary" id="yc-new-btn" type="button">🚕 Carrera</button>
     <button class="yc-btn history" id="yc-history-btn" type="button">📋 Carreras</button>
@@ -1046,7 +1104,7 @@
     </div>
   </div>
 
-  <!-- ===== YADAH BASE: MODULO INDEPENDIENTE DE CARRERAS POR LLAMADA ===== -->
+  <!-- ===== YADAH BASE: MODULO DERECHO ===== -->
   <div id="yadah-base-stack" aria-live="polite"></div>
   <div id="yadah-base-fab"><button class="yb-btn yb-menu-btn" id="yb-open-btn" type="button" aria-label="Abrir o cerrar Cola de Base" title="Abrir o cerrar Cola de Base">🏠</button></div>
   <div id="yadah-base-modal"><div class="yb-modal-card" onclick="event.stopPropagation()">
@@ -1066,7 +1124,7 @@
   <div id="yadah-base-assignment" aria-live="assertive" style="display:none"><div class="yb-assignment-list" id="yb-assignment-list"></div></div>
   <div id="yadah-base-active" aria-live="polite" style="display:none"><div class="yb-active-list" id="yb-active-list"></div></div>
   
-  <button id="yadah-base-tab" type="button" aria-label="Abrir carreras asignadas de base"><span id="yadah-base-tab-arrow">‹</span><span class="yadah-base-tab-label">BASE</span><span id="yadah-base-tab-count">0</span></button>
+  <button id="yadah-base-tab" type="button" aria-label="Abrir carreras asignadas de base"><span id="yadah-base-tab-arrow">›</span><span class="yadah-base-tab-label">BASE</span><span id="yadah-base-tab-count">0</span></button>
   <div id="yadah-base-notifications" aria-live="polite" aria-label="Carreras asignadas de base"></div>
 
   <div class="controls-panel">
@@ -2127,7 +2185,7 @@
       button.addEventListener('click', () => setTimeout(closeMapOptions, 0));
     });
 
-    if (!trackingUnit && document.getElementById('btn-recenter')) document.getElementById('btn-recenter').addEventListener('click', applyCameraPerspective);
+    if (!trackingUnit && document.getElementById('btn-recenter')) document.getElementById('btn-recenter'].addEventListener('click', applyCameraPerspective);
 
     // ==========================================
     // MÓDULO DE RADIO WEBRTC EN TIEMPO REAL
@@ -2501,13 +2559,11 @@
     }
 
     bindRadioPTT();
-
-    if (!trackingUnit) checkAuth();
   </script>
 
   <script>
   /* ======================================================================
-     YADAH CARRERAS v1
+     YADAH CARRERAS v1 - CON PESTAÑA IZQUIERDA Y AUTO-CIERRE
      ====================================================================== */
   (function(){
     'use strict';
@@ -2517,6 +2573,8 @@
     let ycState = { version:1, day:'', careers:[] };
     let ycLastSerialized = '';
     let ycInitialized = false;
+    let careerNotifyTimer = null;
+    let careerNotifySignature = '';
 
     const $ = id => document.getElementById(id);
     const now = () => Date.now();
@@ -2595,13 +2653,31 @@
     }
     function fmtTime(ts){ return new Date(ts).toLocaleTimeString('es-SV',{hour:'2-digit',minute:'2-digit'}); }
     function esc(s){ return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+    
     function render(){
       ensureDay();
-      const stack=$('yadah-career-stack'); if(!stack) return;
+      const box=$('yadah-career-notifications'), tab=$('yadah-career-tab'), countEl=$('yadah-career-tab-count');
+      if(!box||!tab) return;
+
       const active=ycState.careers.filter(c=>c.status==='pending'||c.status==='active');
-      stack.innerHTML='';
-      if(!active.length){ stack.style.display='none'; return; }
-      stack.style.display='flex';
+      
+      if(!active.length){
+        clearTimeout(careerNotifyTimer);
+        careerNotifySignature='';
+        box.classList.remove('open');
+        tab.classList.remove('open');
+        box.style.display='none';
+        tab.style.display='none';
+        box.innerHTML='';
+        if(countEl) countEl.style.display='none';
+        return;
+      }
+
+      const signature=active.map(c=>c.id).sort().join('|');
+      const isNewSet=signature!==careerNotifySignature;
+      careerNotifySignature=signature;
+
+      box.innerHTML='';
       active.forEach(c=>{
         const card=document.createElement('div'); card.className='yc-card '+c.status;
         let action='';
@@ -2613,9 +2689,34 @@
           if(c.driver===unitName() || isMod()) action+=`<button class="finish" data-yc-action="finish" data-id="${c.id}">${c.driver===unitName()?'FINALIZAR CARRERA':'Marcar finalizada'}</button>`;
         }
         card.innerHTML=`<div class="yc-line"><div class="yc-place">🚕 ${esc(c.place)}</div><div class="yc-time">${fmtTime(c.createdAt)}</div></div>${c.status==='pending'?'<div class="yc-state">🔵 PENDIENTE</div>':''}${action}`;
-        stack.appendChild(card);
+        box.appendChild(card);
       });
+
+      box.style.display='flex';
+      tab.style.display='flex';
+      if(countEl){
+        countEl.textContent=String(active.length);
+        countEl.style.display='flex';
+      }
+
+      if(isNewSet){
+        box.classList.add('open');
+        tab.classList.add('open');
+        const ar=$('yadah-career-tab-arrow');
+        if(ar) ar.textContent='›';
+
+        clearTimeout(careerNotifyTimer);
+        careerNotifyTimer=setTimeout(()=>{
+          const current=$('yadah-career-notifications');
+          const currentTab=$('yadah-career-tab');
+          if(current) current.classList.remove('open');
+          if(currentTab) currentTab.classList.remove('open');
+          const arrow=$('yadah-career-tab-arrow');
+          if(arrow) arrow.textContent='‹';
+        },15000);
+      }
     }
+
     let ycRecognition = null;
     let ycListening = false;
     function setVoiceStatus(text){ const el=$('yc-voice-status'); if(el) el.textContent=text||''; }
@@ -2667,8 +2768,26 @@
       $('yc-place-input')?.addEventListener('keydown',e=>{if(e.key==='Enter')createCareer(e.target.value);});
       $('yc-mic')?.addEventListener('click',startCareerVoice);
       $('yadah-career-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-career-modal')closeModal();});
-      $('yadah-career-stack')?.addEventListener('click',e=>{const b=e.target.closest('[data-yc-action]');if(!b)return; const id=b.dataset.id; if(b.dataset.ycAction==='accept')acceptCareer(id); else if(b.dataset.ycAction==='finish')finishCareer(id); else if(b.dataset.ycAction==='cancel')cancelCareer(id);});
+      $('yadah-career-notifications')?.addEventListener('click',e=>{const b=e.target.closest('[data-yc-action]');if(!b)return; const id=b.dataset.id; if(b.dataset.ycAction==='accept')acceptCareer(id); else if(b.dataset.ycAction==='finish')finishCareer(id); else if(b.dataset.ycAction==='cancel')cancelCareer(id);});
     }
+
+    // Comportamiento de la pestaña izquierda para carreras libres
+    const careerTab=$('yadah-career-tab');
+    if(careerTab && !careerTab.dataset.bound){
+      careerTab.dataset.bound='1';
+      careerTab.addEventListener('click',e=>{
+        e.preventDefault(); e.stopPropagation();
+        const box=$('yadah-career-notifications');
+        if(!box) return;
+        const open=!box.classList.contains('open');
+        clearTimeout(careerNotifyTimer);
+        box.classList.toggle('open',open);
+        careerTab.classList.toggle('open',open);
+        const ar=$('yadah-career-tab-arrow');
+        if(ar) ar.textContent=open?'‹':'›';
+      });
+    }
+
     function init(){ if(ycInitialized)return; ycInitialized=true; loadLocal(); ensureDay(); bind(); render(); connect(); }
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
     window.YadahCareers={createCareer,acceptCareer,finishCareer,cancelCareer,render};
@@ -2882,7 +3001,7 @@
       box.classList.remove('open');
       tab.classList.remove('open');
       const ar = $('yadah-base-tab-arrow');
-      if(ar) ar.textContent = '‹';
+      if(ar) ar.textContent = '›';
     }
   });
 
