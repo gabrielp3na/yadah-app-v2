@@ -1799,58 +1799,109 @@
 
     function closeVehicleHistory() { activeHistoryUnit = null; if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'none'; if (map && map.getSource('route-trails')) map.getSource('route-trails').setData({ type: 'FeatureCollection', features: [] }); }
 function applyVehicleHistory(hours = 24) {
- const validHours = Math.max(2, Math.min(24, Number(hours) || 24));
- const rangeBox = document.getElementById('vh-range-options');
- if (rangeBox) rangeBox.style.display = 'none';
- const statusDiv = document.getElementById('vh-status-info');
- try {
-  if (!isModulator() || !activeHistoryUnit || !map) return;
-  if (!db) {
-   if (statusDiv) { statusDiv.textContent = 'Cargando historial...'; statusDiv.style.color = '#38bdf8'; }
-   initDatabase();
-   setTimeout(() => applyVehicleHistory(validHours), 300);
-   return;
+  const validHours = Math.max(2, Math.min(24, Number(hours) || 24));
+  const rangeBox = document.getElementById('vh-range-options');
+  const statusDiv = document.getElementById('vh-status-info');
+  if (rangeBox) rangeBox.style.display = 'none';
+
+  if (!isModulator()) {
+    if (statusDiv) { statusDiv.textContent = 'Solo el Modulador puede ver recorridos.'; statusDiv.style.color = '#ef4444'; }
+    return;
   }
-  const startTime = Date.now() - (validHours * 60 * 60 * 1000);
-  const tx = db.transaction([STORE_NAME], 'readonly');
-  const store = tx.objectStore(STORE_NAME);
-  const req = store.openCursor();
-  const historyPoints = [];
-  req.onsuccess = (e) => {
-   try {
-    const cursor = e.target.result;
-    if (cursor) {
-     const val = cursor.value;
-     const ts = Number(val.timestamp), lon = Number(val.lon), lat = Number(val.lat);
-     if (val.unit === activeHistoryUnit && ts >= startTime && Number.isFinite(ts) && Number.isFinite(lon) && Number.isFinite(lat)) historyPoints.push({ timestamp: ts, lon, lat });
-     cursor.continue();
-    } else {
-     historyPoints.sort((a,b) => a.timestamp - b.timestamp);
-     const historyCoords = historyPoints.map(p => [p.lon, p.lat]);
-     const drawHistory = () => {
-      try {
-       ensureLayersExist();
-       const source = map.getSource('route-trails');
-       if (source) source.setData({ type:'FeatureCollection', features: historyCoords.length >= 2 ? [{ type:'Feature', geometry:{ type:'LineString', coordinates:historyCoords }, properties:{} }] : [] });
-       if (statusDiv) {
-        statusDiv.textContent = historyCoords.length < 2 ? `Sin historial en las últimas ${validHours} horas.` : `¡Mostrando ${historyCoords.length} puntos en las últimas ${validHours} horas!`;
-        statusDiv.style.color = historyCoords.length < 2 ? '#ef4444' : '#0284c7';
-       }
-       if (historyCoords.length >= 2) map.flyTo({ center:historyCoords[historyCoords.length-1], zoom:16, pitch:0, bearing:0 });
-      } catch (err) {
-       if (statusDiv) { statusDiv.textContent = 'No se pudo dibujar el recorrido.'; statusDiv.style.color = '#ef4444'; }
+  if (!activeHistoryUnit) {
+    if (statusDiv) { statusDiv.textContent = 'Selecciona primero un móvil.'; statusDiv.style.color = '#ef4444'; }
+    return;
+  }
+  if (!map) {
+    if (statusDiv) { statusDiv.textContent = 'Mapa no disponible.'; statusDiv.style.color = '#ef4444'; }
+    return;
+  }
+
+  const drawHistory = (historyPoints) => {
+    historyPoints.sort((a, b) => a.timestamp - b.timestamp);
+    const historyCoords = historyPoints.map(p => [p.lon, p.lat]);
+    try {
+      ensureLayersExist();
+      const source = map.getSource('route-trails');
+      if (source) {
+        source.setData({
+          type: 'FeatureCollection',
+          features: historyCoords.length >= 2 ? [{
+            type: 'Feature',
+            geometry: { type: 'LineString', coordinates: historyCoords },
+            properties: {}
+          }] : []
+        });
       }
-     };
-     if (map.loaded && !map.loaded()) map.once('load', drawHistory); else drawHistory();
+      if (statusDiv) {
+        statusDiv.textContent = historyCoords.length < 2
+          ? `Sin historial en las últimas ${validHours} horas.`
+          : `¡Mostrando ${historyCoords.length} puntos en las últimas ${validHours} horas!`;
+        statusDiv.style.color = historyCoords.length < 2 ? '#ef4444' : '#0284c7';
+      }
+      if (historyCoords.length >= 2) {
+        map.flyTo({ center: historyCoords[historyCoords.length - 1], zoom: 16, pitch: 0, bearing: 0 });
+      }
+    } catch (err) {
+      if (statusDiv) { statusDiv.textContent = 'No se pudo dibujar el recorrido.'; statusDiv.style.color = '#ef4444'; }
     }
-   } catch (err) {
-    if (statusDiv) { statusDiv.textContent = 'No se pudo leer el historial.'; statusDiv.style.color = '#ef4444'; }
-   }
   };
-  req.onerror = () => { if (statusDiv) { statusDiv.textContent = 'No se pudo leer el historial.'; statusDiv.style.color = '#ef4444'; } };
- } catch (err) {
-  if (statusDiv) { statusDiv.textContent = 'No se pudo cargar el recorrido.'; statusDiv.style.color = '#ef4444'; }
- }
+
+  const readHistory = (database) => {
+    try {
+      const tx = database.transaction([STORE_NAME], 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.openCursor();
+      const historyPoints = [];
+      const startTime = Date.now() - (validHours * 60 * 60 * 1000);
+      req.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          const val = cursor.value;
+          const ts = Number(val.timestamp), lon = Number(val.lon), lat = Number(val.lat);
+          if (val.unit === activeHistoryUnit && ts >= startTime && Number.isFinite(ts) && Number.isFinite(lon) && Number.isFinite(lat)) {
+            historyPoints.push({ timestamp: ts, lon, lat });
+          }
+          cursor.continue();
+        } else {
+          drawHistory(historyPoints);
+        }
+      };
+      req.onerror = () => {
+        if (statusDiv) { statusDiv.textContent = 'No se pudo leer el historial.'; statusDiv.style.color = '#ef4444'; }
+      };
+    } catch (err) {
+      if (statusDiv) { statusDiv.textContent = 'No se pudo abrir el historial.'; statusDiv.style.color = '#ef4444'; }
+    }
+  };
+
+  if (statusDiv) { statusDiv.textContent = `Buscando recorrido de ${activeHistoryUnit}: últimas ${validHours} horas...`; statusDiv.style.color = '#38bdf8'; }
+
+  if (db) {
+    readHistory(db);
+    return;
+  }
+
+  try {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = (e) => {
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        const store = database.createObjectStore(STORE_NAME, { autoIncrement: true });
+        store.createIndex('unit_time', ['unit', 'timestamp']);
+        store.createIndex('timestamp', 'timestamp');
+      }
+    };
+    request.onsuccess = (e) => {
+      db = e.target.result;
+      readHistory(db);
+    };
+    request.onerror = () => {
+      if (statusDiv) { statusDiv.textContent = 'No se pudo abrir la base de historial.'; statusDiv.style.color = '#ef4444'; }
+    };
+  } catch (err) {
+    if (statusDiv) { statusDiv.textContent = 'No se pudo cargar el historial.'; statusDiv.style.color = '#ef4444'; }
+  }
 }
 
 function copyVehicleTrackingLink() {
