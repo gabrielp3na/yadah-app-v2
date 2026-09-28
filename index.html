@@ -1023,18 +1023,33 @@
   </div>
 
   <!-- ===== YADAH BASE: MODULO INDEPENDIENTE DE CARRERAS POR LLAMADA ===== -->
-  <div id="yadah-base-stack" aria-live="polite"></div>
-  <div id="yadah-base-fab"><button class="yb-btn yb-menu-btn" id="yb-open-btn" type="button" aria-label="Abrir o cerrar Cola de Base" title="Abrir o cerrar Cola de Base">🏠</button></div>
-  <div id="yadah-base-modal"><div class="yb-modal-card" onclick="event.stopPropagation()">
-    <div class="yb-modal-title"><span id="yb-modal-title">🏠 Cliente de base</span><span class="yb-close" id="yb-close">✕</span></div>
-    <div id="yb-add-view">
-      <div class="yb-floating-note">El mapa permanece visible mientras registras la carrera.</div>
-      <label class="yb-label" for="yb-destination">Destino</label>
-      <input class="yb-input" id="yb-destination" maxlength="120" placeholder="Escribe el destino" autocomplete="off">
-      <label class="yb-label" for="yb-price" style="margin-top:10px">Agregar precio</label>
-      <select class="yb-select" id="yb-price"><option value="1.00">$1.00</option><option value="1.50">$1.50</option><option value="2.00">$2.00</option><option value="2.50">$2.50</option><option value="3.00">$3.00</option><option value="3.50">$3.50</option><option value="4.00">$4.00</option><option value="__custom__">Otra cantidad…</option></select>
-      <input class="yb-input" id="yb-custom-price" type="number" min="0.01" max="999.99" step="0.01" placeholder="Escribe la cantidad, por ejemplo 4.50" style="display:none">
-      <div class="yb-actions yb-main-actions"><button class="yb-secondary" id="yb-cancel">Cancelar</button><button class="yb-submit" id="yb-add-queue">🏠 REGISTRAR CLIENTE</button></div>
+  <div id="vehicle-history-card">
+    <div class="vh-header">
+      <span id="vh-unit-name">Móvil</span>
+      <span style="cursor:pointer; color:#94a3b8; font-size:1.1rem;" onclick="closeVehicleHistory()">✕</span>
+    </div>
+    <div style="font-size:0.75rem; color:#94a3b8;">Historial del recorrido:</div>
+    <div class="vh-actions">
+      <button class="btn-vh btn-vh-apply" onclick="showVehicleHistoryOptions()">Ver Recorrido 🗺️</button>
+      <button class="btn-vh btn-vh-apply" onclick="copyVehicleTrackingLink()">Copiar enlace de seguimiento 🔗</button>
+      <button class="btn-vh btn-vh-close" onclick="closeVehicleHistory()">Cerrar ✕</button>
+    </div>
+    <div id="vh-range-options" style="display:none; grid-template-columns:repeat(3,1fr); gap:5px; margin-top:6px;">
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(2)">2 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(4)">4 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(6)">6 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(8)">8 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(10)">10 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(12)">12 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(14)">14 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(16)">16 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(18)">18 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(20)">20 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(22)">22 h</button>
+      <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory(24)">24 h</button>
+    </div>
+    <div id="vh-status-info" style="font-size:0.7rem; color:#10b981; text-align:center; margin-top:4px;"></div>
+  </div>
     </div>
     <div id="yb-assign-view" style="display:none"><div class="yb-label">Selecciona el motorista para esta salida</div><div class="yb-draft-summary" id="yb-draft-summary">—</div><div class="yb-unit-grid" id="yb-unit-grid"></div><div class="yb-actions"><button class="yb-secondary" id="yb-assign-cancel">Volver</button></div></div>
   </div></div>
@@ -1786,18 +1801,30 @@
 function applyVehicleHistory() {
  if (!isModulator() || !db || !activeHistoryUnit || !map) return;
  const startTime = Date.now() - (24 * 60 * 60 * 1000);
- const tx = db.transaction([STORE_NAME], 'readonly'); const store = tx.objectStore(STORE_NAME); const req = store.openCursor();
- const historyPoints = [];
- req.onsuccess = (e) => {
-  const cursor = e.target.result;
-  if (cursor) {
-   const val = cursor.value;
-   const ts = Number(val.timestamp), lon = Number(val.lon), lat = Number(val.lat);
-   if (val.unit === activeHistoryUnit && ts >= startTime && Number.isFinite(ts) && Number.isFinite(lon) && Number.isFinite(lat)) historyPoints.push({ timestamp: ts, lon, lat });
-   cursor.continue();
-  } else {
-   historyPoints.sort((a,b) => a.timestamp - b.timestamp);
-   const historyCoords = historyPoints.map(p => [p.lon, p.lat]);
+    function openVehicleHistoryFromList(unitId) {
+      if (!isModulator()) return;
+      toggleFleetDrawer(false);
+      activeHistoryUnit = unitId;
+      document.getElementById('vh-unit-name').textContent = unitId;
+      const rangeBox = document.getElementById('vh-range-options');
+      if (rangeBox) rangeBox.style.display = 'none';
+      const statusDiv = document.getElementById('vh-status-info');
+      if (statusDiv) statusDiv.textContent = '';
+      if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'flex';
+    }
+    function showVehicleHistoryOptions() {
+      const rangeBox = document.getElementById('vh-range-options');
+      if (rangeBox) rangeBox.style.display = rangeBox.style.display === 'grid' ? 'none' : 'grid';
+    }
+    function copyVehicleTrackingLink() {
+      if (!activeHistoryUnit) return;
+      const clientLink = `${window.location.href.split('?')[0]}?track=${encodeURIComponent(activeHistoryUnit)}`;
+      navigator.clipboard.writeText(clientLink).then(() => {
+        alert(`📋 ¡Enlace de seguimiento copiado!\n\n${clientLink}`);
+      }).catch(() => {
+        prompt('Copia el enlace para el cliente:', clientLink);
+      });
+    }
    ensureLayersExist();
    if (map.getSource('route-trails')) map.getSource('route-trails').setData({ type:'FeatureCollection', features: historyCoords.length >= 2 ? [{ type:'Feature', geometry:{ type:'LineString', coordinates:historyCoords }, properties:{} }] : [] });
    const statusDiv = document.getElementById('vh-status-info');
@@ -1969,31 +1996,35 @@ function applyVehicleHistory() {
                 const box = document.getElementById('yadah-base-assignment');
                 const place = document.getElementById('yb-assignment-place');
                 const meta = document.getElementById('yb-assignment-meta');
-                if (place) place.textContent = assignData.label || 'Destino de base';
-                if (meta) meta.textContent = `🏠 BASE · ${assignData.price ? '$' + Number(assignData.price).toFixed(2) : 'Tarifa registrada'}`;
-                if (box) box.style.display = 'none';
-        if (typeof renderBaseNotifications === 'function') renderBaseNotifications();
-              } else {
-                window.__yadahBaseNoNavigation = false;
-                alert(`🎯 ¡Misión asignada: ${assignData.label}!`);
-                pendingDestination = { lon: assignData.lon, lat: assignData.lat, label: assignData.label };
-                if (lblRouteStats) lblRouteStats.textContent = `📍 [Asignado] ${assignData.label}. ¿Iniciar marcha?`;
-                if (navRouteInfo) navRouteInfo.style.display = 'flex';
-              }
-            }
-          } else if (topic === TOPIC_POI) {
-            const d = JSON.parse(text); if (d && d.action === 'sync' && d.pois) { localStorage.setItem('yadah_custom_pois', JSON.stringify(d.pois)); renderCustomPoiMarkers(); }
-          } else if (topic === TOPIC_BASE) {
-            const d = JSON.parse(text); if (d.coords) { defaultBaseCoords = d.coords; localStorage.setItem('yadah_base_coords', JSON.stringify(defaultBaseCoords)); if (permanentBaseMarker) permanentBaseMarker.setLngLat(defaultBaseCoords); }
-          } else if (topic === TOPIC_MODULATOR) {
-            const d = JSON.parse(text); if (d && d.lat && d.lon) updateModulatorState(d.lat, d.lon);
-          } else if (topic === TOPIC_GPS) {
-            const d = JSON.parse(text); if (d.unit && d.unit !== currentUnit) updateVehicleOnMap(d.unit, d.lon, d.lat, d.heading, d.speed, d.isSos);
-          } else if (topic === TOPIC_STATUS) {
-            const d = JSON.parse(text); if (d.unit && d.unit !== currentUnit && d.status === 'offline') {
-              if (fleetStatusMap[d.unit]) fleetStatusMap[d.unit].state = 'offline';
-              if (fleetMarkers[d.unit]) { fleetMarkers[d.unit].marker.remove(); delete fleetMarkers[d.unit]; }
-              refreshFleetStatsCounters();
+function applyVehicleHistory(hours = 24) {
+  if (!isModulator() || !db || !activeHistoryUnit || !map) return;
+  const validHours = Math.max(2, Math.min(24, Number(hours) || 24));
+  const startTime = Date.now() - (validHours * 60 * 60 * 1000);
+  const rangeBox = document.getElementById('vh-range-options');
+  if (rangeBox) rangeBox.style.display = 'none';
+  const tx = db.transaction([STORE_NAME], 'readonly'); const store = tx.objectStore(STORE_NAME); const req = store.openCursor();
+  const historyPoints = [];
+  req.onsuccess = (e) => {
+    const cursor = e.target.result;
+    if (cursor) {
+      const val = cursor.value;
+      const ts = Number(val.timestamp), lon = Number(val.lon), lat = Number(val.lat);
+      if (val.unit === activeHistoryUnit && ts >= startTime && Number.isFinite(ts) && Number.isFinite(lon) && Number.isFinite(lat)) historyPoints.push({ timestamp: ts, lon, lat });
+      cursor.continue();
+    } else {
+      historyPoints.sort((a,b) => a.timestamp - b.timestamp);
+      const historyCoords = historyPoints.map(p => [p.lon, p.lat]);
+      ensureLayersExist();
+      if (map.getSource('route-trails')) map.getSource('route-trails').setData({ type:'FeatureCollection', features: historyCoords.length >= 2 ? [{ type:'Feature', geometry:{ type:'LineString', coordinates:historyCoords }, properties:{} }] : [] });
+      const statusDiv = document.getElementById('vh-status-info');
+      if (statusDiv) {
+        statusDiv.textContent = historyCoords.length < 2 ? `Sin historial en las últimas ${validHours} horas.` : `¡Mostrando ${historyCoords.length} puntos de las últimas ${validHours} horas!`;
+        statusDiv.style.color = historyCoords.length < 2 ? '#ef4444' : '#10b981';
+        if (historyCoords.length >= 2) map.flyTo({ center:historyCoords[historyCoords.length - 1], zoom:16, pitch:0, bearing:0 });
+      }
+    }
+  };
+}
             }
           } else if (topic === TOPIC_NAV) {
             const nav = JSON.parse(text);
@@ -2895,3 +2926,4 @@ function applyVehicleHistory() {
   </script>
 </body>
 </html>
+
