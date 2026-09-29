@@ -300,6 +300,20 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.6);
     }
 
+    .mobile-search-toggle {
+      display: none;
+    }
+
+    .search-close {
+      display: none;
+      background: #1f2937;
+      border: none;
+      color: #f8fafc;
+      font-weight: 800;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+
     .search-input-box input {
       flex: 1;
       background: transparent;
@@ -863,7 +877,61 @@
     #yadah-career-history-list{display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow:auto}.yc-history-item{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 10px}.yc-history-main{font-size:.82rem;font-weight:800;color:#fff}.yc-history-meta{font-size:.68rem;color:#94a3b8;margin-top:3px}
     .yc-empty{color:#64748b;font-size:.8rem;text-align:center;padding:14px}
     #yadah-career-tab{position:fixed;right:0;top:var(--career-tab-top,50%);transform:translateY(-50%);z-index:3927;width:48px;min-height:112px;border:1px solid #22d3ee;border-radius:12px 0 0 12px;background:rgba(5,7,11,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;box-shadow:-4px 4px 12px rgba(0,0,0,.45);font-weight:900;cursor:pointer;touch-action:none;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px 4px;transition:right .25s ease} #yadah-career-tab.open{right:min(320px,86vw);background:rgba(5,7,11,.48)} #yadah-career-tab-count{min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center} #yadah-career-tab-arrow{font-size:30px;line-height:.8} .yadah-career-tab-label{font-size:.62rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px} @media(max-width:799px){#yadah-career-stack{max-height:42vh;padding:7px}} @media(min-width:800px){#yadah-career-fab{right:18px;bottom:102px}}
-  </style>
+  
+    /* ---------- Buscador compacto en móvil ---------- */
+    @media (max-width: 720px) {
+      #nav-search-bar {
+        left: 10px;
+        right: auto;
+        width: auto;
+        max-width: none;
+        align-items: flex-start;
+      }
+
+      #nav-search-bar:not(.mobile-search-open) .search-input-box {
+        display: none;
+      }
+
+      #nav-search-bar:not(.mobile-search-open) .mobile-search-toggle {
+        display: flex;
+        width: 46px;
+        height: 46px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 50%;
+        background: #111827;
+        border: 2px solid #38bdf8;
+        color: #f8fafc;
+        font-size: 1.25rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+
+      #nav-search-bar.mobile-search-open {
+        width: calc(100vw - 20px);
+        max-width: 400px;
+      }
+
+      #nav-search-bar.mobile-search-open .mobile-search-toggle {
+        display: none;
+      }
+
+      #nav-search-bar.mobile-search-open .search-input-box {
+        display: flex;
+        width: 100%;
+        min-height: 44px;
+        border-radius: 13px;
+      }
+
+      #nav-search-bar.mobile-search-open .search-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+</style>
 </head>
 <body>
 
@@ -902,9 +970,11 @@
   </div>
 
   <div id="nav-search-bar">
+    <button id="mobile-search-toggle" class="mobile-search-toggle" type="button" aria-label="Abrir buscador" onclick="openMobileSearch(event)">🔍</button>
     <div class="search-input-box">
       <input type="text" id="input-destination" placeholder="Escribe el destino, negocio o enlace Google Maps..." oninput="handleSearchInput(this.value)" autocomplete="off" />
-      <button onclick="prepareRouteDestination()">Buscar 🔍</button>
+      <button class="search-submit" onclick="prepareRouteDestination()">Buscar 🔍</button>
+      <button class="search-close" type="button" aria-label="Cerrar buscador" onclick="closeMobileSearch(event)">✕</button>
     </div>
     <div id="search-suggestions"></div>
     <div class="nav-route-info" id="nav-route-info">
@@ -968,7 +1038,7 @@
     </div>
     <div class="header-actions">
       <button class="btn-header" id="btn-toggle-fleet" onclick="toggleFleetDrawer(true)" style="display:none; border-color:#38bdf8; color:#38bdf8;">📋 Flota</button>
-      <button class="btn-header" id="btn-buzon" onclick="toggleHistory(true)">📁 Buzón</button>
+      <button class="btn-header" onclick="toggleHistory(true)">📁 Buzón</button>
     </div>
   </header>
 
@@ -1450,6 +1520,35 @@
       navRouteInfo.style.display = 'flex';
     }
 
+    function openMobileSearch(event) {
+      if (event) event.stopPropagation();
+      if (!navSearchBar) return;
+      navSearchBar.classList.add('mobile-search-open');
+      setTimeout(() => {
+        const input = document.getElementById('input-destination');
+        if (input) input.focus();
+      }, 0);
+    }
+
+    function closeMobileSearch(event) {
+      if (event) event.stopPropagation();
+      if (!navSearchBar) return;
+      navSearchBar.classList.remove('mobile-search-open');
+      if (searchSuggestions) {
+        searchSuggestions.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      if (window.innerWidth > 720 || !navSearchBar) return;
+      if (!navSearchBar.classList.contains('mobile-search-open')) return;
+      if (!navSearchBar.contains(event.target)) closeMobileSearch();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && window.innerWidth <= 720) closeMobileSearch();
+    });
+
     async function prepareRouteDestination() {
       searchSuggestions.style.display = 'none';
       const query = document.getElementById('input-destination').value.trim();
@@ -1524,7 +1623,6 @@
         firstPersonMode=isDriver();
         if(btnSos)btnSos.style.display=isDriver()?'flex':'none';
         if(navSearchBar)navSearchBar.style.display=isDriver()?'flex':'none';
-        const btnBuzon = document.getElementById('btn-buzon'); if(btnBuzon) btnBuzon.style.display='block';
         if(btnToggleFleet)btnToggleFleet.style.display=isModulator()?'block':'none';
         if(fleetSummaryBar)fleetSummaryBar.style.display=isModulator()?'flex':'none';
         if(btnUnlockBase)btnUnlockBase.style.display=isModulator()?'flex':'none';
@@ -2018,12 +2116,12 @@ function applyVehicleHistory() {
           } else if (topic === TOPIC_ALERT) {
             const alertData = JSON.parse(text);
             if (alertData.sender !== currentUnit && channelStatus) {
-                let remoteDevId = null; for (const [devId, name] of radioDeviceNames.entries()) { if (name === alertData.sender) { remoteDevId = devId; break; } }
-                if (remoteDevId) { const remoteStream = yadahRemoteStreams.get(remoteDevId); if (!yadahStartRemoteRecording(remoteDevId, remoteStream)) yadahRemotePendingLive.add(remoteDevId); } else { yadahRemotePendingLive.add('__sender__' + alertData.sender); }
               if (alertData.live === true) {
                 channelStatus.className = 'channel-status receiving';
                 channelStatus.textContent = `▼ TRANSMITIENDO: ${alertData.sender}`;
                 playBeep(660, 0.06);
+                const stream = activeRadioStreams.get(alertData.sender);
+                if (stream) startReceivedRadioRecording(stream, alertData.sender);
                 clearTimeout(window.yadahRemoteTalkTimer);
                 window.yadahRemoteTalkTimer = setTimeout(() => {
                   if (channelStatus && !radioTalking) {
@@ -2031,8 +2129,8 @@ function applyVehicleHistory() {
                     channelStatus.textContent = '● CANAL LIBRE';
                   }
                 }, 5000);
-                for (const [devId, name] of radioDeviceNames.entries()) { if (name === alertData.sender) yadahStopRemoteRecording(devId); } yadahRemotePendingLive.delete('__sender__' + alertData.sender);
               } else if (alertData.live === false) {
+                stopReceivedRadioRecording(alertData.sender);
                 clearTimeout(window.yadahRemoteTalkTimer);
                 if (!radioTalking) {
                   channelStatus.className = 'channel-status';
@@ -2041,6 +2139,28 @@ function applyVehicleHistory() {
               }
             }
           }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         } catch (e) {}
       });
     }
@@ -2134,10 +2254,6 @@ function applyVehicleHistory() {
     let radioInitialized = false;
     const radioPeers = new Map();
     const radioCandidateQueues = new Map();
-    const radioDeviceNames = new Map();
-    const yadahRemoteStreams = new Map();
-    const yadahRemoteRecorders = new Map();
-    const yadahRemotePendingLive = new Set();
     const radioAudioElements = new Map();
     let radioAudioUnlocked = false;
 
@@ -2273,7 +2389,7 @@ function applyVehicleHistory() {
       await attachRadioTrackToPeers();
       radioLocalTrack.enabled = true;
       radioTalking = true;
-      yadahStartRadioRecording();
+      startRadioRecording();
       if (btnPtt) btnPtt.classList.add('active');
       if (channelStatus) {
         channelStatus.className = 'channel-status transmitting';
@@ -2300,7 +2416,7 @@ function applyVehicleHistory() {
         channelStatus.textContent = '● CANAL LIBRE';
       }
       if (!wasRadioTalking) return;
-      yadahStopRadioRecording();
+      stopRadioRecording();
       playBeep(600, 0.04);
       if (mqttClient && mqttClient.connected && currentUnit) {
         mqttClient.publish(TOPIC_ALERT, JSON.stringify({ sender: currentUnit, live: false }));
@@ -2314,7 +2430,6 @@ function applyVehicleHistory() {
 
     async function flushRadioCandidates(targetDevId, pc) {
       const queue = radioCandidateQueues.get(targetDevId) || [];
-      yadahStopRemoteRecording(targetDevId); yadahRemoteStreams.delete(targetDevId); radioDeviceNames.delete(targetDevId);
       radioCandidateQueues.delete(targetDevId);
       for (const candidate of queue) {
         try { await pc.addIceCandidate(candidate); } catch (error) {}
@@ -2328,7 +2443,6 @@ function applyVehicleHistory() {
         if (data.target && data.target !== deviceId) return;
         if (!data.sender || !data.deviceId) return;
 
-        radioDeviceNames.set(targetDevId, data.sender);
         const targetDevId = data.deviceId;
         let pc = radioPeers.get(targetDevId);
 
@@ -2369,47 +2483,6 @@ function applyVehicleHistory() {
       }
     }
 
-    function yadahSaveRadioBlob(sender, startedAt, blob, duration) {
-      try {
-        if (!blob || !blob.size) return;
-        yadahOpenRadioDB().then((db) => {
-          const tx = db.transaction(['recordings'], 'readwrite');
-          tx.objectStore('recordings').add({ sender: sender || 'Radio', timestamp: startedAt || Date.now(), duration: Math.max(0, duration || 0), audio: blob });
-        }).catch((e) => console.warn('No se pudo guardar el audio recibido:', e));
-      } catch (e) { console.warn('No se pudo preparar el audio recibido:', e); }
-    }
-
-    function yadahStartRemoteRecording(targetDevId, stream) {
-      try {
-        if (!window.MediaRecorder || !window.MediaStream || !stream) return false;
-        if (yadahRemoteRecorders.has(targetDevId)) return true;
-        const track = stream.getAudioTracks && stream.getAudioTracks()[0];
-        if (!track || track.readyState === 'ended') return false;
-        const recStream = new MediaStream(); recStream.addTrack(track);
-        let options = {};
-        try { if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) options = { mimeType: 'audio/webm;codecs=opus' }; } catch (e) {}
-        const recorder = new MediaRecorder(recStream, options);
-        const chunks = []; const startedAt = Date.now();
-        const senderName = radioDeviceNames.get(targetDevId) || targetDevId.split('_')[0] || 'Radio';
-        recorder.ondataavailable = (event) => { if (event.data && event.data.size) chunks.push(event.data); };
-        recorder.onerror = (event) => console.warn('Grabación recibida:', event.error || event);
-        recorder.onstop = () => {
-          yadahRemoteRecorders.delete(targetDevId);
-          try { recStream.getTracks().forEach(t => t.stop()); } catch (e) {}
-          const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
-          yadahSaveRadioBlob(senderName, startedAt, blob, Date.now() - startedAt);
-        };
-        recorder.start(250); yadahRemoteRecorders.set(targetDevId, recorder); return true;
-      } catch (e) { console.warn('No se pudo iniciar grabación recibida:', e); return false; }
-    }
-
-    function yadahStopRemoteRecording(targetDevId) {
-      yadahRemotePendingLive.delete(targetDevId);
-      const recorder = yadahRemoteRecorders.get(targetDevId);
-      if (!recorder) return;
-      try { if (recorder.state !== 'inactive') recorder.stop(); else yadahRemoteRecorders.delete(targetDevId); } catch (e) { yadahRemoteRecorders.delete(targetDevId); }
-    }
-
     async function createRadioPeer(targetDevId, isInitiator) {
       if (radioPeers.has(targetDevId)) return radioPeers.get(targetDevId);
 
@@ -2427,67 +2500,15 @@ function applyVehicleHistory() {
       pc.ontrack = (event) => {
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
-
-        yadahRemoteStreams.set(targetDevId, stream);
-        const remoteTrack = stream.getAudioTracks && stream.getAudioTracks()[0];
-        if (remoteTrack) {
-          remoteTrack.onended = () => {
-            if (yadahRemoteRecorders.has(targetDevId)) yadahStopRemoteRecording(targetDevId);
-            yadahRemoteStreams.delete(targetDevId);
-          };
-        }
-        if (yadahRemotePendingLive.has(targetDevId)) {
-          yadahRemotePendingLive.delete(targetDevId);
-          yadahStartRemoteRecording(targetDevId, stream);
-        } else {
-          const senderName = radioDeviceNames.get(targetDevId);
-          const senderPendingKey = '__sender__' + senderName;
-          if (senderName && yadahRemotePendingLive.has(senderPendingKey)) {
-            yadahRemotePendingLive.delete(senderPendingKey);
-            yadahStartRemoteRecording(targetDevId, stream);
-          }
-        }
-
-        stream.getAudioTracks().forEach(track => {
-          track.enabled = true;
-        });
-
-        let remoteAudio = radioAudioElements.get(targetDevId);
-        if (!remoteAudio) {
-          remoteAudio = document.createElement('audio');
-          remoteAudio.autoplay = true;
-          remoteAudio.playsInline = true;
-          remoteAudio.controls = false;
-          remoteAudio.muted = false;
-          remoteAudio.volume = 1.0;
-          remoteAudio.style.display = 'none';
-          document.body.appendChild(remoteAudio);
-          radioAudioElements.set(targetDevId, remoteAudio);
-        }
-
-        remoteAudio.srcObject = stream;
-        remoteAudio.muted = false;
-        remoteAudio.volume = 1.0;
-
+        const senderName = targetDevId.split('_')[0];
+        activeRadioStreams.set(senderName, stream);
         const mainSpeaker = document.getElementById('radio-speaker');
         if (mainSpeaker) {
           mainSpeaker.srcObject = stream;
           mainSpeaker.muted = false;
           mainSpeaker.volume = 1.0;
+          mainSpeaker.play().catch(() => {});
         }
-
-        try {
-          const playResult = remoteAudio.play();
-          if (playResult && typeof playResult.catch === 'function') playResult.catch(() => {});
-        } catch (error) {}
-
-        if (mainSpeaker) {
-          try {
-            const playResult = mainSpeaker.play();
-            if (playResult && typeof playResult.catch === 'function') playResult.catch(() => {});
-          } catch (error) {}
-        }
-
         if (channelStatus && !radioTalking) {
           channelStatus.className = 'channel-status receiving';
           channelStatus.textContent = '▼ RADIO EN VIVO';
@@ -2547,6 +2568,24 @@ function applyVehicleHistory() {
       }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function closeAllRadioPeers() {
       for (const targetDevId of Array.from(radioPeers.keys())) closeRadioPeer(targetDevId);
       if (radioLocalStream) {
@@ -2605,151 +2644,11 @@ function applyVehicleHistory() {
     }
 
     let cachedAudios = [];
-    let yadahRadioRecorder = null;
-    let yadahRadioChunks = [];
-    let yadahRadioStartedAt = 0;
-
-    function yadahOpenRadioDB() {
-      return new Promise((resolve, reject) => {
-        try {
-          const req = indexedDB.open('YadahRadioHistoryDB', 1);
-          req.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains('recordings')) {
-              db.createObjectStore('recordings', { keyPath: 'id', autoIncrement: true });
-            }
-          };
-          req.onsuccess = () => resolve(req.result);
-          req.onerror = () => reject(req.error);
-        } catch (e) {
-          reject(e);
-        }
-      });
-    }
-
-    function yadahStartRadioRecording() {
-      try {
-        if (!window.MediaRecorder || !window.MediaStream || !radioLocalTrack) return;
-        if (yadahRadioRecorder && yadahRadioRecorder.state !== 'inactive') return;
-
-        const stream = new MediaStream();
-        stream.addTrack(radioLocalTrack);
-
-        let options = {};
-        try {
-          if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-            options = { mimeType: 'audio/webm;codecs=opus' };
-          }
-        } catch (e) {}
-
-        yadahRadioRecorder = new MediaRecorder(stream, options);
-        yadahRadioChunks = [];
-        yadahRadioStartedAt = Date.now();
-
-        yadahRadioRecorder.ondataavailable = (event) => {
-          if (event.data && event.data.size) yadahRadioChunks.push(event.data);
-        };
-
-        yadahRadioRecorder.onerror = (event) => {
-          console.warn('Grabación de radio:', event.error || event);
-        };
-
-        yadahRadioRecorder.onstop = () => {
-          const recorder = yadahRadioRecorder;
-          const chunks = yadahRadioChunks.slice();
-          const startedAt = yadahRadioStartedAt;
-
-          yadahRadioChunks = [];
-          yadahRadioRecorder = null;
-
-          try {
-            const blob = new Blob(chunks, { type: (recorder && recorder.mimeType) || 'audio/webm' });
-            if (!blob.size) return;
-
-            yadahOpenRadioDB().then((db) => {
-              const tx = db.transaction(['recordings'], 'readwrite');
-              tx.objectStore('recordings').add({
-                sender: (typeof unitName === 'function') ? unitName() : 'Radio',
-                timestamp: startedAt || Date.now(),
-                duration: Math.max(0, Date.now() - (startedAt || Date.now())),
-                audio: blob
-              });
-            }).catch((e) => console.warn('No se pudo guardar el audio:', e));
-          } catch (e) {
-            console.warn('No se pudo preparar el audio:', e);
-          }
-        };
-
-        yadahRadioRecorder.start(250);
-      } catch (e) {
-        console.warn('No se pudo iniciar el buzón de radio:', e);
-        yadahRadioRecorder = null;
-        yadahRadioChunks = [];
-      }
-    }
-
-    function yadahStopRadioRecording() {
-      try {
-        if (yadahRadioRecorder && yadahRadioRecorder.state !== 'inactive') {
-          yadahRadioRecorder.stop();
-        }
-      } catch (e) {
-        console.warn('No se pudo cerrar la grabación:', e);
-      }
-    }
-
-    function yadahLoadRadioHistory() {
-      const list = document.getElementById('history-list');
-      if (!list) return;
-
-      yadahOpenRadioDB().then((db) => {
-        const tx = db.transaction(['recordings'], 'readonly');
-        const req = tx.objectStore('recordings').getAll();
-
-        req.onsuccess = () => {
-          const cutoff = Date.now() - 86400000;
-          const records = (req.result || [])
-            .filter(r => r && r.timestamp >= cutoff)
-            .sort((a, b) => b.timestamp - a.timestamp);
-
-          list.innerHTML = '';
-
-          if (!records.length) {
-            list.innerHTML = '<p style="color:#64748b;font-size:0.85rem;">No hay transmisiones registradas.</p>';
-            return;
-          }
-
-          records.forEach((record) => {
-            const row = document.createElement('div');
-            row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #1e293b;';
-
-            const info = document.createElement('div');
-            info.style.cssText = 'flex:1;';
-            const time = new Date(record.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            const seconds = Math.round((record.duration || 0) / 1000);
-            info.innerHTML = '<b style="color:#fff;">' + (record.sender || 'Radio') + '</b><div style="font-size:.68rem;color:#94a3b8;">' + time + ' · ' + seconds + ' s</div>';
-
-            const play = document.createElement('button');
-            play.type = 'button';
-            play.textContent = '▶';
-            play.style.cssText = 'border:0;border-radius:6px;padding:7px 10px;background:#0284c7;color:#fff;font-weight:800;';
-            play.onclick = () => {
-              try {
-                const url = URL.createObjectURL(record.audio);
-                const audio = new Audio(url);
-                audio.onended = () => URL.revokeObjectURL(url);
-                audio.play().catch(() => {});
-              } catch (e) {}
-            };
-
-            row.appendChild(info);
-            row.appendChild(play);
-            list.appendChild(row);
-          });
-        };
-      }).catch((e) => console.warn('No se pudo abrir el buzón:', e));
-    }
-
+    let radioRecorder = null;
+    let radioRecordingChunks = [];
+    let radioRecordingStartedAt = 0;
+    const RADIO_HISTORY_DB = 'YadahRadioHistoryDB';
+    const RADIO_HISTORY_STORE = 'recordings';
     function getStoredAudios() {
       try {
         const stored = JSON.parse(localStorage.getItem('yadah_audio_history') || '[]');
@@ -2759,34 +2658,136 @@ function applyVehicleHistory() {
       }
       return cachedAudios;
     }
-
     function toggleHistory(show) {
       const modal = document.getElementById('history-modal');
       if (modal) modal.style.display = show ? 'flex' : 'none';
-      if (show) yadahLoadRadioHistory();
+      if (show) renderHistory();
+    }
+    function openRadioHistoryDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(RADIO_HISTORY_DB, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(RADIO_HISTORY_STORE)) {
+            const store = db.createObjectStore(RADIO_HISTORY_STORE, { keyPath: 'id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp');
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
     }
 
-    function renderHistory() {
-      yadahLoadRadioHistory();
+    async function purgeOldRadioRecordings() {
+      try {
+        const database = await openRadioHistoryDB();
+        const tx = database.transaction(RADIO_HISTORY_STORE, 'readwrite');
+        const store = tx.objectStore(RADIO_HISTORY_STORE);
+        const cutoff = Date.now() - 86400000;
+        const req = store.openCursor();
+        req.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (!cursor) return;
+          if (Number(cursor.value.timestamp || 0) < cutoff) cursor.delete();
+          cursor.continue();
+        };
+      } catch (e) { console.warn('No se pudo limpiar el Buzón:', e); }
     }
 
-    function playAudioByIndex(index) {
-      yadahLoadRadioHistory();
+    function startRadioRecording() {
+      try {
+        if (!radioLocalStream) return;
+        const tracks = radioLocalStream.getAudioTracks();
+        if (!tracks.length) return;
+        const stream = new MediaStream([tracks[0]]);
+        const options = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+          ? { mimeType: 'audio/webm;codecs=opus' } : { mimeType: 'audio/webm' };
+        radioRecordingChunks = [];
+        radioRecordingStartedAt = Date.now();
+        radioRecorder = new MediaRecorder(stream, options);
+        radioRecorder.ondataavailable = e => { if (e.data && e.data.size) radioRecordingChunks.push(e.data); };
+        radioRecorder.start(250);
+      } catch (e) {
+        radioRecorder = null;
+        console.warn('No se pudo iniciar la grabación del radio:', e);
+      }
     }
 
+    function stopRadioRecording() {
+      const recorder = radioRecorder;
+      radioRecorder = null;
+      if (!recorder) return;
+      const chunks = radioRecordingChunks.slice();
+      const startedAt = radioRecordingStartedAt || Date.now();
+      radioRecordingChunks = [];
+      recorder.onstop = async () => {
+        try {
+          const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+          if (!blob.size) return;
+          const database = await openRadioHistoryDB();
+          const tx = database.transaction(RADIO_HISTORY_STORE, 'readwrite');
+          tx.objectStore(RADIO_HISTORY_STORE).add({
+            sender: currentUnit || 'Sin unidad',
+            timestamp: startedAt,
+            duration: Math.max(0, Date.now() - startedAt),
+            mimeType: blob.type,
+            audio: blob
+          });
+          tx.oncomplete = () => { renderHistory(); };
+          tx.onerror = () => { console.warn('No se pudo guardar la grabación del radio.'); };
+        } catch (e) { console.warn('No se pudo guardar la grabación:', e); }
+      };
+      try { if (recorder.state !== 'inactive') recorder.stop(); } catch (e) {}
+    }
 
+    async function getRadioHistoryRecords() {
+      const database = await openRadioHistoryDB();
+      return new Promise((resolve, reject) => {
+        const tx = database.transaction(RADIO_HISTORY_STORE, 'readonly');
+        const req = tx.objectStore(RADIO_HISTORY_STORE).getAll();
+        req.onsuccess = () => resolve((req.result || []).sort((a,b) => Number(b.timestamp||0) - Number(a.timestamp||0)));
+        req.onerror = () => reject(req.error);
+      });
+    }
 
+    async function renderHistory() {
+      const listContainer = document.getElementById('history-list');
+      if (!listContainer) return;
+      await purgeOldRadioRecordings();
+      try {
+        const audios = await getRadioHistoryRecords();
+        listContainer.textContent = '';
+        if (!audios.length) {
+          listContainer.textContent = 'No hay transmisiones registradas.';
+          return;
+        }
+        audios.forEach(item => {
+          const row = document.createElement('div'); row.className = 'history-item';
+          const info = document.createElement('div');
+          const sender = document.createElement('b'); sender.style.color = '#f59e0b'; sender.textContent = item.sender || 'Colega';
+          const time = document.createElement('div'); time.style.cssText='font-size:.72rem;color:#94a3b8;';
+          const d = new Date(item.timestamp); time.textContent=d.toLocaleTimeString('es-SV',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+          info.append(sender,time);
+          const button=document.createElement('button'); button.className='btn-play-audio'; button.textContent='▶ Reproducir';
+          button.onclick=()=>playStoredRadioAudio(item);
+          row.append(info,button); listContainer.appendChild(row);
+        });
+      } catch (e) { listContainer.textContent='No se pudo cargar el Buzón.'; }
+    }
 
+    function playStoredRadioAudio(item) {
+      if (!item || !item.audio) return;
+      try {
+        const url = URL.createObjectURL(item.audio);
+        const audio = new Audio(url);
+        audio.onended = () => URL.revokeObjectURL(url);
+        audio.play().catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
+      } catch (e) { alert('No se pudo reproducir esta transmisión.'); }
+    }
 
+    function playAudioByIndex(index) { renderHistory(); }
 
-
-
-
-
-
-
-
-
+    purgeOldRadioRecordings();
 
 
     bindRadioPTT();
@@ -3184,4 +3185,3 @@ function applyVehicleHistory() {
   </script>
 </body>
 </html>
-
