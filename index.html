@@ -146,19 +146,6 @@
       font-size: 1.2rem;
       border-radius: 9px;
     }
-    .replay-last-audio-btn {
-      color: #38bdf8;
-      border-color: rgba(56,189,248,.55);
-      font-size: 1.35rem;
-      font-weight: 900;
-    }
-    .replay-last-audio-btn.replaying {
-      animation: yadahReplaySpin .9s linear infinite;
-      background: #0e7490;
-      color: #fff;
-    }
-    @keyframes yadahReplaySpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
     .header-icon-btn .header-badge {
       position: absolute; top: -5px; right: -5px;
       min-width: 18px; height: 18px; padding: 0 4px;
@@ -737,4 +724,23 @@
       border-radius: 8px;
       display: flex;
       justify-content: space-between;
-      align-items: center
+      align-items: center;
+      font-size: 0.82rem;
+      border: 1px solid #334155;
+    }
+
+    .btn-play-audio {
+      background: #38bdf8;
+      border: none;
+      color: #111827;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .car-marker-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer
