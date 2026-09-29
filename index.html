@@ -968,7 +968,7 @@
     </div>
     <div class="header-actions">
       <button class="btn-header" id="btn-toggle-fleet" onclick="toggleFleetDrawer(true)" style="display:none; border-color:#38bdf8; color:#38bdf8;">📋 Flota</button>
-      <button class="btn-header" onclick="toggleHistory(true)">📁 Buzón</button>
+      <button class="btn-header" id="btn-buzon" onclick="toggleHistory(true)">📁 Buzón</button>
     </div>
   </header>
 
@@ -1524,6 +1524,7 @@
         firstPersonMode=isDriver();
         if(btnSos)btnSos.style.display=isDriver()?'flex':'none';
         if(navSearchBar)navSearchBar.style.display=isDriver()?'flex':'none';
+        const btnBuzon = document.getElementById('btn-buzon'); if(btnBuzon) btnBuzon.style.display='block';
         if(btnToggleFleet)btnToggleFleet.style.display=isModulator()?'block':'none';
         if(fleetSummaryBar)fleetSummaryBar.style.display=isModulator()?'flex':'none';
         if(btnUnlockBase)btnUnlockBase.style.display=isModulator()?'flex':'none';
@@ -2017,6 +2018,8 @@ function applyVehicleHistory() {
           } else if (topic === TOPIC_ALERT) {
             const alertData = JSON.parse(text);
             if (alertData.sender !== currentUnit && channelStatus) {
+                let remoteDevId = null; for (const [devId, name] of radioDeviceNames.entries()) { if (name === alertData.sender) { remoteDevId = devId; break; } }
+                if (remoteDevId) { const remoteStream = yadahRemoteStreams.get(remoteDevId); if (!yadahStartRemoteRecording(remoteDevId, remoteStream)) yadahRemotePendingLive.add(remoteDevId); } else { yadahRemotePendingLive.add('__sender__' + alertData.sender); }
               if (alertData.live === true) {
                 channelStatus.className = 'channel-status receiving';
                 channelStatus.textContent = `▼ TRANSMITIENDO: ${alertData.sender}`;
@@ -2028,6 +2031,7 @@ function applyVehicleHistory() {
                     channelStatus.textContent = '● CANAL LIBRE';
                   }
                 }, 5000);
+                for (const [devId, name] of radioDeviceNames.entries()) { if (name === alertData.sender) yadahStopRemoteRecording(devId); } yadahRemotePendingLive.delete('__sender__' + alertData.sender);
               } else if (alertData.live === false) {
                 clearTimeout(window.yadahRemoteTalkTimer);
                 if (!radioTalking) {
@@ -2130,6 +2134,10 @@ function applyVehicleHistory() {
     let radioInitialized = false;
     const radioPeers = new Map();
     const radioCandidateQueues = new Map();
+    const radioDeviceNames = new Map();
+    const yadahRemoteStreams = new Map();
+    const yadahRemoteRecorders = new Map();
+    const yadahRemotePendingLive = new Set();
     const radioAudioElements = new Map();
     let radioAudioUnlocked = false;
 
@@ -2306,6 +2314,7 @@ function applyVehicleHistory() {
 
     async function flushRadioCandidates(targetDevId, pc) {
       const queue = radioCandidateQueues.get(targetDevId) || [];
+      yadahStopRemoteRecording(targetDevId); yadahRemoteStreams.delete(targetDevId); radioDeviceNames.delete(targetDevId);
       radioCandidateQueues.delete(targetDevId);
       for (const candidate of queue) {
         try { await pc.addIceCandidate(candidate); } catch (error) {}
@@ -2319,6 +2328,7 @@ function applyVehicleHistory() {
         if (data.target && data.target !== deviceId) return;
         if (!data.sender || !data.deviceId) return;
 
+        radioDeviceNames.set(targetDevId, data.sender);
         const targetDevId = data.deviceId;
         let pc = radioPeers.get(targetDevId);
 
@@ -2359,6 +2369,47 @@ function applyVehicleHistory() {
       }
     }
 
+    function yadahSaveRadioBlob(sender, startedAt, blob, duration) {
+      try {
+        if (!blob || !blob.size) return;
+        yadahOpenRadioDB().then((db) => {
+          const tx = db.transaction(['recordings'], 'readwrite');
+          tx.objectStore('recordings').add({ sender: sender || 'Radio', timestamp: startedAt || Date.now(), duration: Math.max(0, duration || 0), audio: blob });
+        }).catch((e) => console.warn('No se pudo guardar el audio recibido:', e));
+      } catch (e) { console.warn('No se pudo preparar el audio recibido:', e); }
+    }
+
+    function yadahStartRemoteRecording(targetDevId, stream) {
+      try {
+        if (!window.MediaRecorder || !window.MediaStream || !stream) return false;
+        if (yadahRemoteRecorders.has(targetDevId)) return true;
+        const track = stream.getAudioTracks && stream.getAudioTracks()[0];
+        if (!track || track.readyState === 'ended') return false;
+        const recStream = new MediaStream(); recStream.addTrack(track);
+        let options = {};
+        try { if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) options = { mimeType: 'audio/webm;codecs=opus' }; } catch (e) {}
+        const recorder = new MediaRecorder(recStream, options);
+        const chunks = []; const startedAt = Date.now();
+        const senderName = radioDeviceNames.get(targetDevId) || targetDevId.split('_')[0] || 'Radio';
+        recorder.ondataavailable = (event) => { if (event.data && event.data.size) chunks.push(event.data); };
+        recorder.onerror = (event) => console.warn('Grabación recibida:', event.error || event);
+        recorder.onstop = () => {
+          yadahRemoteRecorders.delete(targetDevId);
+          try { recStream.getTracks().forEach(t => t.stop()); } catch (e) {}
+          const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+          yadahSaveRadioBlob(senderName, startedAt, blob, Date.now() - startedAt);
+        };
+        recorder.start(250); yadahRemoteRecorders.set(targetDevId, recorder); return true;
+      } catch (e) { console.warn('No se pudo iniciar grabación recibida:', e); return false; }
+    }
+
+    function yadahStopRemoteRecording(targetDevId) {
+      yadahRemotePendingLive.delete(targetDevId);
+      const recorder = yadahRemoteRecorders.get(targetDevId);
+      if (!recorder) return;
+      try { if (recorder.state !== 'inactive') recorder.stop(); else yadahRemoteRecorders.delete(targetDevId); } catch (e) { yadahRemoteRecorders.delete(targetDevId); }
+    }
+
     async function createRadioPeer(targetDevId, isInitiator) {
       if (radioPeers.has(targetDevId)) return radioPeers.get(targetDevId);
 
@@ -2376,6 +2427,26 @@ function applyVehicleHistory() {
       pc.ontrack = (event) => {
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
+
+        yadahRemoteStreams.set(targetDevId, stream);
+        const remoteTrack = stream.getAudioTracks && stream.getAudioTracks()[0];
+        if (remoteTrack) {
+          remoteTrack.onended = () => {
+            if (yadahRemoteRecorders.has(targetDevId)) yadahStopRemoteRecording(targetDevId);
+            yadahRemoteStreams.delete(targetDevId);
+          };
+        }
+        if (yadahRemotePendingLive.has(targetDevId)) {
+          yadahRemotePendingLive.delete(targetDevId);
+          yadahStartRemoteRecording(targetDevId, stream);
+        } else {
+          const senderName = radioDeviceNames.get(targetDevId);
+          const senderPendingKey = '__sender__' + senderName;
+          if (senderName && yadahRemotePendingLive.has(senderPendingKey)) {
+            yadahRemotePendingLive.delete(senderPendingKey);
+            yadahStartRemoteRecording(targetDevId, stream);
+          }
+        }
 
         stream.getAudioTracks().forEach(track => {
           track.enabled = true;
