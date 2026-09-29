@@ -2018,9 +2018,6 @@ function applyVehicleHistory() {
             const alertData = JSON.parse(text);
             if (alertData.sender !== currentUnit && channelStatus) {
               if (alertData.live === true) {
-                const peerId = Array.from(radioPeerSenders.entries()).find(([id, sender]) => sender === alertData.sender)?.[0];
-                radioActiveTalkers.add(alertData.sender);
-                if (peerId) startRadioRecording(peerId, alertData.sender);
                 channelStatus.className = 'channel-status receiving';
                 channelStatus.textContent = `▼ TRANSMITIENDO: ${alertData.sender}`;
                 playBeep(660, 0.06);
@@ -2032,9 +2029,6 @@ function applyVehicleHistory() {
                   }
                 }, 5000);
               } else if (alertData.live === false) {
-                const peerId = Array.from(radioPeerSenders.entries()).find(([id, sender]) => sender === alertData.sender)?.[0];
-                radioActiveTalkers.delete(alertData.sender);
-                if (peerId) stopRadioRecording(peerId);
                 clearTimeout(window.yadahRemoteTalkTimer);
                 if (!radioTalking) {
                   channelStatus.className = 'channel-status';
@@ -2137,10 +2131,6 @@ function applyVehicleHistory() {
     const radioPeers = new Map();
     const radioCandidateQueues = new Map();
     const radioAudioElements = new Map();
-    const radioPeerSenders = new Map();
-    const radioRemoteStreams = new Map();
-    const radioActiveTalkers = new Set();
-    const radioRecorders = new Map();
     let radioAudioUnlocked = false;
 
     function unlockRadioAudio() {
@@ -2246,16 +2236,6 @@ function applyVehicleHistory() {
       return attached;
     }
 
-    const RADIO_HISTORY_DB = 'YadahRadioHistoryDB';
-    const RADIO_HISTORY_STORE = 'radio_audio';
-    function openRadioHistoryDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(RADIO_HISTORY_DB,1);req.onupgradeneeded=e=>{const db=e.target.result;if(!db.objectStoreNames.contains(RADIO_HISTORY_STORE)){const s=db.createObjectStore(RADIO_HISTORY_STORE,{keyPath:'id',autoIncrement:true});s.createIndex('timestamp','timestamp');}};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
-    async function saveRadioRecording(sender,blob,startedAt,endedAt){if(!blob||!blob.size)return;try{const db=await openRadioHistoryDB();const tx=db.transaction([RADIO_HISTORY_STORE],'readwrite');tx.objectStore(RADIO_HISTORY_STORE).add({sender:sender||'Desconocido',timestamp:startedAt||Date.now(),startedAt:startedAt||Date.now(),endedAt:endedAt||Date.now(),mimeType:blob.type||'audio/webm',blob});tx.oncomplete=()=>{try{db.close();}catch(e){}};setTimeout(renderHistory,0);}catch(e){console.warn('No se pudo guardar el audio del buzón:',e);}}
-    async function cleanOldRadioRecordings(){try{const db=await openRadioHistoryDB();const cutoff=Date.now()-86400000;const tx=db.transaction([RADIO_HISTORY_STORE],'readwrite');const idx=tx.objectStore(RADIO_HISTORY_STORE).index('timestamp');const req=idx.openCursor(IDBKeyRange.upperBound(cutoff));req.onsuccess=e=>{const c=e.target.result;if(c){c.delete();c.continue();}};tx.oncomplete=()=>{try{db.close();}catch(e){}};}catch(e){}}
-    function startRadioRecording(peerId,sender){const stream=peerId==='__local__'?radioLocalStream:radioRemoteStreams.get(peerId);if(!stream||radioRecorders.has(peerId)||typeof MediaRecorder==='undefined')return;let mimeType='';for(const type of ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus']){try{if(MediaRecorder.isTypeSupported(type)){mimeType=type;break;}}catch(e){}}let recorder;try{recorder=new MediaRecorder(stream,mimeType?{mimeType}:undefined);}catch(e){return;}const chunks=[],startedAt=Date.now();recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};recorder.onstop=()=>{saveRadioRecording(sender,new Blob(chunks,{type:recorder.mimeType||mimeType||'audio/webm'}),startedAt,Date.now());radioRecorders.delete(peerId);};recorder.onerror=()=>radioRecorders.delete(peerId);radioRecorders.set(peerId,recorder);try{recorder.start(250);}catch(e){radioRecorders.delete(peerId);}}
-    function stopRadioRecording(peerId){const r=radioRecorders.get(peerId);if(!r)return;try{if(r.state!=='inactive')r.stop();}catch(e){radioRecorders.delete(peerId);}}
-    function stopAllRadioRecordings(){for(const id of Array.from(radioRecorders.keys()))stopRadioRecording(id);}
-    async function listRadioRecordings(){await cleanOldRadioRecordings();try{const db=await openRadioHistoryDB();return await new Promise(resolve=>{const tx=db.transaction([RADIO_HISTORY_STORE],'readonly');const req=tx.objectStore(RADIO_HISTORY_STORE).getAll();req.onsuccess=()=>resolve((req.result||[]).filter(x=>x.timestamp>Date.now()-86400000).sort((a,b)=>b.timestamp-a.timestamp));req.onerror=()=>resolve([]);tx.oncomplete=()=>{try{db.close();}catch(e){}};});}catch(e){return[];}}
-
     async function startRadioTalking(event) {
       if (event) event.preventDefault();
       if (isDriver() && !gpsPermissionGranted) {
@@ -2285,7 +2265,7 @@ function applyVehicleHistory() {
       await attachRadioTrackToPeers();
       radioLocalTrack.enabled = true;
       radioTalking = true;
-      startRadioRecording("__local__", currentUnit);
+      startRadioRecording();
       if (btnPtt) btnPtt.classList.add('active');
       if (channelStatus) {
         channelStatus.className = 'channel-status transmitting';
@@ -2303,7 +2283,6 @@ function applyVehicleHistory() {
       radioButtonPressed = false;
       radioTalkSession++;
       const wasRadioTalking = radioTalking;
-      if (wasRadioTalking) stopRadioRecording("__local__");
 
       if (radioLocalTrack) radioLocalTrack.enabled = false;
       radioTalking = false;
@@ -2313,6 +2292,7 @@ function applyVehicleHistory() {
         channelStatus.textContent = '● CANAL LIBRE';
       }
       if (!wasRadioTalking) return;
+      stopRadioRecording();
       playBeep(600, 0.04);
       if (mqttClient && mqttClient.connected && currentUnit) {
         mqttClient.publish(TOPIC_ALERT, JSON.stringify({ sender: currentUnit, live: false }));
@@ -2327,9 +2307,6 @@ function applyVehicleHistory() {
     async function flushRadioCandidates(targetDevId, pc) {
       const queue = radioCandidateQueues.get(targetDevId) || [];
       radioCandidateQueues.delete(targetDevId);
-      radioRemoteStreams.delete(targetDevId);
-      radioPeerSenders.delete(targetDevId);
-      stopRadioRecording(targetDevId);
       for (const candidate of queue) {
         try { await pc.addIceCandidate(candidate); } catch (error) {}
       }
@@ -2343,7 +2320,6 @@ function applyVehicleHistory() {
         if (!data.sender || !data.deviceId) return;
 
         const targetDevId = data.deviceId;
-        radioPeerSenders.set(targetDevId, data.sender);
         let pc = radioPeers.get(targetDevId);
 
         if (data.type === 'hello') {
@@ -2400,13 +2376,23 @@ function applyVehicleHistory() {
       pc.ontrack = (event) => {
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
-        radioRemoteStreams.set(targetDevId, stream);
+
+        // Conectamos directamente al altavoz principal #radio-speaker del DOM
         const mainSpeaker = document.getElementById('radio-speaker');
-        if (mainSpeaker) { mainSpeaker.srcObject = stream; mainSpeaker.muted = false; mainSpeaker.volume = 1.0; mainSpeaker.play().catch(() => {}); }
-        const sender = radioPeerSenders.get(targetDevId);
-        if (sender && radioActiveTalkers.has(sender)) startRadioRecording(targetDevId, sender);
-        if (channelStatus && !radioTalking) { channelStatus.className='channel-status receiving'; channelStatus.textContent='▼ RADIO EN VIVO'; }
+        if (mainSpeaker) {
+          mainSpeaker.srcObject = stream;
+        startReceivedRadioRecording(stream, data && data.sender ? data.sender : targetDevId);
+          mainSpeaker.muted = false;
+          mainSpeaker.volume = 1.0;
+          mainSpeaker.play().catch(() => {});
+        }
+
+        if (channelStatus && !radioTalking) {
+          channelStatus.className = 'channel-status receiving';
+          channelStatus.textContent = '▼ RADIO EN VIVO';
+        }
       };
+
       pc.onconnectionstatechange = () => {
         if (['failed', 'closed', 'disconnected'].includes(pc.connectionState)) {
           closeRadioPeer(targetDevId);
@@ -2422,6 +2408,22 @@ function applyVehicleHistory() {
       }
 
       return pc;
+    }
+
+    const receivedRadioRecorders = new Map();
+    function startReceivedRadioRecording(stream, sender) {
+      try {
+        const key = String(sender || 'radio');
+        const old = receivedRadioRecorders.get(key);
+        if (old && old.recorder && old.recorder.state !== 'inactive') return;
+        const tracks = stream.getAudioTracks(); if (!tracks.length) return;
+        const recorder = new MediaRecorder(new MediaStream([tracks[0]]), MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? {mimeType:'audio/webm;codecs=opus'} : {mimeType:'audio/webm'});
+        const chunks=[]; const started=Date.now();
+        recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+        recorder.onstop=async()=>{try{const blob=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});if(!blob.size)return;const database=await openRadioHistoryDB();const tx=database.transaction(RADIO_HISTORY_STORE,'readwrite');tx.objectStore(RADIO_HISTORY_STORE).add({sender:key,timestamp:started,duration:Date.now()-started,mimeType:blob.type,audio:blob});tx.oncomplete=()=>{purgeOldRadioRecordings();renderHistory();};}catch(e){console.warn('No se pudo guardar audio recibido:',e)}};
+        tracks[0].addEventListener('ended',()=>{try{if(recorder.state!=='inactive')recorder.stop()}catch(e){}});
+        recorder.start(250); receivedRadioRecorders.set(key,{recorder,stream});
+      } catch(e){ console.warn('No se pudo grabar radio recibido:',e); }
     }
 
     function closeRadioPeer(targetDevId) {
@@ -2444,7 +2446,6 @@ function applyVehicleHistory() {
     }
 
     function closeAllRadioPeers() {
-      stopAllRadioRecordings();
       for (const targetDevId of Array.from(radioPeers.keys())) closeRadioPeer(targetDevId);
       if (radioLocalStream) {
         radioLocalStream.getTracks().forEach(track => track.stop());
@@ -2501,10 +2502,152 @@ function applyVehicleHistory() {
       });
     }
 
-    async function toggleHistory(show){const modal=document.getElementById('history-modal');if(modal)modal.style.display=show?'flex':'none';if(show)await renderHistory();}
-    async function renderHistory(){const box=document.getElementById('history-list');if(!box)return;const audios=await listRadioRecordings();box.textContent='';if(!audios.length){box.textContent='No hay transmisiones grabadas en las últimas 24 horas.';return;}audios.forEach(item=>{const row=document.createElement('div');row.className='history-item';const info=document.createElement('div');const sender=document.createElement('b');sender.style.color='#38bdf8';sender.textContent=item.sender||'Desconocido';const time=document.createElement('div');time.style.cssText='font-size:0.72rem;color:#94a3b8;';time.textContent=new Date(item.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});info.append(sender,time);const b=document.createElement('button');b.className='btn-play-audio';b.textContent='▶ Reproducir';b.onclick=()=>playAudioByIndex(item.id);row.append(info,b);box.appendChild(row);});}
-    async function playAudioByIndex(id){try{const db=await openRadioHistoryDB();const tx=db.transaction([RADIO_HISTORY_STORE],'readonly');const req=tx.objectStore(RADIO_HISTORY_STORE).get(id);req.onsuccess=()=>{const item=req.result;if(!item||!item.blob)return;const url=URL.createObjectURL(item.blob);const audio=new Audio(url);audio.onended=()=>URL.revokeObjectURL(url);audio.play().catch(()=>{});};}catch(e){alert('No se pudo reproducir la grabación.');}}
-    cleanOldRadioRecordings();
+    let cachedAudios = [];
+    let radioRecorder = null;
+    let radioRecordingChunks = [];
+    let radioRecordingStartedAt = 0;
+    const RADIO_HISTORY_DB = 'YadahRadioHistoryDB';
+    const RADIO_HISTORY_STORE = 'recordings';
+    function getStoredAudios() {
+      try {
+        const stored = JSON.parse(localStorage.getItem('yadah_audio_history') || '[]');
+        cachedAudios = stored.filter(item => item && item.timestamp > Date.now() - 86400000).slice(0, 25);
+      } catch (error) {
+        cachedAudios = [];
+      }
+      return cachedAudios;
+    }
+    function toggleHistory(show) {
+      const modal = document.getElementById('history-modal');
+      if (modal) modal.style.display = show ? 'flex' : 'none';
+      if (show) renderHistory();
+    }
+    function openRadioHistoryDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(RADIO_HISTORY_DB, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(RADIO_HISTORY_STORE)) {
+            const store = db.createObjectStore(RADIO_HISTORY_STORE, { keyPath: 'id', autoIncrement: true });
+            store.createIndex('timestamp', 'timestamp');
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function purgeOldRadioRecordings() {
+      try {
+        const database = await openRadioHistoryDB();
+        const tx = database.transaction(RADIO_HISTORY_STORE, 'readwrite');
+        const store = tx.objectStore(RADIO_HISTORY_STORE);
+        const cutoff = Date.now() - 86400000;
+        const req = store.openCursor();
+        req.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (!cursor) return;
+          if (Number(cursor.value.timestamp || 0) < cutoff) cursor.delete();
+          cursor.continue();
+        };
+      } catch (e) { console.warn('No se pudo limpiar el Buzón:', e); }
+    }
+
+    function startRadioRecording() {
+      try {
+        if (!radioLocalStream) return;
+        const tracks = radioLocalStream.getAudioTracks();
+        if (!tracks.length) return;
+        const stream = new MediaStream([tracks[0]]);
+        const options = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+          ? { mimeType: 'audio/webm;codecs=opus' } : { mimeType: 'audio/webm' };
+        radioRecordingChunks = [];
+        radioRecordingStartedAt = Date.now();
+        radioRecorder = new MediaRecorder(stream, options);
+        radioRecorder.ondataavailable = e => { if (e.data && e.data.size) radioRecordingChunks.push(e.data); };
+        radioRecorder.start(250);
+      } catch (e) {
+        radioRecorder = null;
+        console.warn('No se pudo iniciar la grabación del radio:', e);
+      }
+    }
+
+    function stopRadioRecording() {
+      const recorder = radioRecorder;
+      radioRecorder = null;
+      if (!recorder) return;
+      const chunks = radioRecordingChunks.slice();
+      const startedAt = radioRecordingStartedAt || Date.now();
+      radioRecordingChunks = [];
+      recorder.onstop = async () => {
+        try {
+          const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+          if (!blob.size) return;
+          const database = await openRadioHistoryDB();
+          const tx = database.transaction(RADIO_HISTORY_STORE, 'readwrite');
+          tx.objectStore(RADIO_HISTORY_STORE).add({
+            sender: currentUnit || 'Sin unidad',
+            timestamp: startedAt,
+            duration: Math.max(0, Date.now() - startedAt),
+            mimeType: blob.type,
+            audio: blob
+          });
+          tx.oncomplete = () => { renderHistory(); };
+          tx.onerror = () => { console.warn('No se pudo guardar la grabación del radio.'); };
+        } catch (e) { console.warn('No se pudo guardar la grabación:', e); }
+      };
+      try { if (recorder.state !== 'inactive') recorder.stop(); } catch (e) {}
+    }
+
+    async function getRadioHistoryRecords() {
+      const database = await openRadioHistoryDB();
+      return new Promise((resolve, reject) => {
+        const tx = database.transaction(RADIO_HISTORY_STORE, 'readonly');
+        const req = tx.objectStore(RADIO_HISTORY_STORE).getAll();
+        req.onsuccess = () => resolve((req.result || []).sort((a,b) => Number(b.timestamp||0) - Number(a.timestamp||0)));
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function renderHistory() {
+      const listContainer = document.getElementById('history-list');
+      if (!listContainer) return;
+      await purgeOldRadioRecordings();
+      try {
+        const audios = await getRadioHistoryRecords();
+        listContainer.textContent = '';
+        if (!audios.length) {
+          listContainer.textContent = 'No hay transmisiones registradas.';
+          return;
+        }
+        audios.forEach(item => {
+          const row = document.createElement('div'); row.className = 'history-item';
+          const info = document.createElement('div');
+          const sender = document.createElement('b'); sender.style.color = '#f59e0b'; sender.textContent = item.sender || 'Colega';
+          const time = document.createElement('div'); time.style.cssText='font-size:.72rem;color:#94a3b8;';
+          const d = new Date(item.timestamp); time.textContent=d.toLocaleTimeString('es-SV',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+          info.append(sender,time);
+          const button=document.createElement('button'); button.className='btn-play-audio'; button.textContent='▶ Reproducir';
+          button.onclick=()=>playStoredRadioAudio(item);
+          row.append(info,button); listContainer.appendChild(row);
+        });
+      } catch (e) { listContainer.textContent='No se pudo cargar el Buzón.'; }
+    }
+
+    function playStoredRadioAudio(item) {
+      if (!item || !item.audio) return;
+      try {
+        const url = URL.createObjectURL(item.audio);
+        const audio = new Audio(url);
+        audio.onended = () => URL.revokeObjectURL(url);
+        audio.play().catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
+      } catch (e) { alert('No se pudo reproducir esta transmisión.'); }
+    }
+
+    function playAudioByIndex(index) { renderHistory(); }
+
+    purgeOldRadioRecordings();
+
 
     bindRadioPTT();
 
