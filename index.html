@@ -2377,13 +2377,44 @@ function applyVehicleHistory() {
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
 
-        // Conectamos directamente al altavoz principal #radio-speaker del DOM
+        stream.getAudioTracks().forEach(track => {
+          track.enabled = true;
+        });
+
+        let remoteAudio = radioAudioElements.get(targetDevId);
+        if (!remoteAudio) {
+          remoteAudio = document.createElement('audio');
+          remoteAudio.autoplay = true;
+          remoteAudio.playsInline = true;
+          remoteAudio.controls = false;
+          remoteAudio.muted = false;
+          remoteAudio.volume = 1.0;
+          remoteAudio.style.display = 'none';
+          document.body.appendChild(remoteAudio);
+          radioAudioElements.set(targetDevId, remoteAudio);
+        }
+
+        remoteAudio.srcObject = stream;
+        remoteAudio.muted = false;
+        remoteAudio.volume = 1.0;
+
         const mainSpeaker = document.getElementById('radio-speaker');
         if (mainSpeaker) {
           mainSpeaker.srcObject = stream;
           mainSpeaker.muted = false;
           mainSpeaker.volume = 1.0;
-          mainSpeaker.play().catch(() => {});
+        }
+
+        try {
+          const playResult = remoteAudio.play();
+          if (playResult && typeof playResult.catch === 'function') playResult.catch(() => {});
+        } catch (error) {}
+
+        if (mainSpeaker) {
+          try {
+            const playResult = mainSpeaker.play();
+            if (playResult && typeof playResult.catch === 'function') playResult.catch(() => {});
+          } catch (error) {}
         }
 
         if (channelStatus && !radioTalking) {
@@ -2391,6 +2422,23 @@ function applyVehicleHistory() {
           channelStatus.textContent = '▼ RADIO EN VIVO';
         }
       };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       pc.onconnectionstatechange = () => {
         if (['failed', 'closed', 'disconnected'].includes(pc.connectionState)) {
@@ -3065,3 +3113,4 @@ function applyVehicleHistory() {
   </script>
 </body>
 </html>
+
