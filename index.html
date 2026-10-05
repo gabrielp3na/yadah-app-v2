@@ -4,777 +4,268 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Yadah Radio 3D Flota</title>
-
-  <!-- MapLibre GL JS -->
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
-
-  <!-- MQTT WebSockets -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    body {
-      background-color: #0b0f19;
-      color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      height: 100vh;
-      height: 100dvh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    #login-screen {
-      position: fixed;
-      inset: 0;
-      background: #0b0f19;
-      z-index: 4000;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: 16px;
-    }
-
-    .login-header h1 {
-      color: #38bdf8;
-      font-size: 1.4rem;
-      margin-bottom: 4px;
-    }
-
-    .login-header p {
-      color: #94a3b8;
-      font-size: 0.85rem;
-    }
-
-    .grid-units {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      max-width: 420px;
-      margin: 0 auto;
-      width: 100%;
-      padding-bottom: 30px;
-    }
-
-    .btn-unit-select {
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #f8fafc;
-      padding: 12px 6px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .btn-unit-select.modulador {
-      grid-column: span 2;
-      background: #1e3a8a;
-      border-color: #3b82f6;
-      color: #dbeafe;
-      font-size: 1rem;
-    }
-
-    .btn-unit-select:active {
-      background: #38bdf8;
-      color: #0b0f19;
-    }
-
-    header {
-      background-color: #111827;
-      padding: 8px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #1f2937;
-      z-index: 1000;
-      flex-shrink: 0;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #38bdf8;
-      white-space: nowrap;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      align-items: center;
-    }
-
-    .btn-header {
-      background: #1f2937;
-      border: 1px solid #374151;
-      color: #cbd5e1;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .header-icon-btn {
-      position: relative;
-      width: 42px; height: 38px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center; justify-content: center;
-      font-size: 1.2rem;
-      border-radius: 9px;
-    }
-    .header-icon-btn .header-badge {
-      position: absolute; top: -5px; right: -5px;
-      min-width: 18px; height: 18px; padding: 0 4px;
-      border-radius: 10px; background: #dc2626; color: #fff;
-      font-size: .62rem; font-weight: 900;
-      display: none; align-items: center; justify-content: center;
-      border: 2px solid #111827;
-    }
-    #connected-people-btn .header-badge { background:#0284c7; }
-    #connected-people-panel {
-      position: fixed; top: 58px; right: 10px; z-index: 3600;
-      width: min(280px, calc(100vw - 20px));
-      max-height: 45vh; overflow:auto;
-      background:#0b1220; border:1px solid #38bdf8; border-radius:12px;
-      box-shadow:0 10px 28px rgba(0,0,0,.55); padding:10px; display:none;
-    }
-    #connected-people-panel h3 { margin:0 0 8px; color:#38bdf8; font-size:.82rem; }
-    .connected-person { display:flex; align-items:center; gap:8px; padding:7px 6px; border-bottom:1px solid #1f2937; color:#e2e8f0; font-size:.78rem; }
-    .connected-dot { width:8px; height:8px; border-radius:50%; background:#22c55e; flex:none; }
-    .connected-empty { color:#64748b; font-size:.75rem; padding:8px 4px; }
-
-    #gps-lock-banner {
-      background: #dc2626;
-      color: #ffffff;
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 2200;
-    }
-
-    #map-context-menu {
-      position: absolute;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #111827;
-      border: 2px solid #38bdf8;
-      border-radius: 12px;
-      padding: 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-      z-index: 3200;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.8);
-      width: 270px;
-      text-align: center;
-    }
-
-    .menu-title {
-      font-size: 0.8rem;
-      font-weight: bold;
-      color: #38bdf8;
-      margin-bottom: 2px;
-    }
-
-    .btn-ctx {
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 800;
-      font-size: 0.78rem;
-      cursor: pointer;
-    }
-
-    .btn-ctx-nav { background: #0284c7; color: #ffffff; }
-    .btn-ctx-save { background: #38bdf8; color: #0b0f19; }
-    .btn-ctx-assign { background: #3b82f6; color: #ffffff; }
-    .btn-ctx-cancel { background: #374151; color: #cbd5e1; }
-
-    #fleet-summary-bar {
-      background: #0f172a;
-      border-bottom: 1px solid #334155;
-      padding: 6px 12px;
-      display: none;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.75rem;
-      cursor: pointer;
-      z-index: 999;
-    }
-
-    .badge-stat {
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-    }
-    .badge-stat.online { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
-    .badge-stat.stopped { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-    .badge-stat.offline { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
-    .badge-stat.at-base { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
-
-    #fleet-list-drawer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 320px;
-      height: 100vh;
-      height: 100dvh;
-      background: #111827;
-      border-right: 2px solid #38bdf8;
-      z-index: 3500;
-      display: none;
-      flex-direction: column;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.8);
-    }
-
-    .drawer-header {
-      padding: 14px;
-      background: #030712;
-      border-bottom: 1px solid #1f2937;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #38bdf8;
-      font-weight: 800;
-      font-size: 0.95rem;
-    }
-
-    .fleet-items-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .unit-card-row {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .unit-card-row:active { background: #334155; }
-
-    .unit-card-info b { font-size: 0.85rem; color: #f8fafc; }
-    .unit-card-info div { font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
-
-    #map-container {
-      flex: 1;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      background-color: #0f172a;
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-    }
-
-    .map-night-mode .maplibregl-canvas {
-      filter: invert(90%) hue-rotate(180deg) brightness(85%) contrast(110%);
-    }
-
-    #nav-search-bar {
-      position: absolute;
-      top: 10px;
-      left: 12px;
-      right: 12px;
-      z-index: 2400;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      max-width: 400px;
-    }
-
-    .search-input-box {
-      display: flex;
-      background: #111827;
-      border: 2px solid #38bdf8;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-    }
-
-    .mobile-search-toggle {
-      display: none;
-    }
-
-    .search-close {
-      display: none;
-      background: #1f2937;
-      border: none;
-      color: #f8fafc;
-      font-weight: 800;
-      padding: 0 12px;
-      cursor: pointer;
-    }
-
-    .search-input-box input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 10px 12px;
-      color: #f8fafc;
-      font-size: 0.85rem;
-      outline: none;
-    }
-
-    .search-input-box button {
-      background: #38bdf8;
-      border: none;
-      color: #0b0f19;
-      font-weight: 800;
-      padding: 0 14px;
-      cursor: pointer;
-    }
-
-    #search-suggestions {
-      background: #111827;
-      border: 1px solid #38bdf8;
-      border-radius: 8px;
-      max-height: 220px;
-      overflow-y: auto;
-      display: none;
-      flex-direction: column;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.8);
-      margin-top: 2px;
-    }
-
-    .suggestion-item {
-      padding: 10px 12px;
-      font-size: 0.78rem;
-      color: #e2e8f0;
-      border-bottom: 1px solid #1f2937;
-      cursor: pointer;
-    }
-    .suggestion-item:hover, .suggestion-item:active {
-      background: #1e3a8a;
-      color: #ffffff;
-    }
-
-    .nav-route-info {
-      background: #030712;
-      border: 1px solid #38bdf8;
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: none;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.78rem;
-      color: #38bdf8;
-      font-weight: 700;
-      margin-top: 4px;
-    }
-
-    .nav-route-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-nav-action {
-      flex: 1;
-      padding: 6px;
-      border-radius: 6px;
-      border: none;
-      font-weight: 800;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-
-    .btn-nav-start { background: #0284c7; color: #ffffff; }
-    .btn-nav-cancel { background: #ef4444; color: #ffffff; }
-
-    .map-floating-controls {
-      position: absolute;
-      top: 65px;
-      right: 12px;
-      z-index: 2500;
-    }
-
-    .map-menu-button {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: #111827;
-      border: 2px solid #38bdf8;
-      color: #f8fafc;
-      font-size: 1.45rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.65);
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-
-    .map-menu-button.active {
-      background: #38bdf8;
-      color: #07111f;
-    }
-
-    .map-options-menu {
-      position: absolute;
-      top: 56px;
-      right: 0;
-      width: 210px;
-      background: rgba(17,24,39,0.98);
-      border: 1px solid #334155;
-      border-radius: 14px;
-      padding: 7px;
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.7);
-      backdrop-filter: blur(8px);
-    }
-
-    .map-options-menu.open { display: flex; }
-
-    .map-option {
-      width: 100%;
-      min-height: 42px;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      background: #0f172a;
-      color: #e2e8f0;
-      padding: 9px 11px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: left;
-      touch-action: manipulation;
-    }
-
-    .map-option:active { background: #1e293b; }
-    .map-option.danger { color: #fecaca; border-color: #7f1d1d; }
-    .map-option .option-icon { width: 24px; text-align: center; font-size: 1.05rem; }
-
-    .map-options-menu .btn-float-action {
-      width: 100%;
-      height: 42px;
-      border-radius: 10px;
-      border: 1px solid #334155;
-      background: #0f172a;
-      color: #e2e8f0;
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 10px;
-      padding: 9px 11px;
-      box-shadow: none;
-      text-align: left;
-    }
-
-    .map-options-menu .btn-float-action.active {
-      background: #164e63;
-      color: #bae6fd;
-      border-color: #38bdf8;
-    }
-
-    .map-options-menu .btn-float-action.btn-float-exit {
-      background: #2a1115;
-      border-color: #7f1d1d;
-      color: #fecaca;
-    }
-
-    .map-options-menu .btn-float-action.unlocked {
-      background: #064e3b;
-      border-color: #38bdf8;
-      color: #d1fae5;
-      animation: none;
-    }
-
-    .btn-sos {
-      position: absolute;
-      bottom: 20px;
-      left: 14px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: #dc2626;
-      border: 3px solid #f87171;
-      color: #ffffff;
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.7);
-      cursor: pointer;
-      z-index: 2500;
-      touch-action: manipulation;
-    }
-
-    .btn-sos.active { animation: pulse-sos 0.7s infinite alternate; }
-
-    @keyframes pulse-sos {
-      from { transform: scale(1); background: #dc2626; }
-      to { transform: scale(1.15); background: #991b1b; }
-    }
-
-    @keyframes pulse-base {
-      from { transform: scale(1); filter: drop-shadow(0 0 4px #38bdf8); }
-      to { transform: scale(1.12); filter: drop-shadow(0 0 14px #38bdf8); }
-    }
-
-    .base-active-glow {
-      animation: pulse-base 0.9s infinite alternate;
-    }
-
-    #sos-alert-banner {
-      position: absolute;
-      top: 10px;
-      left: 12px;
-      right: 65px;
-      background: #dc2626;
-      border: 2px solid #fecaca;
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      color: #ffffff;
-      font-weight: 800;
-      font-size: 0.85rem;
-      z-index: 3000;
-      box-shadow: 0 4px 15px rgba(220,38,38,0.8);
-      animation: pulse-sos 0.8s infinite alternate;
-    }
-
-    .controls-panel {
-      background-color: #111827;
-      padding: 10px 14px;
-      padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      border-top: 1px solid #1f2937;
-      z-index: 1000;
-      flex-shrink: 0;
-    }
-
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.72rem;
-      color: #94a3b8;
-    }
-
-    .status-active { color: #38bdf8; font-weight: 600; }
-    .status-warning { color: #ef4444; font-weight: 700; }
-
-    .channel-status {
-      background-color: #030712;
-      text-align: center;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: #94a3b8;
-      border: 1px solid #1f2937;
-    }
-
-    .channel-status.transmitting {
-      background-color: #dc2626;
-      color: #ffffff;
-      border-color: #ef4444;
-      animation: pulse 0.8s infinite alternate;
-    }
-
-    .channel-status.receiving {
-      background-color: #0284c7;
-      color: #ffffff;
-      border-color: #38bdf8;
-    }
-
-    .channel-status.blocked {
-      background-color: #450a0a;
-      color: #fca5a5;
-      border-color: #dc2626;
-    }
-
-    @keyframes pulse { from { opacity: 0.8; } to { opacity: 1; } }
-
-    .btn-ptt {
-      width: 100%;
-      height: 54px;
-      background-color: #030712;
-      border: 2px solid #38bdf8;
-      border-radius: 12px;
-      color: #38bdf8;
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-      touch-action: none;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+    body { background-color: #0b0f19; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+    #login-screen { position: fixed; inset: 0; background: #0b0f19; z-index: 4000; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
+    .login-header { text-align: center; margin-bottom: 16px; }
+    .login-header h1 { color: #38bdf8; font-size: 1.4rem; margin-bottom: 4px; }
+    .login-header p { color: #94a3b8; font-size: 0.85rem; }
+    .grid-units { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 420px; margin: 0 auto; width: 100%; padding-bottom: 30px; }
+    .btn-unit-select { background: #1e293b; border: 1px solid #334155; color: #f8fafc; padding: 12px 6px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .btn-unit-select.modulador { grid-column: span 2; background: #1e3a8a; border-color: #3b82f6; color: #dbeafe; font-size: 1rem; }
+    header { background-color: #111827; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; z-index: 1000; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 6px; font-size: 0.95rem; font-weight: 700; color: #38bdf8; white-space: nowrap; }
+    .header-actions { display: flex; gap: 6px; overflow-x: auto; align-items: center; }
+    .btn-header { background: #1f2937; border: 1px solid #374151; color: #cbd5e1; padding: 6px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .header-icon-btn { position: relative; width: 42px; height: 38px; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; border-radius: 9px; }
+    .header-icon-btn .header-badge { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 10px; background: #dc2626; color: #fff; font-size: .62rem; font-weight: 900; display: none; align-items: center; justify-content: center; border: 2px solid #111827; }
+    #map-container { flex: 1; width: 100%; position: relative; overflow: hidden; background-color: #0f172a; }
+    #map { width: 100%; height: 100%; }
+    .controls-panel { background-color: #111827; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #1f2937; z-index: 1000; flex-shrink: 0; }
+    .status-bar { display: flex; justify-content: space-between; font-size: 0.72rem; color: #94a3b8; }
+    .channel-status { background-color: #030712; text-align: center; padding: 6px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; color: #94a3b8; border: 1px solid #1f2937; }
+    .channel-status.transmitting { background-color: #dc2626; color: #ffffff; }
+    .btn-ptt { width: 100%; height: 54px; background-color: #030712; border: 2px solid #38bdf8; border-radius: 12px; color: #38bdf8; font-size: 1rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; touch-action: none; }
     .btn-ptt.active { background-color: #38bdf8; color: #0b0f19; }
+    #history-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 3500; display: none; align-items: flex-end; }
+    .history-card { width: 100%; background: #111827; border-top: 2px solid #38bdf8; border-radius: 16px 16px 0 0; padding: 16px; max-height: 65vh; display: flex; flex-direction: column; gap: 12px; }
+    .history-head { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #38bdf8; }
+    .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-bottom: 20px; }
+    .history-item { background: #1e293b; padding: 10px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; border: 1px solid #334155; }
+    .btn-play-audio { background: #38bdf8; border: none; color: #111827; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .car-marker-container { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+    .car-badge { background: #030712; border: 1px solid #38bdf8; color: #f8fafc; font-size: 0.68rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-bottom: 2px; text-align: center; }
+    .car-badge.base-station { border-color: #38bdf8; background: #0f172a; }
+    .car-svg-rotator { width: 44px; height: 44px; }
+    .base-icon { font-size: 1.8rem; }
+  </style>
+</head>
+<body>
+  <audio id="radio-speaker" autoplay playsinline controls style="display:none;"></audio>
+  <div id="login-screen">
+    <div class="login-header"><h1>📻 Yadah Radio Flota</h1><p>Selecciona tu terminal de despacho</p></div>
+    <div class="grid-units">
+      <button class="btn-unit-select modulador" onclick="selectUnit('Modulador')"><span>🏢</span> Modulador / Base Central</button>
+      <button class="btn-unit-select" onclick="selectUnit('Móvil 01')"><span>🚘</span> Móvil 01</button>
+      <button class="btn-unit-select" onclick="selectUnit('Móvil 02')"><span>🚘</span> Móvil 02</button>
+    </div>
+  </div>
+  <header>
+    <div class="brand"><span>📻</span> Yadah PTT</div>
+    <div class="header-actions">
+      <button class="btn-header header-icon-btn" id="message-inbox-btn" type="button" onclick="toggleHistory(true)">💬<span class="header-badge" id="missed-message-count">0</span></button>
+    </div>
+  </header>
+  <div id="map-container"><div id="map"></div></div>
+  <div class="controls-panel">
+    <div class="channel-status" id="channel-status">● CANAL LIBRE</div>
+    <button class="btn-ptt" id="btn-ptt"><span>🎙️</span> PULSAR PARA HABLAR</button>
+  </div>
+  <div id="history-modal" onclick="toggleHistory(false)">
+    <div class="history-card" onclick="event.stopPropagation()">
+      <div class="history-head"><span>Buzón Compartido</span><span style="cursor:pointer;" onclick="toggleHistory(false)">✕</span></div>
+      <div class="history-list" id="history-list"><p style="color:#64748b;">No hay transmisiones.</p></div>
+    </div>
+  </div>  <script>
+    let currentUnit = localStorage.getItem('yadah_terminal_id');
+    const loginScreen = document.getElementById('login-screen');
+    const channelStatus = document.getElementById('channel-status');
+    const radioSpeaker = document.getElementById('radio-speaker');
+    const btnPtt = document.getElementById('btn-ptt');
 
-    .btn-ptt.gps-disabled {
-      background-color: #1e293b !important;
-      border-color: #475569 !important;
-      color: #64748b !important;
-      cursor: not-allowed !important;
-      opacity: 0.65;
+    function checkAuth() {
+      if (currentUnit) {
+        if (loginScreen) loginScreen.style.display = 'none';
+        connectNetwork();
+        initializeRadio();
+      } else {
+        if (loginScreen) loginScreen.style.display = 'flex';
+      }
     }
 
-    #history-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 3500;
-      display: none;
-      align-items: flex-end;
+    function selectUnit(id) {
+      currentUnit = id;
+      localStorage.setItem('yadah_terminal_id', id);
+      checkAuth();
     }
 
-    .history-card {
-      width: 100%;
-      background: #111827;
-      border-top: 2px solid #38bdf8;
-      border-radius: 16px 16px 0 0;
-      padding: 16px;
-      max-height: 65vh;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    let audioCtx = null;
+    function playBeep(freq = 880, duration = 0.08) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.frequency.value = freq; gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.start(); osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
     }
 
-    .history-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-      color: #38bdf8;
+    const defaultBaseCoords = [-89.356200, 13.724208];
+    const map = new maplibregl.Map({
+      container: 'map',
+      style: {
+        version: 8,
+        sources: { 'google-base': { type: 'raster', tiles: ['https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'], tileSize: 256 } },
+        layers: [{ id: 'google-base-layer', type: 'raster', source: 'google-base', minzoom: 0, maxzoom: 22 }]
+      },
+      center: defaultBaseCoords, zoom: 16.5
+    });
+
+    let mqttClient = null;
+    const TOPIC_VOICE_MESSAGE = 'yadah/radio/flota/voice_message';
+    const RADIO_SIGNAL_TOPIC = 'yadah/radio/webrtc/signaling/v10';
+    const ROOM_NAME = 'yadah-radio-flota-3d';
+    const STUN_SERVERS = [{ urls: 'stun:stun.l.google.com:19302' }];
+    let deviceId = `${currentUnit || 'guest'}_${Math.random().toString(16).slice(2, 10)}`;
+    let radioLocalStream = null;
+    let radioLocalTrack = null;
+    let radioTalking = false;
+    let radioInitialized = false;
+    const radioPeers = new Map();
+
+    function initializeRadio() {
+      if (radioInitialized || !mqttClient || !mqttClient.connected || !currentUnit) return;
+      radioInitialized = true;
+      mqttClient.subscribe(RADIO_SIGNAL_TOPIC);
+      sendRadioSignal({ type: 'hello' });
     }
 
-    .message-composer { background:#0b1220; border:1px solid #334155; border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:8px; }
-    .message-recipient-row { display:flex; gap:7px; align-items:center; }
-    .message-recipient { flex:1; background:#111827; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:8px 10px; }
-    .message-text-row { display:flex; gap:7px; align-items:flex-end; }
-    .message-text { flex:1; min-height:42px; max-height:110px; resize:vertical; background:#030712; color:#fff; border:1px solid #334155; border-radius:8px; padding:9px 10px; font:inherit; outline:none; }
-    .message-tool-btn,.message-send-btn { border:1px solid #38bdf8; border-radius:8px; min-width:44px; height:42px; cursor:pointer; font-weight:800; }
-    .message-tool-btn { background:#1e293b; color:#e2e8f0; font-size:1.1rem; }
-    .message-send-btn { background:#38bdf8; color:#07111f; padding:0 13px; }
-    .message-photo-preview { display:none; align-items:center; gap:8px; background:#111827; border:1px solid #334155; border-radius:8px; padding:6px; }
-    .message-photo-preview img { width:48px; height:48px; object-fit:cover; border-radius:6px; }
-    .message-photo-name { flex:1; font-size:.72rem; color:#cbd5e1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .message-clear-photo { background:#374151; color:#fff; border:0; border-radius:6px; padding:6px 8px; cursor:pointer; }
-    .history-message { align-items:flex-start; }
-    .history-message-body { flex:1; min-width:0; }
-    .history-message-text { color:#f8fafc; white-space:pre-wrap; word-break:break-word; margin-top:4px; }
-    .history-message-photo { max-width:min(230px,65vw); max-height:230px; border-radius:9px; margin-top:7px; display:block; cursor:pointer; }
-    .history-message-type { font-size:.64rem; color:#38bdf8; margin-left:6px; }
-
-    .history-list {
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-bottom: 20px;
+    function sendRadioSignal(data) {
+      if (!mqttClient || !mqttClient.connected || !currentUnit) return;
+      mqttClient.publish(RADIO_SIGNAL_TOPIC, JSON.stringify({ room: ROOM_NAME, sender: currentUnit, deviceId, timestamp: Date.now(), ...data }));
     }
 
-    .history-item {
-      background: #1e293b;
-      padding: 10px 12px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.82rem;
-      border: 1px solid #334155;
+    async function getRadioMicrophone() {
+      if (radioLocalTrack && radioLocalTrack.readyState === 'live') { radioLocalTrack.enabled = true; return true; }
+      try {
+        radioLocalStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+        radioLocalTrack = radioLocalStream.getAudioTracks()[0] || null;
+        if (!radioLocalTrack) return false;
+        radioLocalTrack.enabled = true;
+        return true;
+      } catch (e) { return false; }
     }
 
-    .btn-play-audio {
-      background: #38bdf8;
-      border: none;
-      color: #111827;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
+    async function startRadioTalking(e) {
+      if (e) e.preventDefault();
+      if (radioTalking) return;
+      const ok = await getRadioMicrophone();
+      if (!ok) return;
+      radioTalking = true;
+      startRadioRecording();
+      if (btnPtt) btnPtt.classList.add('active');
+      if (channelStatus) { channelStatus.className = 'channel-status transmitting'; channelStatus.textContent = '▲ TRANSMITIENDO EN VIVO...'; }
+      playBeep(920, 0.04);
     }
 
-    .car-marker-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
+    function stopRadioTalking(e) {
+      if (e) e.preventDefault();
+      if (!radioTalking) return;
+      radioTalking = false;
+      if (radioLocalTrack) radioLocalTrack.enabled = false;
+      if (btnPtt) btnPtt.classList.remove('active');
+      if (channelStatus) { channelStatus.className = 'channel-status'; channelStatus.textContent = '● CANAL LIBRE'; }
+      stopRadioRecording();
+      playBeep(600, 0.04);
+    }
+  </script>  <script>
+    const STORAGE_BUZON = 'yadah_shared_voice_inbox_v1';
+    let radioRecorder = null; let radioRecordingChunks = [];
+
+    function startRadioRecording() {
+      try {
+        if (!radioLocalStream) return;
+        radioRecordingChunks = [];
+        radioRecorder = new MediaRecorder(new MediaStream([radioLocalStream.getAudioTracks()[0]]));
+        radioRecorder.ondataavailable = e => { if (e.data && e.data.size) radioRecordingChunks.push(e.data); };
+        radioRecorder.start(250);
+      } catch (e) { radioRecorder = null; }
     }
 
-    .car-marker-container.sos-active .car-badge {
-      background: #dc2626 !important;
-      border-color: #ffffff !important;
-      animation: pulse-sos 0.5s infinite alternate;
+    function stopRadioRecording() {
+      if (!radioRecorder) return;
+      const rec = radioRecorder; radioRecorder = null;
+      const chunks = radioRecordingChunks;
+      rec.onstop = () => {
+        try {
+          const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' });
+          if (!blob.size) return;
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const item = { id: 'v_' + Date.now() + '_' + Math.random().toString(16).slice(2), sender: currentUnit, timestamp: Date.now(), audioBase64: reader.result, mimeType: blob.type };
+            saveBuzonItem(item);
+            renderHistory();
+            if (mqttClient && mqttClient.connected) mqttClient.publish(TOPIC_VOICE_MESSAGE, JSON.stringify(item));
+          };
+          reader.readAsDataURL(blob);
+        } catch (e) {}
+      };
+      try { rec.stop(); } catch(e){}
     }
 
-    .car-badge {
-      background: #030712;
-      border: 1px solid #38bdf8;
-      color: #f8fafc;
-      font-size: 0.68rem;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-bottom: 2px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.6);
-      white-space: nowrap;
-      text-align: center;
+    function saveBuzonItem(item) {
+      try {
+        let list = JSON.parse(localStorage.getItem(STORAGE_BUZON) || '[]');
+        if (!list.some(x => x.id === item.id)) {
+          list.unshift(item);
+          if (list.length > 30) list = list.slice(0, 30);
+          localStorage.setItem(STORAGE_BUZON, JSON.stringify(list));
+        }
+      } catch(e){}
     }
 
-    .car-badge.base-station {
-      border-color: #38bdf8;
-      background: #0f172a;
+    function receiveSharedVoiceMessage(data) {
+      if (!data || !data.sender || data.sender === currentUnit || !data.audioBase64) return;
+      saveBuzonItem(data);
+      const modal = document.getElementById('history-modal');
+      if (modal && modal.style.display === 'flex') renderHistory();
     }
 
-    .car-badge.custom-poi {
-      border-color: #38bdf8;
-      background: #082f49;
-      color: #38bdf8;
+    function toggleHistory(show) {
+      const modal = document.getElementById('history-modal');
+      if (modal) modal.style.display = show ? 'flex' : 'none';
+      if (show) renderHistory();
     }
 
-    .car-svg-
+    function renderHistory() {
+      const list = document.getElementById('history-list');
+      if (!list) return;
+      try {
+        const items = JSON.parse(localStorage.getItem(STORAGE_BUZON) || '[]');
+        list.innerHTML = items.length ? items.map(i => `<div class="history-item"><div><b>${i.sender}</b><div style="font-size:0.7rem;color:#94a3b8;">${new Date(i.timestamp).toLocaleTimeString()}</div></div><button class="btn-play-audio" onclick="playBase64Audio('${i.audioBase64}')">▶ Reproducir</button></div>`).join('') : '<p style="color:#64748b; font-size:0.85rem;">No hay transmisiones.</p>';
+      } catch(e) { list.textContent = 'No se pudo cargar el Buzón.'; }
+    }
+
+    function playBase64Audio(b64) { try { new Audio(b64).play().catch(()=>{}); } catch(e){} }
+
+    function connectNetwork() {
+      if (mqttClient && mqttClient.connected) return;
+      mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', { clientId: 'yadah_' + Math.random().toString(16).substring(2, 9), clean: true });
+      mqttClient.on('connect', () => {
+        mqttClient.subscribe([TOPIC_VOICE_MESSAGE, RADIO_SIGNAL_TOPIC]);
+        initializeRadio();
+      });
+      mqttClient.on('message', (top, msg) => {
+        try {
+          const text = msg.toString();
+          if (top === TOPIC_VOICE_MESSAGE) receiveSharedVoiceMessage(JSON.parse(text));
+        } catch(e){}
+      });
+    }
+
+    if (btnPtt) {
+      btnPtt.addEventListener('pointerdown', startRadioTalking);
+      btnPtt.addEventListener('pointerup', stopRadioTalking);
+      btnPtt.addEventListener('pointercancel', stopRadioTalking);
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>
