@@ -1484,7 +1484,7 @@
               const newName = prompt("Nuevo nombre para el punto:", poi.name);
               if (newName && newName.trim()) { poi.name = newName.trim(); saveAllPOIs(getCustomPOIs(), true); alert("✅ Nombre actualizado para todos."); }
             } else if (action === "2") {
-              if (myLastCoords) { poi.lon = myLastCoords.lon; poi.lat = myLastCoords.lat; saveAllPOIs(getCustomPOIs(), true); alert("✅ Ubicación corregida para todos."); } else { alert("⚠️ No hay señal GPS disponible."); }
+              if (myLastCoords) { poi.lon = myLastCoords.lon; poi.lat = myLastCoords.lat; saveAllPOIs(getCustomPOIs(), true); alert("✅ Ubicación corregida para todos."); } else { alert("⚠️️ No hay señal GPS disponible."); }
             } else if (action === "3") {
               if (confirm(`¿Estás seguro de eliminar el punto "${poi.name}" para toda la flota?`)) {
                 const updated = getCustomPOIs().filter(p => p.id !== poi.id);
@@ -2947,6 +2947,8 @@ function applyVehicleHistory() {
     }
 
     bindRadioPTT();
+
+    if (!trackingUnit) checkAuth();
   </script>
 
   <script>
