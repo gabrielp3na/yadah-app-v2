@@ -2291,8 +2291,6 @@ function applyVehicleHistory() {
                 channelStatus.className = 'channel-status receiving';
                 channelStatus.textContent = `▼ TRANSMITIENDO: ${alertData.sender}`;
                 playBeep(660, 0.06);
-                const stream = activeRadioStreams.get(alertData.sender);
-                if (stream) startReceivedRadioRecording(stream, alertData.sender);
                 clearTimeout(window.yadahRemoteTalkTimer);
                 window.yadahRemoteTalkTimer = setTimeout(() => {
                   if (channelStatus && !radioTalking) {
@@ -2301,7 +2299,6 @@ function applyVehicleHistory() {
                   }
                 }, 5000);
               } else if (alertData.live === false) {
-                stopReceivedRadioRecording(alertData.sender);
                 clearTimeout(window.yadahRemoteTalkTimer);
                 if (!radioTalking) {
                   channelStatus.className = 'channel-status';
