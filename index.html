@@ -1077,9 +1077,23 @@
   </div>
 
   <script>
-      localStorage.removeItem('yadah_terminal_id');
+    // YADAH SESSION PERSISTENTE
+    // El perfil solo se cierra mediante logoutUnit(). Refrescar la página no lo cierra.
+    function yadahGetTerminalId() {
+      try { return localStorage.getItem('yadah_terminal_id') || null; } catch (e) { return null; }
     }
+    function yadahSaveTerminalId(id) {
+      try { localStorage.setItem('yadah_terminal_id', id); } catch (e) {}
+    }
+    function yadahClearTerminalId() {
+      try { localStorage.removeItem('yadah_terminal_id'); } catch (e) {}
+    }
+
+
+
+
     const urlParams = new URLSearchParams(window.location.search);
+    const trackingUnit = urlParams.get('track');
 
     if (trackingUnit) {
       document.getElementById('login-screen').style.display = 'none';
@@ -1346,7 +1360,7 @@
       });
     }
 
-    let currentUnit = localStorage.getItem('yadah_terminal_id');
+    let currentUnit = yadahGetTerminalId();
     const isDriver = () => currentUnit && currentUnit !== 'Modulador' && currentUnit !== 'Clientes';
     const isClientQueue = () => currentUnit === 'Clientes';
     const isModulator = () => currentUnit === 'Modulador';
@@ -1538,7 +1552,7 @@
       currentUnit = id;
       deviceId = `${currentUnit}_${Math.random().toString(16).slice(2, 10)}_${Date.now().toString(16)}`;
       radioInitialized = false;
-      localStorage.setItem('yadah_terminal_id', id);
+      yadahSaveTerminalId(id);
       checkAuth(); unlockAudioHardware();
     }
 
@@ -1550,7 +1564,7 @@
         mqttClient.end(true); mqttClient = null;
       }
       Object.keys(fleetMarkers).forEach(k => { if (k !== 'BASE_PERMANENTE') { fleetMarkers[k].marker.remove(); delete fleetMarkers[k]; } });
-      localStorage.removeItem('yadah_terminal_id'); currentUnit = null; 
+      yadahClearTerminalId(); currentUnit = null; 
       if(document.getElementById('client-queue-screen'))document.getElementById('client-queue-screen').style.display='none'; 
       if(document.querySelector('header'))document.querySelector('header').style.display=''; 
       if(mapContainer)mapContainer.style.display=''; 
