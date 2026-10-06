@@ -921,7 +921,7 @@
     #yadah-career-modal{position:fixed;inset:0;z-index:3900;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center}
     .yc-modal-card{width:min(520px,100%);background:#111827;border-top:2px solid #38bdf8;border-radius:16px 16px 0 0;padding:16px;max-height:82vh;overflow:auto}
     .yc-modal-title{display:flex;justify-content:space-between;align-items:center;color:#38bdf8;font-weight:900;font-size:.98rem;margin-bottom:10px}.yc-close{cursor:pointer;color:#94a3b8;font-size:1.2rem}
-    .yc-input-row{display:flex;gap:8px;align-items:stretch}.yc-input{width:100%;padding:11px 12px;background:#030712;color:#fff;border:1px solid #334155;border-radius:8px;outline:none;font-size:.9rem;min-width:0}.yc-mic{width:48px;min-width:48px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#e2e8f0;font-size:1.25rem;cursor:pointer}.yc-mic.active{background:#dc2626;border-color:#f87171;animation:ycMicPulse 1s infinite}.yc-mic.unsupported{opacity:.45}.yc-label{font-size:.72rem;color:#94a3b8;margin:8px 0 5px;display:block}.yc-voice-status{font-size:.68rem;color:#38bdf8;min-height:16px;margin-top:5px}.yc-actions{display:flex;gap:8px;margin-top:12px}.yc-actions button{flex:1;padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.yc-submit{background:#0891b2;color:#fff}.yc-secondary{background:#374151;color:#e2e8f0}@keyframes ycMicPulse{50%{transform:scale(1.04)}}
+    .yc-input-row{display:flex;gap:8px;align-items:stretch}.yc-input{width:100%;padding:11px 12px;background:#030712;color:#fff;border:1px solid #334155;border-radius:8px;outline:none;font-size:.9rem;min-width:0}.yc-mic{width:48px;min-width:48px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#e2e8f0;font-size:1.25rem;cursor:pointer}.yc-mic.active{background:#dc2626;border-color:#f87171;animation:ycMicPulse 1s infinite}.yc-mic.unsupported{opacity:.45}.yc-label{font-size:.72rem;color:#94a3b8;margin:8px 0 5px;display:block}.yc-voice-status{font-size:.68rem;color:#38bdf8;min-height:16px;margin-top:5px}.yc-actions{display:flex;gap:8px;margin-top:12px}.yc-actions button{flex:1;padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.yc-submit{background:#0284c7;color:#fff}.yc-secondary{background:#374151;color:#e2e8f0}@keyframes ycMicPulse{50%{transform:scale(1.04)}}
     #yadah-career-history-list{display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow:auto}.yc-history-item{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 10px}.yc-history-main{font-size:.82rem;font-weight:800;color:#fff}.yc-history-meta{font-size:.68rem;color:#94a3b8;margin-top:3px}
     .yc-empty{color:#64748b;font-size:.8rem;text-align:center;padding:14px}
     #yadah-career-tab{position:fixed;right:0;top:var(--career-tab-top,50%);transform:translateY(-50%);z-index:3927;width:48px;min-height:112px;border:1px solid #22d3ee;border-radius:12px 0 0 12px;background:rgba(5,7,11,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;box-shadow:-4px 4px 12px rgba(0,0,0,.45);font-weight:900;cursor:pointer;touch-action:none;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px 4px;transition:right .25s ease} #yadah-career-tab.open{right:min(320px,86vw);background:rgba(5,7,11,.48)} #yadah-career-tab-count{min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center} #yadah-career-tab-arrow{font-size:30px;line-height:.8} .yadah-career-tab-label{font-size:.62rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px} @media(max-width:799px){#yadah-career-stack{max-height:42vh;padding:7px}} @media(min-width:800px){#yadah-career-fab{right:18px;bottom:102px}}
@@ -1149,7 +1149,7 @@
       <div class="yc-modal-title"><span id="yc-modal-title">🚕 Nueva carrera</span><span class="yc-close" id="yc-close">✕</span></div>
       <div id="yc-form-view">
         <label class="yc-label" for="yc-place-input">¿Dónde quieren el carro?</label>
-        <div class="yc-input-row"><input class="yc-input" id="yc-place-input" maxlength="120" autocomplete="off" placeholder="Ej.: Tabernáculo de las Conchitas"><button class="yc-mic" id="yc-mic" type="button" title="Hablar carrera" aria-label="Hablar carrera">🎙️️</button></div><div class="yc-voice-status" id="yc-voice-status" aria-live="polite"></div>
+        <div class="yc-input-row"><input class="yc-input" id="yc-place-input" maxlength="120" autocomplete="off" placeholder="Ej.: Tabernáculo de las Conchitas"><button class="yc-mic" id="yc-mic" type="button" title="Hablar carrera" aria-label="Hablar carrera">🎙️</button></div><div class="yc-voice-status" id="yc-voice-status" aria-live="polite"></div>
         <div class="yc-actions"><button class="yc-secondary" id="yc-cancel">Cancelar</button><button class="yc-submit" id="yc-create">Crear carrera</button></div>
       </div>
       <div id="yc-history-view" style="display:none">
@@ -2948,8 +2948,11 @@ function applyVehicleHistory() {
 
     bindRadioPTT();
 
+    // Verificación automática de sesión guardada al refrescar
     if (currentUnit) {
       checkAuth();
+    } else {
+      if (loginScreen) loginScreen.style.display = 'flex';
     }
   </script>
 
@@ -3082,7 +3085,7 @@ function applyVehicleHistory() {
       const input=$('yc-place-input');
       ycRecognition=new SR();
       ycRecognition.lang='es-SV'; ycRecognition.continuous=true; ycRecognition.interimResults=true; ycRecognition.maxAlternatives=1;
-      ycListening=true; $('yc-mic')?.classList.add('active'); setVoiceStatus('🎙️️ Escuchando… di el lugar y termina diciendo “cambio”.');
+      ycListening=true; $('yc-mic')?.classList.add('active'); setVoiceStatus('🎙️ Escuchando… di el lugar y termina diciendo “cambio”.');
       ycRecognition.onresult=(event)=>{
         let finalText=''; let interim='';
         for(let i=event.resultIndex;i<event.results.length;i++){
