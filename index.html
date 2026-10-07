@@ -98,8 +98,6 @@
     }
 
     header {
-      position: relative;
-      z-index: 3000;
       background-color: #111827;
       padding: 8px 12px;
       display: flex;
@@ -138,6 +136,36 @@
       cursor: pointer;
       white-space: nowrap;
     }
+
+    .header-icon-btn {
+      position: relative;
+      width: 42px; height: 38px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      border-radius: 9px;
+    }
+    .header-icon-btn .header-badge {
+      position: absolute; top: -5px; right: -5px;
+      min-width: 18px; height: 18px; padding: 0 4px;
+      border-radius: 10px; background: #dc2626; color: #fff;
+      font-size: .62rem; font-weight: 900;
+      display: none; align-items: center; justify-content: center;
+      border: 2px solid #111827;
+    }
+    #connected-people-btn .header-badge { background:#0284c7; }
+    #connected-people-panel {
+      position: fixed; top: 58px; right: 10px; z-index: 3600;
+      width: min(280px, calc(100vw - 20px));
+      max-height: 45vh; overflow:auto;
+      background:#0b1220; border:1px solid #38bdf8; border-radius:12px;
+      box-shadow:0 10px 28px rgba(0,0,0,.55); padding:10px; display:none;
+    }
+    #connected-people-panel h3 { margin:0 0 8px; color:#38bdf8; font-size:.82rem; }
+    .connected-person { display:flex; align-items:center; gap:8px; padding:7px 6px; border-bottom:1px solid #1f2937; color:#e2e8f0; font-size:.78rem; }
+    .connected-dot { width:8px; height:8px; border-radius:50%; background:#22c55e; flex:none; }
+    .connected-empty { color:#64748b; font-size:.75rem; padding:8px 4px; }
 
     #gps-lock-banner {
       background: #dc2626;
@@ -300,6 +328,20 @@
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
+    .mobile-search-toggle {
+      display: none;
+    }
+
+    .search-close {
+      display: none;
+      background: #1f2937;
+      border: none;
+      color: #f8fafc;
+      font-weight: 800;
+      padding: 0 12px;
+      cursor: pointer;
     }
 
     .search-input-box input {
@@ -650,6 +692,24 @@
       color: #38bdf8;
     }
 
+    .message-composer { background:#0b1220; border:1px solid #334155; border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:8px; }
+    .message-recipient-row { display:flex; gap:7px; align-items:center; }
+    .message-recipient { flex:1; background:#111827; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:8px 10px; }
+    .message-text-row { display:flex; gap:7px; align-items:flex-end; }
+    .message-text { flex:1; min-height:42px; max-height:110px; resize:vertical; background:#030712; color:#fff; border:1px solid #334155; border-radius:8px; padding:9px 10px; font:inherit; outline:none; }
+    .message-tool-btn,.message-send-btn { border:1px solid #38bdf8; border-radius:8px; min-width:44px; height:42px; cursor:pointer; font-weight:800; }
+    .message-tool-btn { background:#1e293b; color:#e2e8f0; font-size:1.1rem; }
+    .message-send-btn { background:#38bdf8; color:#07111f; padding:0 13px; }
+    .message-photo-preview { display:none; align-items:center; gap:8px; background:#111827; border:1px solid #334155; border-radius:8px; padding:6px; }
+    .message-photo-preview img { width:48px; height:48px; object-fit:cover; border-radius:6px; }
+    .message-photo-name { flex:1; font-size:.72rem; color:#cbd5e1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .message-clear-photo { background:#374151; color:#fff; border:0; border-radius:6px; padding:6px 8px; cursor:pointer; }
+    .history-message { align-items:flex-start; }
+    .history-message-body { flex:1; min-width:0; }
+    .history-message-text { color:#f8fafc; white-space:pre-wrap; word-break:break-word; margin-top:4px; }
+    .history-message-photo { max-width:min(230px,65vw); max-height:230px; border-radius:9px; margin-top:7px; display:block; cursor:pointer; }
+    .history-message-type { font-size:.64rem; color:#38bdf8; margin-left:6px; }
+
     .history-list {
       overflow-y: auto;
       display: flex;
@@ -865,7 +925,73 @@
     #yadah-career-history-list{display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow:auto}.yc-history-item{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 10px}.yc-history-main{font-size:.82rem;font-weight:800;color:#fff}.yc-history-meta{font-size:.68rem;color:#94a3b8;margin-top:3px}
     .yc-empty{color:#64748b;font-size:.8rem;text-align:center;padding:14px}
     #yadah-career-tab{position:fixed;right:0;top:var(--career-tab-top,50%);transform:translateY(-50%);z-index:3927;width:48px;min-height:112px;border:1px solid #22d3ee;border-radius:12px 0 0 12px;background:rgba(5,7,11,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;box-shadow:-4px 4px 12px rgba(0,0,0,.45);font-weight:900;cursor:pointer;touch-action:none;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px 4px;transition:right .25s ease} #yadah-career-tab.open{right:min(320px,86vw);background:rgba(5,7,11,.48)} #yadah-career-tab-count{min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center} #yadah-career-tab-arrow{font-size:30px;line-height:.8} .yadah-career-tab-label{font-size:.62rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px} @media(max-width:799px){#yadah-career-stack{max-height:42vh;padding:7px}} @media(min-width:800px){#yadah-career-fab{right:18px;bottom:102px}}
-  </style>
+  
+    /* ---------- Buscador compacto en móvil ---------- */
+    @media (max-width: 720px) {
+      #nav-search-bar {
+        top: 70px;
+        left: 10px;
+        right: auto;
+        width: auto;
+        max-width: none;
+        align-items: flex-start;
+      }
+
+      #nav-search-bar:not(.mobile-search-open) .search-input-box {
+        display: none;
+      }
+
+      #nav-search-bar:not(.mobile-search-open) .mobile-search-toggle {
+        display: flex;
+        width: 46px;
+        height: 46px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 50%;
+        background: rgba(17,24,39,0.48);
+        border: 2px solid rgba(56,189,248,0.78);
+        color: #f8fafc;
+        font-size: 1.25rem;
+        opacity: 0.78;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+        transition: background .18s ease, opacity .18s ease, transform .18s ease;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+
+      #nav-search-bar:not(.mobile-search-open) .mobile-search-toggle:active {
+        opacity: 1;
+        background: #111827;
+        border-color: #38bdf8;
+        transform: scale(0.96);
+      }
+
+      #nav-search-bar.mobile-search-open {
+        width: calc(100vw - 20px);
+        max-width: 400px;
+      }
+
+      #nav-search-bar.mobile-search-open .mobile-search-toggle {
+        display: none;
+      }
+
+      #nav-search-bar.mobile-search-open .search-input-box {
+        display: flex;
+        width: 100%;
+        min-height: 44px;
+        border-radius: 13px;
+      }
+
+      #nav-search-bar.mobile-search-open .search-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+</style>
 </head>
 <body>
 
@@ -885,7 +1011,7 @@
   </div>
 
   <div id="gps-lock-banner">
-    <span>⚠️ GPS DENEGADO O APAGADO. La radio está bloqueada hasta activar la ubicación.</span>
+    <span>⚠️️ GPS DENEGADO O APAGADO. La radio está bloqueada hasta activar la ubicación.</span>
   </div>
 
   <div id="map-context-menu">
@@ -904,9 +1030,11 @@
   </div>
 
   <div id="nav-search-bar">
+    <button id="mobile-search-toggle" class="mobile-search-toggle" type="button" aria-label="Abrir buscador" onclick="openMobileSearch(event)">🔍</button>
     <div class="search-input-box">
       <input type="text" id="input-destination" placeholder="Escribe el destino, negocio o enlace Google Maps..." oninput="handleSearchInput(this.value)" autocomplete="off" />
-      <button onclick="prepareRouteDestination()">Buscar 🔍</button>
+      <button class="search-submit" onclick="prepareRouteDestination()">Buscar 🔍</button>
+      <button class="search-close" type="button" aria-label="Cerrar buscador" onclick="closeMobileSearch(event)">✕</button>
     </div>
     <div id="search-suggestions"></div>
     <div class="nav-route-info" id="nav-route-info">
@@ -969,10 +1097,17 @@
       <span>📻</span> Yadah PTT
     </div>
     <div class="header-actions">
+      <button class="btn-header header-icon-btn" id="connected-people-btn" type="button" title="Personas conectadas" onclick="toggleConnectedPeople()">👥<span class="header-badge" id="connected-people-count">0</span></button>
+      <button class="btn-header header-icon-btn" id="replay-last-audio-btn" type="button" title="Escuchar último audio" aria-label="Escuchar último audio" onclick="replayLatestVoice()">↻</button>
+      <button class="btn-header header-icon-btn" id="message-inbox-btn" type="button" title="Mensajes de radio" onclick="openMessageInbox()">💬<span class="header-badge" id="missed-message-count">0</span></button>
       <button class="btn-header" id="btn-toggle-fleet" onclick="toggleFleetDrawer(true)" style="display:none; border-color:#38bdf8; color:#38bdf8;">📋 Flota</button>
-      <button class="btn-header" onclick="toggleHistory(true)">📁 Buzón</button>
     </div>
   </header>
+
+  <div id="connected-people-panel" onclick="event.stopPropagation()">
+    <h3>👥 Personas conectadas</h3>
+    <div id="connected-people-list"><div class="connected-empty">Buscando conexiones...</div></div>
+  </div>
 
   <div id="fleet-summary-bar" onclick="toggleFleetDrawer(true)">
     <span>🏢 <b>Supervisión Flota:</b></span>
@@ -1070,6 +1205,25 @@
         <span>Últimas Transmisiones (24h)</span>
         <span style="cursor:pointer; color:#94a3b8; font-size:1.1rem; padding:4px;" onclick="toggleHistory(false)">✕</span>
       </div>
+      <div class="message-composer">
+        <div class="message-recipient-row">
+          <span style="font-size:.72rem;color:#94a3b8;">Enviar a:</span>
+          <select id="message-recipient" class="message-recipient">
+            <option value="all">👥 Toda la flota conectada</option>
+          </select>
+        </div>
+        <div class="message-photo-preview" id="message-photo-preview">
+          <img id="message-photo-thumb" alt="Vista previa">
+          <span class="message-photo-name" id="message-photo-name"></span>
+          <button type="button" class="message-clear-photo" onclick="clearMessagePhoto()">✕</button>
+        </div>
+        <div class="message-text-row">
+          <textarea id="message-text" class="message-text" maxlength="1000" placeholder="Escribe un mensaje..."></textarea>
+          <button type="button" class="message-tool-btn" title="Adjuntar foto" onclick="document.getElementById('message-photo-input').click()">📷</button>
+          <button type="button" class="message-send-btn" onclick="sendTextOrPhotoMessage()">Enviar</button>
+          <input id="message-photo-input" type="file" accept="image/*" style="display:none" onchange="handleMessagePhoto(this.files[0])">
+        </div>
+      </div>
       <div class="history-list" id="history-list">
         <p style="color:#64748b; font-size:0.85rem;">No hay transmisiones registradas.</p>
       </div>
@@ -1077,20 +1231,9 @@
   </div>
 
   <script>
-    // YADAH SESSION PERSISTENTE
-    // El perfil solo se cierra mediante logoutUnit(). Refrescar la página no lo cierra.
-    function yadahGetTerminalId() {
-      try { return localStorage.getItem('yadah_terminal_id') || null; } catch (e) { return null; }
+    if (!localStorage.getItem('yadah_sec_ver_2021_v2')) {
+      localStorage.setItem('yadah_sec_ver_2021_v2', 'true');
     }
-    function yadahSaveTerminalId(id) {
-      try { localStorage.setItem('yadah_terminal_id', id); } catch (e) {}
-    }
-    function yadahClearTerminalId() {
-      try { localStorage.removeItem('yadah_terminal_id'); } catch (e) {}
-    }
-
-
-
 
     const urlParams = new URLSearchParams(window.location.search);
     const trackingUnit = urlParams.get('track');
@@ -1360,7 +1503,7 @@
       });
     }
 
-    let currentUnit = yadahGetTerminalId();
+    let currentUnit = localStorage.getItem('yadah_terminal_id');
     const isDriver = () => currentUnit && currentUnit !== 'Modulador' && currentUnit !== 'Clientes';
     const isClientQueue = () => currentUnit === 'Clientes';
     const isModulator = () => currentUnit === 'Modulador';
@@ -1462,6 +1605,35 @@
       navRouteInfo.style.display = 'flex';
     }
 
+    function openMobileSearch(event) {
+      if (event) event.stopPropagation();
+      if (!navSearchBar) return;
+      navSearchBar.classList.add('mobile-search-open');
+      setTimeout(() => {
+        const input = document.getElementById('input-destination');
+        if (input) input.focus();
+      }, 0);
+    }
+
+    function closeMobileSearch(event) {
+      if (event) event.stopPropagation();
+      if (!navSearchBar) return;
+      navSearchBar.classList.remove('mobile-search-open');
+      if (searchSuggestions) {
+        searchSuggestions.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      if (window.innerWidth > 720 || !navSearchBar) return;
+      if (!navSearchBar.classList.contains('mobile-search-open')) return;
+      if (!navSearchBar.contains(event.target)) closeMobileSearch();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && window.innerWidth <= 720) closeMobileSearch();
+    });
+
     async function prepareRouteDestination() {
       searchSuggestions.style.display = 'none';
       const query = document.getElementById('input-destination').value.trim();
@@ -1552,7 +1724,7 @@
       currentUnit = id;
       deviceId = `${currentUnit}_${Math.random().toString(16).slice(2, 10)}_${Date.now().toString(16)}`;
       radioInitialized = false;
-      yadahSaveTerminalId(id);
+      localStorage.setItem('yadah_terminal_id', id);
       checkAuth(); unlockAudioHardware();
     }
 
@@ -1564,7 +1736,7 @@
         mqttClient.end(true); mqttClient = null;
       }
       Object.keys(fleetMarkers).forEach(k => { if (k !== 'BASE_PERMANENTE') { fleetMarkers[k].marker.remove(); delete fleetMarkers[k]; } });
-      yadahClearTerminalId(); currentUnit = null; 
+      localStorage.removeItem('yadah_terminal_id'); currentUnit = null; 
       if(document.getElementById('client-queue-screen'))document.getElementById('client-queue-screen').style.display='none'; 
       if(document.querySelector('header'))document.querySelector('header').style.display=''; 
       if(mapContainer)mapContainer.style.display=''; 
@@ -1777,7 +1949,7 @@
         if (data.routes && data.routes.length > 0) {
           const route = data.routes[0];
           if (lblRouteStats) lblRouteStats.innerHTML = `🏁 <b>${label}</b><br>${(route.distance / 1000).toFixed(1)} km (~${Math.round(route.duration / 60)} min). En marcha 🚀`;
-          historyPoints.sort((a, b) => a.timestamp - b.timestamp);           const historyCoords = historyPoints.map(p => [p.lon, p.lat]);           ensureLayersExist();
+          ensureLayersExist();
           map.getSource('nav-active-route').setData({ type: 'FeatureCollection', features: [{ type: 'Feature', geometry: route.geometry, properties: {} }] });
           if (mqttClient && mqttClient.connected && currentUnit) {
             mqttClient.publish('yadah/radio/flota/navigation', JSON.stringify({ unit: currentUnit, geometry: route.geometry, label: label }));
@@ -1940,6 +2112,8 @@ function applyVehicleHistory() {
     const TOPIC_NAV = 'yadah/radio/flota/navigation'; const TOPIC_STATUS = 'yadah/radio/flota/status';
     const TOPIC_BASE = 'yadah/radio/flota/base'; const TOPIC_MODULATOR = 'yadah/radio/flota/modulator_gps';
     const TOPIC_POI = 'yadah/radio/flota/poi'; const TOPIC_ASSIGN = 'yadah/radio/flota/assignment';
+    const TOPIC_MESSAGES = 'yadah/radio/flota/messages';
+    const TOPIC_VOICE_MESSAGE = 'yadah/radio/flota/voice_message';
 
     function triggerSOS() {
       isSosActive = !isSosActive; if (btnSos) btnSos.classList.toggle('active', isSosActive);
@@ -1959,8 +2133,10 @@ function applyVehicleHistory() {
       if (isDriver()) opts.will = { topic: TOPIC_STATUS, payload: JSON.stringify({ unit: currentUnit, status: 'offline' }), qos: 1, retain: true };
       mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', opts);
       mqttClient.on('connect', () => {
-        mqttClient.subscribe([TOPIC_GPS, TOPIC_ALERT, TOPIC_PANIC, TOPIC_NAV, TOPIC_STATUS, TOPIC_BASE, TOPIC_MODULATOR, TOPIC_POI, TOPIC_ASSIGN, RADIO_SIGNAL_TOPIC]);
+        mqttClient.subscribe([TOPIC_GPS, TOPIC_ALERT, TOPIC_PANIC, TOPIC_NAV, TOPIC_STATUS, TOPIC_BASE, TOPIC_MODULATOR, TOPIC_POI, TOPIC_ASSIGN, TOPIC_MESSAGES, TOPIC_VOICE_MESSAGE, RADIO_SIGNAL_TOPIC]);
         if (typeof initializeRadio === 'function') initializeRadio();
+        setMissedRadioMessages(getMissedRadioMessages());
+        updateConnectedPeopleBadge();
         if (isDriver()) mqttClient.publish(TOPIC_STATUS, JSON.stringify({ unit: currentUnit, status: 'online' }), { retain: true });
       });
       mqttClient.on('message', (topic, message) => {
@@ -1993,6 +2169,10 @@ function applyVehicleHistory() {
                 if (navRouteInfo) navRouteInfo.style.display = 'flex';
               }
             }
+          } else if (topic === TOPIC_MESSAGES) {
+            receiveTextOrPhotoMessage(JSON.parse(text));
+          } else if (topic === TOPIC_VOICE_MESSAGE) {
+            receiveSharedVoiceMessage(JSON.parse(text));
           } else if (topic === TOPIC_POI) {
             const d = JSON.parse(text); if (d && d.action === 'sync' && d.pois) { localStorage.setItem('yadah_custom_pois', JSON.stringify(d.pois)); renderCustomPoiMarkers(); }
           } else if (topic === TOPIC_BASE) {
@@ -2030,8 +2210,6 @@ function applyVehicleHistory() {
             const alertData = JSON.parse(text);
             if (alertData.sender !== currentUnit && channelStatus) {
               if (alertData.live === true) {
-                if (remoteDevId) { if (radioRemoteStreams.has(remoteDevId)) yadahStartRemoteRecording(remoteDevId); else radioRemotePending.add(remoteDevId); }
-                const remoteDevId = Array.from(radioDeviceNames.entries()).find(([id, name]) => name === alertData.sender)?.[0];
                 channelStatus.className = 'channel-status receiving';
                 channelStatus.textContent = `▼ TRANSMITIENDO: ${alertData.sender}`;
                 playBeep(660, 0.06);
@@ -2043,8 +2221,6 @@ function applyVehicleHistory() {
                   }
                 }, 5000);
               } else if (alertData.live === false) {
-                if (remoteDevId) { radioRemotePending.delete(remoteDevId); yadahStopRemoteRecording(remoteDevId); }
-                const remoteDevId = Array.from(radioDeviceNames.entries()).find(([id, name]) => name === alertData.sender)?.[0];
                 clearTimeout(window.yadahRemoteTalkTimer);
                 if (!radioTalking) {
                   channelStatus.className = 'channel-status';
@@ -2099,7 +2275,6 @@ function applyVehicleHistory() {
       );
     } else if (!trackingUnit) { updateGpsLockState(false); }
 
-    // Menú compacto de opciones del mapa: mantiene los IDs existentes para no alterar radio/WebRTC.
     function closeMapOptions() {
       const menu = document.getElementById('map-options-menu');
       const trigger = document.getElementById('btn-map-options');
@@ -2128,7 +2303,7 @@ function applyVehicleHistory() {
     if (!trackingUnit && document.getElementById('btn-recenter')) document.getElementById('btn-recenter').addEventListener('click', applyCameraPerspective);
 
     // ==========================================
-    // MÓDULO DE RADIO WEBRTC EN TIEMPO REAL (VERSIÓN UNIFICADA CORREGIDA)
+    // MÓDULO DE RADIO WEBRTC EN TIEMPO REAL
     // ==========================================
     const RADIO_SIGNAL_TOPIC = 'yadah/radio/webrtc/signaling/v10';
     const ROOM_NAME = 'yadah-radio-flota-3d';
@@ -2146,11 +2321,8 @@ function applyVehicleHistory() {
     let radioInitialized = false;
     const radioPeers = new Map();
     const radioCandidateQueues = new Map();
-    const radioRemoteStreams = new Map();
-    const radioRemoteRecorders = new Map();
-    const radioRemotePending = new Set();
-    const radioDeviceNames = new Map();
     const radioAudioElements = new Map();
+    const activeRadioStreams = new Map();
     let radioAudioUnlocked = false;
 
     function unlockRadioAudio() {
@@ -2285,7 +2457,7 @@ function applyVehicleHistory() {
       await attachRadioTrackToPeers();
       radioLocalTrack.enabled = true;
       radioTalking = true;
-      yadahStartRadioRecording();
+      startRadioRecording();
       if (btnPtt) btnPtt.classList.add('active');
       if (channelStatus) {
         channelStatus.className = 'channel-status transmitting';
@@ -2312,7 +2484,7 @@ function applyVehicleHistory() {
         channelStatus.textContent = '● CANAL LIBRE';
       }
       if (!wasRadioTalking) return;
-      yadahStopRadioRecording();
+      stopRadioRecording();
       playBeep(600, 0.04);
       if (mqttClient && mqttClient.connected && currentUnit) {
         mqttClient.publish(TOPIC_ALERT, JSON.stringify({ sender: currentUnit, live: false }));
@@ -2339,7 +2511,6 @@ function applyVehicleHistory() {
         if (data.target && data.target !== deviceId) return;
         if (!data.sender || !data.deviceId) return;
 
-        radioDeviceNames.set(data.deviceId, data.sender);
         const targetDevId = data.deviceId;
         let pc = radioPeers.get(targetDevId);
 
@@ -2397,70 +2568,21 @@ function applyVehicleHistory() {
       pc.ontrack = (event) => {
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
-        yadahRegisterRemoteStream(targetDevId, stream);
-
-        stream.getAudioTracks().forEach(track => {
-          track.enabled = true;
-        });
-
-        let remoteAudio = radioAudioElements.get(targetDevId);
-        if (!remoteAudio) {
-          remoteAudio = document.createElement('audio');
-          remoteAudio.autoplay = true;
-          remoteAudio.playsInline = true;
-          remoteAudio.controls = false;
-          remoteAudio.muted = false;
-          remoteAudio.volume = 1.0;
-          remoteAudio.style.display = 'none';
-          document.body.appendChild(remoteAudio);
-          radioAudioElements.set(targetDevId, remoteAudio);
-        }
-
-        remoteAudio.srcObject = stream;
-        remoteAudio.muted = false;
-        remoteAudio.volume = 1.0;
-
+        const senderName = targetDevId.split('_')[0];
+        activeRadioStreams.set(senderName, stream);
+        updateConnectedPeopleBadge();
         const mainSpeaker = document.getElementById('radio-speaker');
         if (mainSpeaker) {
           mainSpeaker.srcObject = stream;
           mainSpeaker.muted = false;
           mainSpeaker.volume = 1.0;
+          mainSpeaker.play().catch(() => {});
         }
-
-        try {
-          const playResult = remoteAudio.play();
-          if (playResult && typeof playResult.catch === 'function') playResult.catch(() => {});
-        } catch (error) {}
-
-        if (mainSpeaker) {
-          try {
-            const playResult = mainSpeaker.play();
-            if (playResult && typeof playResult.catch === 'function') playResult.catch(() => {});
-          } catch (error) {}
-        }
-
         if (channelStatus && !radioTalking) {
           channelStatus.className = 'channel-status receiving';
           channelStatus.textContent = '▼ RADIO EN VIVO';
         }
       };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       pc.onconnectionstatechange = () => {
         if (['failed', 'closed', 'disconnected'].includes(pc.connectionState)) {
@@ -2479,9 +2601,6 @@ function applyVehicleHistory() {
       return pc;
     }
 
-      yadahStopRemoteRecording(targetDevId);
-      radioRemotePending.delete(targetDevId);
-      radioRemoteStreams.delete(targetDevId);
     function closeRadioPeer(targetDevId) {
       const pc = radioPeers.get(targetDevId);
       if (pc) {
@@ -2542,7 +2661,7 @@ function applyVehicleHistory() {
       window.addEventListener('click', unlockAudioHardware, { once: false, passive: true });
 
       window.addEventListener('keydown', (event) => {
-        unlockRadioAudio();
+        unlockAudioAudio();
         const tag = document.activeElement && document.activeElement.tagName;
         if (event.code === 'Space' && !event.repeat && !['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) {
           pressed = true;
@@ -2558,297 +2677,278 @@ function applyVehicleHistory() {
       });
     }
 
-    function yadahSaveRadioRecording(blob, sender, startedAt) {
-      try {
-        if (!blob || !blob.size) return;
-        yadahOpenRadioDB().then((db) => {
-          const tx = db.transaction(['recordings'], 'readwrite');
-          tx.objectStore('recordings').add({
-            sender: sender || 'Radio',
-            timestamp: startedAt || Date.now(),
-            duration: Math.max(0, Date.now() - (startedAt || Date.now())),
-            audio: blob
-          });
-        }).catch((e) => console.warn('No se pudo guardar el audio:', e));
-      } catch (e) {
-        console.warn('No se pudo preparar el audio:', e);
-      }
+    // ==========================================
+    // SISTEMA DE BUZÓN COMPARTIDO (ESTABLE Y LIMPIO)
+    // ==========================================
+    const STORAGE_BUZON_KEY = 'yadah_shared_voice_inbox_v1';
+    let radioRecorder = null;
+    let radioRecordingChunks = [];
+    let radioRecordingStartedAt = 0;
+
+    function getMissedRadioMessages() {
+      try { return Math.max(0, Number(localStorage.getItem('yadah_missed_radio_messages') || 0)); } catch(e) { return 0; }
     }
 
-    function yadahStartRemoteRecording(targetDevId) {
-      try {
-        if (radioRemoteRecorders.has(targetDevId)) return;
-        const stream = radioRemoteStreams.get(targetDevId);
-        if (!stream || !window.MediaRecorder || !window.MediaStream) return;
-
-        const track = stream.getAudioTracks()[0];
-        if (!track) return;
-
-        const recordStream = new MediaStream([track]);
-        let options = {};
-        try {
-          if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-            options = { mimeType: 'audio/webm;codecs=opus' };
-          }
-        } catch (e) {}
-
-        const recorder = new MediaRecorder(recordStream, options);
-        const entry = {
-          recorder,
-          chunks: [],
-          startedAt: Date.now(),
-          sender: radioDeviceNames.get(targetDevId) || targetDevId
-        };
-        radioRemoteRecorders.set(targetDevId, entry);
-
-        recorder.ondataavailable = (event) => {
-          if (event.data && event.data.size) entry.chunks.push(event.data);
-        };
-
-        recorder.onerror = (event) => {
-          console.warn('Grabación recibida de radio:', event.error || event);
-        };
-
-        recorder.onstop = () => {
-          const blob = new Blob(entry.chunks, {
-            type: recorder.mimeType || 'audio/webm'
-          });
-          radioRemoteRecorders.delete(targetDevId);
-          entry.chunks = [];
-          yadahSaveRadioRecording(blob, entry.sender, entry.startedAt);
-        };
-
-        recorder.start(250);
-      } catch (e) {
-        radioRemoteRecorders.delete(targetDevId);
-        console.warn('No se pudo grabar la transmisión recibida:', e);
-      }
+    function setMissedRadioMessages(value) {
+      const n = Math.max(0, Number(value) || 0);
+      try { localStorage.setItem('yadah_missed_radio_messages', String(n)); } catch(e) {}
+      const badge = document.getElementById('missed-message-count');
+      if (badge) { badge.textContent = n > 99 ? '99+' : String(n); badge.style.display = n > 0 ? 'flex' : 'none'; }
     }
 
-    function yadahStopRemoteRecording(targetDevId) {
-      const entry = radioRemoteRecorders.get(targetDevId);
-      if (!entry) return;
-      try {
-        if (entry.recorder && entry.recorder.state !== 'inactive') {
-          entry.recorder.stop();
-        } else {
-          radioRemoteRecorders.delete(targetDevId);
-        }
-      } catch (e) {
-        radioRemoteRecorders.delete(targetDevId);
-      }
+    function addMissedRadioMessage(sender) {
+      setMissedRadioMessages(getMissedRadioMessages() + 1);
+      try { playBeep(520, 0.08); } catch(e) {}
     }
 
-    function yadahRegisterRemoteStream(targetDevId, stream) {
-      if (!stream) return;
-      radioRemoteStreams.set(targetDevId, stream);
-
-      const track = stream.getAudioTracks()[0];
-      if (track) {
-        track.enabled = true;
-        track.onended = () => {
-          yadahStopRemoteRecording(targetDevId);
-          radioRemoteStreams.delete(targetDevId);
-        };
-      }
-
-      if (radioRemotePending.has(targetDevId)) {
-        radioRemotePending.delete(targetDevId);
-        yadahStartRemoteRecording(targetDevId);
-      }
+    function openMessageInbox() {
+      setMissedRadioMessages(0);
+      toggleHistory(true);
     }
 
-
-
-    let cachedAudios = [];
-    let yadahRadioRecorder = null;
-    let yadahRadioChunks = [];
-    let yadahRadioStartedAt = 0;
-
-    function yadahOpenRadioDB() {
-      return new Promise((resolve, reject) => {
-        try {
-          const req = indexedDB.open('YadahRadioHistoryDB', 1);
-          req.onupgradeneeded = (e) => {
-            const db = e.target.result;
-            if (!db.objectStoreNames.contains('recordings')) {
-              db.createObjectStore('recordings', { keyPath: 'id', autoIncrement: true });
-            }
-          };
-          req.onsuccess = () => resolve(req.result);
-          req.onerror = () => reject(req.error);
-        } catch (e) {
-          reject(e);
-        }
-      });
+    function toggleConnectedPeople() {
+      const panel = document.getElementById('connected-people-panel');
+      if (!panel) return;
+      const open = panel.style.display === 'block';
+      panel.style.display = open ? 'none' : 'block';
+      if (!open) renderConnectedPeople();
     }
 
-    function yadahStartRadioRecording() {
-      try {
-        if (!window.MediaRecorder || !window.MediaStream || !radioLocalTrack) return;
-        if (yadahRadioRecorder && yadahRadioRecorder.state !== 'inactive') return;
-
-        const stream = new MediaStream();
-        stream.addTrack(radioLocalTrack);
-
-        let options = {};
-        try {
-          if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-            options = { mimeType: 'audio/webm;codecs=opus' };
-          }
-        } catch (e) {}
-
-        yadahRadioRecorder = new MediaRecorder(stream, options);
-        yadahRadioChunks = [];
-        yadahRadioStartedAt = Date.now();
-
-        yadahRadioRecorder.ondataavailable = (event) => {
-          if (event.data && event.data.size) yadahRadioChunks.push(event.data);
-        };
-
-        yadahRadioRecorder.onerror = (event) => {
-          console.warn('Grabación de radio:', event.error || event);
-        };
-
-        yadahRadioRecorder.onstop = () => {
-          const recorder = yadahRadioRecorder;
-          const chunks = yadahRadioChunks.slice();
-          const startedAt = yadahRadioStartedAt;
-
-          yadahRadioChunks = [];
-          yadahRadioRecorder = null;
-
-          try {
-            const blob = new Blob(chunks, { type: (recorder && recorder.mimeType) || 'audio/webm' });
-            if (!blob.size) return;
-            yadahSaveRadioRecording(
-              blob,
-              (typeof unitName === 'function') ? unitName() : 'Radio',
-              startedAt || Date.now()
-            );
-          } catch (e) {
-            console.warn('No se pudo preparar el audio:', e);
-          }
-        };
-
-        yadahRadioRecorder.start(250);
-      } catch (e) {
-        console.warn('No se pudo iniciar el buzón de radio:', e);
-        yadahRadioRecorder = null;
-        yadahRadioChunks = [];
-      }
-    }
-
-    function yadahStopRadioRecording() {
-      try {
-        if (yadahRadioRecorder && yadahRadioRecorder.state !== 'inactive') {
-          yadahRadioRecorder.stop();
-        }
-      } catch (e) {
-        console.warn('No se pudo cerrar la grabación:', e);
-      }
-    }
-
-    function yadahLoadRadioHistory() {
-      const list = document.getElementById('history-list');
+    function renderConnectedPeople() {
+      const list = document.getElementById('connected-people-list');
+      const badge = document.getElementById('connected-people-count');
       if (!list) return;
-
-      yadahOpenRadioDB().then((db) => {
-        const tx = db.transaction(['recordings'], 'readonly');
-        const req = tx.objectStore('recordings').getAll();
-
-        req.onsuccess = () => {
-          const cutoff = Date.now() - 86400000;
-          const records = (req.result || [])
-            .filter(r => r && r.timestamp >= cutoff)
-            .sort((a, b) => b.timestamp - a.timestamp);
-
-          list.innerHTML = '';
-
-          if (!records.length) {
-            list.innerHTML = '<p style="color:#64748b;font-size:0.85rem;">No hay transmisiones registradas.</p>';
-            return;
-          }
-
-          records.forEach((record) => {
-            const row = document.createElement('div');
-            row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid #1e293b;';
-
-            const info = document.createElement('div');
-            info.style.cssText = 'flex:1;';
-            const time = new Date(record.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-            const seconds = Math.round((record.duration || 0) / 1000);
-            info.innerHTML = '<b style="color:#fff;">' + (record.sender || 'Radio') + '</b><div style="font-size:.68rem;color:#94a3b8;">' + time + ' · ' + seconds + ' s</div>';
-
-            const play = document.createElement('button');
-            play.type = 'button';
-            play.textContent = '▶';
-            play.style.cssText = 'border:0;border-radius:6px;padding:7px 10px;background:#0284c7;color:#fff;font-weight:800;';
-            play.onclick = () => {
-              try {
-                const url = URL.createObjectURL(record.audio);
-                const audio = new Audio(url);
-                audio.onended = () => URL.revokeObjectURL(url);
-                audio.play().catch(() => {});
-              } catch (e) {}
-            };
-
-            row.appendChild(info);
-            row.appendChild(play);
-            list.appendChild(row);
-          });
-        };
-      }).catch((e) => console.warn('No se pudo abrir el buzón:', e));
+      const names = Array.from(radioPeers.keys()).map(id => id.split('_')[0]).filter(Boolean);
+      const unique = [...new Set(names)].filter(n => n && n !== currentUnit);
+      if (badge) { badge.textContent = unique.length > 99 ? '99+' : String(unique.length); badge.style.display = unique.length ? 'flex' : 'none'; }
+      list.innerHTML = unique.length ? unique.map(n => `<div class="connected-person"><span class="connected-dot"></span><span>${n}</span></div>`).join('') : '<div class="connected-empty">No hay otras personas conectadas al radio.</div>';
     }
 
-    function getStoredAudios() {
+    function updateConnectedPeopleBadge() { renderConnectedPeople(); }
+
+    document.addEventListener('click', (e) => {
+      const panel = document.getElementById('connected-people-panel');
+      const btn = document.getElementById('connected-people-btn');
+      if (panel && panel.style.display === 'block' && !panel.contains(e.target) && !btn?.contains(e.target)) panel.style.display = 'none';
+    });
+    setMissedRadioMessages(getMissedRadioMessages());
+
+    let pendingMessagePhoto = null;
+    function populateMessageRecipients() {
+      const select = document.getElementById('message-recipient');
+      if (!select) return;
+      const current = select.value || 'all';
+      const names = Array.from(radioPeers.keys()).map(id => id.split('_')[0]).filter(Boolean);
+      const unique = [...new Set(names)].filter(n => n && n !== currentUnit);
+      select.innerHTML = '<option value="all">👥 Toda la flota conectada</option>' + unique.map(n => `<option value="${String(n).replace(/"/g,'&quot;')}">👤 ${n}</option>`).join('');
+      if ([...select.options].some(o => o.value === current)) select.value = current;
+    }
+
+    function clearMessagePhoto() {
+      pendingMessagePhoto = null;
+      const input = document.getElementById('message-photo-input'); if (input) input.value = '';
+      const preview = document.getElementById('message-photo-preview'); if (preview) preview.style.display = 'none';
+    }
+
+    function handleMessagePhoto(file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const max = 720, scale = Math.min(1, max / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(img.width*scale)); canvas.height = Math.max(1, Math.round(img.height*scale));
+          const ctx = canvas.getContext('2d'); ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          const dataUrl = canvas.toDataURL('image/jpeg',0.68);
+          if (dataUrl.length > 260000) { alert('La foto quedó demasiado grande. Elige una foto más pequeña.'); clearMessagePhoto(); return; }
+          pendingMessagePhoto = { dataUrl, name:file.name };
+          const thumb=document.getElementById('message-photo-thumb'); if(thumb) thumb.src=dataUrl;
+          const name=document.getElementById('message-photo-name'); if(name) name.textContent=file.name;
+          const preview=document.getElementById('message-photo-preview'); if(preview) preview.style.display='flex';
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveItemToStorage(item) {
       try {
-        const stored = JSON.parse(localStorage.getItem('yadah_audio_history') || '[]');
-        cachedAudios = stored.filter(item => item && item.timestamp > Date.now() - 86400000).slice(0, 25);
-      } catch (error) {
-        cachedAudios = [];
-      }
-      return cachedAudios;
+        let list = [];
+        try { list = JSON.parse(localStorage.getItem(STORAGE_BUZON_KEY) || '[]'); } catch(e) { list = []; }
+        if (!list.some(existing => existing.id === item.id)) {
+          list.unshift(item);
+          if (list.length > 30) list = list.slice(0, 30);
+          localStorage.setItem(STORAGE_BUZON_KEY, JSON.stringify(list));
+        }
+      } catch(e) {}
+    }
+
+    function getStoredItems() {
+      try {
+        const list = JSON.parse(localStorage.getItem(STORAGE_BUZON_KEY) || '[]');
+        const cutoff = Date.now() - 86400000;
+        return list.filter(item => item && Number(item.timestamp || 0) > cutoff);
+      } catch(e) { return []; }
+    }
+
+    async function sendTextOrPhotoMessage() {
+      const textEl=document.getElementById('message-text'); const select=document.getElementById('message-recipient');
+      const body=(textEl?.value||'').trim();
+      if (!body && !pendingMessagePhoto) { alert('Escribe un mensaje o adjunta una foto.'); return; }
+      if (!mqttClient || !mqttClient.connected || !currentUnit) { alert('El radio no está conectado.'); return; }
+      const payload={ type:'chat-message', id:`${Date.now()}_${Math.random().toString(16).slice(2)}`, sender:currentUnit, target:select?.value||'all', timestamp:Date.now(), text:body||'', photo:pendingMessagePhoto?.dataUrl||null, photoName:pendingMessagePhoto?.name||null, direction:'outgoing' };
+      mqttClient.publish(TOPIC_MESSAGES, JSON.stringify(payload), {qos:0});
+      saveItemToStorage({...payload, direction:'outgoing'});
+      if (textEl) textEl.value=''; clearMessagePhoto(); renderHistory();
+    }
+
+    async function receiveTextOrPhotoMessage(data) {
+      if (!data || data.type !== 'chat-message' || !data.sender || data.sender === currentUnit) return;
+      if (data.target && data.target !== 'all' && data.target !== currentUnit) return;
+      saveItemToStorage({...data, direction:'incoming'});
+      const modal=document.getElementById('history-modal');
+      const missed = modal?.style.display !== 'flex' || document.hidden || radioTalking;
+      if (missed) addMissedRadioMessage(data.sender);
+      try { playBeep(760,0.08); } catch(e) {}
+      renderHistory();
     }
 
     function toggleHistory(show) {
       const modal = document.getElementById('history-modal');
       if (modal) modal.style.display = show ? 'flex' : 'none';
-      if (show) yadahLoadRadioHistory();
+      if (show) renderHistory();
     }
 
-    function renderHistory() {
-      yadahLoadRadioHistory();
+    function startRadioRecording() {
+      try {
+        if (!radioLocalStream) return;
+        const tracks = radioLocalStream.getAudioTracks();
+        if (!tracks.length) return;
+        const stream = new MediaStream([tracks[0]]);
+        const options = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+          ? { mimeType: 'audio/webm;codecs=opus' } : { mimeType: 'audio/webm' };
+        radioRecordingChunks = [];
+        radioRecordingStartedAt = Date.now();
+        radioRecorder = new MediaRecorder(stream, options);
+        radioRecorder.ondataavailable = e => { if (e.data && e.data.size) radioRecordingChunks.push(e.data); };
+        radioRecorder.start(250);
+      } catch (e) {
+        radioRecorder = null;
+      }
     }
 
-    function playAudioByIndex(index) {
-      yadahLoadRadioHistory();
+    function stopRadioRecording() {
+      const recorder = radioRecorder;
+      radioRecorder = null;
+      if (!recorder) return;
+      const chunks = radioRecordingChunks.slice();
+      const startedAt = radioRecordingStartedAt || Date.now();
+      radioRecordingChunks = [];
+
+      recorder.onstop = async () => {
+        try {
+          const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+          if (!blob.size) return;
+          
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64Audio = reader.result;
+            const recordItem = {
+              id: `voice_${startedAt}_${Math.random().toString(16).slice(2)}`,
+              type: 'voice-message',
+              sender: currentUnit || 'Sin unidad',
+              timestamp: startedAt,
+              duration: Math.max(0, Date.now() - startedAt),
+              audioBase64: base64Audio,
+              mimeType: blob.type
+            };
+            
+            saveItemToStorage(recordItem);
+            renderHistory();
+
+            if (mqttClient && mqttClient.connected && currentUnit) {
+              mqttClient.publish(TOPIC_VOICE_MESSAGE, JSON.stringify(recordItem), { qos: 0 });
+            }
+          };
+          reader.readAsDataURL(blob);
+
+        } catch (e) {}
+      };
+      try { if (recorder.state !== 'inactive') recorder.stop(); } catch (e) {}
     }
 
+    async function receiveSharedVoiceMessage(data) {
+      if (!data || !data.sender || data.sender === currentUnit || !data.audioBase64) return;
+      try {
+        saveItemToStorage(data);
+        const modal = document.getElementById('history-modal');
+        const missed = modal?.style.display !== 'flex' || document.hidden || radioTalking;
+        if (missed) addMissedRadioMessage(data.sender);
+        if (modal && modal.style.display === 'flex') {
+          renderHistory();
+        }
+      } catch (e) {}
+    }
 
+    async function renderHistory() {
+      const listContainer = document.getElementById('history-list');
+      if (!listContainer) return;
+      try {
+        const records = getStoredItems();
+        listContainer.textContent = '';
+        if (!records.length) { listContainer.textContent = 'No hay mensajes ni transmisiones registradas.'; populateMessageRecipients(); return; }
+        
+        records.forEach(item => {
+          const row=document.createElement('div'); row.className='history-item history-message';
+          const info=document.createElement('div'); info.className='history-message-body';
+          const sender=document.createElement('b'); sender.style.color=item.type==='chat-message' ? '#38bdf8' : '#f59e0b'; sender.textContent=item.sender||'Colega';
+          const type=document.createElement('span'); type.className='history-message-type'; type.textContent=item.type==='chat-message' ? (item.photo ? 'FOTO' : 'MENSAJE') : 'VOZ';
+          const time=document.createElement('div'); time.style.cssText='font-size:.72rem;color:#94a3b8;'; const d=new Date(item.timestamp); time.textContent=d.toLocaleTimeString('es-SV',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+          info.append(sender,type,time);
+          
+          if(item.type==='chat-message') {
+            if(item.text) { const t=document.createElement('div'); t.className='history-message-text'; t.textContent=item.text; info.appendChild(t); }
+            if(item.photo) { const img=document.createElement('img'); img.className='history-message-photo'; img.src=item.photo; img.alt=item.photoName||'Foto'; img.onclick=()=>window.open(item.photo,'_blank'); info.appendChild(img); }
+            const dir=document.createElement('div'); dir.style.cssText='font-size:.62rem;color:#64748b;margin-top:5px;'; dir.textContent=item.direction==='outgoing'?'Enviado':'Recibido'; info.appendChild(dir);
+            row.appendChild(info);
+          } else {
+            const button=document.createElement('button'); button.className='btn-play-audio'; button.textContent='▶ Reproducir'; button.onclick=()=>playBase64Audio(item.audioBase64, item.mimeType); row.append(info,button);
+          }
+          listContainer.appendChild(row);
+        });
+        populateMessageRecipients();
+      } catch(e) { listContainer.textContent='No se pudo cargar el Buzón.'; }
+    }
 
+    function playBase64Audio(base64Data, mimeType) {
+      if (!base64Data) return;
+      try {
+        const audio = new Audio(base64Data);
+        audio.play().catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
+      } catch (e) { alert('No se pudo reproducir esta transmisión.'); }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    async function replayLatestVoice() {
+      const btn = document.getElementById('replay-last-audio-btn');
+      try {
+        const records = getStoredItems();
+        const lastVoice = records.find(item => item && item.type !== 'chat-message' && item.audioBase64);
+        if (!lastVoice) { alert('No hay un audio de radio guardado.'); return; }
+        const audio = new Audio(lastVoice.audioBase64);
+        if (btn) btn.style.opacity = '0.55';
+        audio.onended = () => { if (btn) btn.style.opacity = ''; };
+        audio.onerror = () => { if (btn) btn.style.opacity = ''; };
+        await audio.play();
+      } catch (e) {
+        if (btn) btn.style.opacity = '';
+        alert('No se pudo reproducir el último audio.');
+      }
+    }
 
     bindRadioPTT();
-
-    if (!trackingUnit) checkAuth();
   </script>
 
-<script>
-/* ======================================================================
-     YADAH CARRERAS v1
-     ====================================================================== */
+  <script>
   (function(){
     'use strict';
     const YC_TOPIC = 'yadah/radio/flota/carreras/state';
@@ -3019,7 +3119,6 @@ function applyVehicleHistory() {
   </script>
 
   <script>
-  /* YADAH COLA DE BASE v1 */
   (function(){'use strict';
   const TOPIC='yadah/radio/flota/base_queue/v1',STORAGE='yadah_base_queue_v2';let baseNotifyTimer=null,baseNotifySignature='';let state={version:2,day:'',items:[]},client=null,lastRaw='',bound=false,basePanelOpen=false;
   const $=id=>document.getElementById(id),now=()=>Date.now(),dayKey=ts=>new Date(ts).toLocaleDateString('en-CA'),unit=()=>typeof currentUnit!=='undefined'&&currentUnit?currentUnit:'Sin unidad',mod=()=>unit()==='Modulador',clientRole=()=>unit()==='Clientes',uid=()=>window.crypto&&crypto.randomUUID?crypto.randomUUID():'yb_'+Date.now()+'_'+Math.random().toString(16).slice(2);
@@ -3142,9 +3241,8 @@ function applyVehicleHistory() {
   function renderClientQueue(){const box=$('client-queue-list');if(!box)return;const visible=state.items.filter(i=>['waiting','assigned'].includes(i.status)).sort((a,b)=>Number(a.createdAt)-Number(b.createdAt));box.innerHTML='';if(!visible.length){box.innerHTML='<div class="cq-empty">No hay clientes esperando en la sala.</div>';return}visible.forEach(i=>{const card=document.createElement('div');card.className='cq-card';const assigned=i.status==='assigned'&&i.driver?` · ASIGNADO A ${esc(i.driver)}`:'';card.innerHTML=`<div class="cq-row"><div class="cq-dest">🏠 ${esc(i.place)}</div><div class="cq-time">${fmtTime(i.createdAt)}</div></div><div class="cq-status ${i.status==='assigned'?'assigned':''}">🟡 PENDIENTE${assigned}</div>`;box.appendChild(card)})}
   function render(){ensureDay();renderBaseNotifications();const stack=$('yadah-base-stack'),fab=$('yadah-base-fab');if(clientRole()){if(stack)stack.style.display='none';if(fab)fab.style.display='none';renderClientQueue();return}if(fab)fab.style.display=mod()?'flex':'none';if(!stack)return;if(!mod()){stack.style.display='none';return}const visible=state.items.filter(i=>['waiting','assigned','accepted'].includes(i.status));stack.innerHTML='<div class="yb-panel-title">🏠 COLA DE BASE <span style="float:right">'+visible.filter(i=>i.status==='waiting').length+' esperando</span><button type="button" class="yb-add-client" id="yb-add-client">＋ AGREGAR</button></div>';if(!visible.length){stack.innerHTML+='<div class="yb-card"><div class="yb-state">No hay clientes en espera.</div></div>';stack.style.display=basePanelOpen?'flex':'none';return}visible.forEach(i=>{const card=document.createElement('div');card.className='yb-card '+i.status;let action='';if(i.status==='waiting'){action='<button class="assign" data-yb="reassign" data-id="'+i.id+'">ASIGNAR</button>'}else if(i.status==='assigned'){action='<button class="assign" data-yb="reassign" data-id="'+i.id+'">REASIGNAR PENDIENTE</button>'}action+='<button class="cancel" data-yb="cancel" data-id="'+i.id+'">QUITAR DE COLA</button>';card.innerHTML='<div class="yb-line"><div class="yb-place">🏠 '+esc(i.place)+'</div><div class="yb-price">$'+Number(i.price||0).toFixed(2)+'</div></div><div class="yb-state">'+(i.status==='waiting'?'🔵 EN COLA':i.status==='assigned'?'🟡 PENDIENTE · ESPERANDO ACEPTACIÓN':'🟢 ACEPTADA')+(i.driver?' · '+esc(i.driver):'')+'</div>'+action;stack.appendChild(card)});stack.style.display=basePanelOpen?'flex':'none'}
   function toggleBasePanel(){if(!mod())return;const stack=$('yadah-base-stack'),btn=$('yb-open-btn');if(!stack)return;basePanelOpen=!basePanelOpen;stack.style.display=basePanelOpen?'flex':'none';if(btn){btn.classList.toggle('active',basePanelOpen);btn.setAttribute('aria-expanded',String(basePanelOpen))}}
-  function bind(){if(bound)return;bound=true;$('yb-open-btn')?.addEventListener('click',toggleBasePanel);$('yadah-base-stack')?.addEventListener('click',e=>{if(e.target.closest('#yb-add-client')){openAdd();return}const b=e.target.closest('[data-yb]');if(!b)return;if(b.dataset.yb==='reassign')openAssign(b.dataset.id);else if(b.dataset.yb==='cancel')cancel(b.dataset.id)});$('yb-close')?.addEventListener('click',closeModal);$('yb-cancel')?.addEventListener('click',closeModal);$('yb-assign-cancel')?.addEventListener('click',closeModal);$('yb-add-queue')?.addEventListener('click',registerClient);$('yb-price')?.addEventListener('change',e=>{$('yb-custom-price').style.display=e.target.value==='__custom__'?'block':'none';if(e.target.value!=='__custom__')$('yb-custom-price').value=''});$('yadah-base-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-base-modal')closeModal()});$('yadah-base-assignment')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id)});$('yadah-base-active')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-finish]');if(!b)return;finishBaseDriver(b.dataset.id)});$('yadah-base-notifications')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action],[data-base-finish]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id);else if(b.dataset.baseFinish)finishBaseDriver(id)})}
+  function bind(){if(bound)return;bound=true;$('yb-open-btn')?.addEventListener('click',toggleBasePanel);$('yadah-base-stack')?.addEventListener('click',e=>{if(e.target.closest('#yb-add-client')){openAdd();return}const b=e.target.closest('[data-yb]');if(!b)return;if(b.dataset.yb==='reassign')openAssign(b.dataset.id);else if(b.dataset.yb==='cancel')cancel(b.dataset.id)});$('yb-close')?.addEventListener('click',closeModal);$('yb-cancel')?.addEventListener('click',closeModal);$('yb-assign-cancel')?.addEventListener('click',closeModal);$('yb-add-queue')?.addEventListener('click',registerClient);$('yb-price')?.addEventListener('change',e=>{$('yb-custom-price').style.display=e.target.value==='__custom__'?'block':'none';if(e.target.value!=='__custom__')$('yb-custom-price').value=''});$('yadah-base-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-base-modal')closeModal()});$('yadah-base-assignment')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id)});$('yadah-base-active')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-finish]');if(!b)return;finishBaseDriver(b.dataset.id)});$('yadah-base-notifications')?.addEventListener('click',e=>{const b=e.target.closest('[data-base-action],[data-base-finish]');if(!b)return;const id=b.dataset.id;if(b.dataset.baseAction==='accept')acceptDriver(id);else if(b.dataset.baseAction==='reject')rejectDriver(id);else if(b.dataset.baseFinish)finishBaseDriver(b.dataset.id)})}
   
-  /* ===== YADAH: PESTAÑA BASE MOVIBLE VERTICALMENTE ===== */
   (function(){
     const tab=$('yadah-base-tab');
     const box=$('yadah-base-notifications');
@@ -3216,7 +3314,6 @@ function applyVehicleHistory() {
     });
   }
 
-  // Cerrar el panel de notificaciones al hacer clic fuera de él y de la pestaña
   document.addEventListener('click', e => {
     const box = $('yadah-base-notifications');
     const tab = $('yadah-base-tab');
@@ -3235,4 +3332,3 @@ function applyVehicleHistory() {
   </script>
 </body>
 </html>
-
