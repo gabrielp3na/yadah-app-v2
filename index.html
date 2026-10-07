@@ -918,6 +918,7 @@
     #yadah-career-fab{position:absolute;right:12px;bottom:88px;z-index:2700;display:flex;gap:7px;flex-direction:column;align-items:flex-end}
     .yc-btn{border:1px solid #38bdf8;background:#0b1220;color:#e2e8f0;border-radius:10px;padding:9px 11px;font-size:.74rem;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.45);cursor:pointer}
     .yc-btn.primary{background:#0369a1;border-color:#38bdf8;color:#fff}.yc-btn.history{background:#111827}
+    .yc-nearest{font-size:.76rem;color:#0f766e;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:7px;padding:6px 8px;margin-top:5px}
     #yadah-career-stack{--career-panel-width:min(320px,86vw);position:fixed;right:0;left:auto;top:var(--career-tab-top,50%);transform:translateY(-50%);z-index:3925;width:var(--career-panel-width);max-height:48vh;overflow-y:auto;overflow-x:hidden;box-sizing:border-box;padding:7px;background:#05070B;border:1px solid #22d3ee;border-right:0;border-radius:12px 0 0 12px;box-shadow:-8px 8px 24px rgba(0,0,0,.45);display:none;flex-direction:column;gap:5px;transition:right .25s ease} #yadah-career-stack.closed{right:calc(-1 * var(--career-panel-width))}
     .yc-card{pointer-events:auto;background:rgba(3,7,18,.96);border:1px solid #38bdf8;border-radius:11px;padding:9px 10px;box-shadow:0 5px 16px rgba(0,0,0,.55)}
     .yc-card.pending{border-color:#38bdf8}.yc-card.active{border-color:#f59e0b}.yc-card.done{border-color:#38bdf8}
@@ -1419,7 +1420,7 @@
       localStorage.setItem('yadah_custom_pois', JSON.stringify(pois));
       renderCustomPoiMarkers();
       if (broadcast && mqttClient && mqttClient.connected) {
-        mqttClient.publish(TOPIC_POI, JSON.stringify({ action: 'sync', pois: pois }));
+        mqttClient.publish(TOPIC_POI, JSON.stringify({ action: 'sync', pois: pois }), { retain: true, qos: 1 });
       }
     }
 
@@ -2226,6 +2227,10 @@ function applyVehicleHistory() {
       mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', opts);
       mqttClient.on('connect', () => {
         mqttClient.subscribe([TOPIC_GPS, TOPIC_ALERT, TOPIC_PANIC, TOPIC_NAV, TOPIC_STATUS, TOPIC_BASE, TOPIC_MODULATOR, TOPIC_POI, TOPIC_ASSIGN, TOPIC_MESSAGES, TOPIC_VOICE_MESSAGE, RADIO_SIGNAL_TOPIC]);
+        // GABO 37: publicar el registro actual de puntos para que todos los dispositivos lo reciban, incluso si se conectan después.
+        if (typeof getCustomPOIs === 'function' && mqttClient && mqttClient.connected) {
+          mqttClient.publish(TOPIC_POI, JSON.stringify({ action: 'sync', pois: getCustomPOIs() }), { retain: true, qos: 1 });
+        }
         // Cada conexión MQTT vuelve a anunciar el dispositivo. Esto evita que una
         // conexión inicial perdida deje a WebRTC esperando indefinidamente.
         radioInitialized = false;
@@ -2269,7 +2274,7 @@ function applyVehicleHistory() {
           } else if (topic === TOPIC_VOICE_MESSAGE) {
             receiveSharedVoiceMessage(JSON.parse(text));
           } else if (topic === TOPIC_POI) {
-            const d = JSON.parse(text); if (d && d.action === 'sync' && d.pois) { localStorage.setItem('yadah_custom_pois', JSON.stringify(d.pois)); renderCustomPoiMarkers(); }
+            const d = JSON.parse(text); if (d && d.action === 'sync' && Array.isArray(d.pois)) { const incoming=d.pois; const current=getCustomPOIs(); const merged=[...incoming]; current.forEach(p=>{ if(!merged.some(x=>String(x.id)===String(p.id))) merged.push(p); }); localStorage.setItem('yadah_custom_pois', JSON.stringify(merged)); renderCustomPoiMarkers(); }
           } else if (topic === TOPIC_BASE) {
             const d = JSON.parse(text); if (d.coords) { defaultBaseCoords = d.coords; localStorage.setItem('yadah_base_coords', JSON.stringify(defaultBaseCoords)); if (permanentBaseMarker) permanentBaseMarker.setLngLat(defaultBaseCoords); }
           } else if (topic === TOPIC_MODULATOR) {
@@ -3180,11 +3185,52 @@ function applyVehicleHistory() {
     function speakNewCareer(place){
       try{ if(!('speechSynthesis' in window)) return; const text=('Nuevo pedido en '+String(place||'').trim()).trim(); if(!text) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='es-SV'; u.rate=0.95; u.pitch=1; window.speechSynthesis.speak(u); }catch(e){}
     }
+    function getCareerDestinationGeo(place){
+      const input=$('yc-place-input');
+      const dlat=input?.dataset?.lat, dlon=input?.dataset?.lon;
+      if(Number.isFinite(Number(dlat))&&Number.isFinite(Number(dlon))) return {lat:Number(dlat),lon:Number(dlon),source:input.dataset.geoSource||'memoria'};
+      try{
+        const poi=(typeof getCustomPOIs==='function'?getCustomPOIs():[]).find(p=>p&&String(p.name||'').trim().toLocaleLowerCase('es-SV')===place.toLocaleLowerCase('es-SV'));
+        if(poi&&Number.isFinite(Number(poi.lat))&&Number.isFinite(Number(poi.lon))) return {lat:Number(poi.lat),lon:Number(poi.lon),source:'punto-local'};
+      }catch(e){}
+      try{
+        const fences=JSON.parse(localStorage.getItem('yadah_geofences_v1')||'[]');
+        const f=fences.find(x=>x&&x.name&&String(x.name).trim().toLocaleLowerCase('es-SV')===place.toLocaleLowerCase('es-SV'));
+        if(f&&Array.isArray(f.points)&&f.points.length>=3){
+          const pts=f.points.map(p=>[Number(p[0]),Number(p[1])]).filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));
+          if(pts.length>=3){ const lon=pts.reduce((a,p)=>a+p[0],0)/pts.length, lat=pts.reduce((a,p)=>a+p[1],0)/pts.length; return {lat,lon,source:'geocerca'}; }
+        }
+      }catch(e){}
+      return null;
+    }
+    function distanceKm(a,b){
+      if(!a||!b||!Number.isFinite(Number(a.lat))||!Number.isFinite(Number(a.lon))||!Number.isFinite(Number(b.lat))||!Number.isFinite(Number(b.lon))) return Infinity;
+      const R=6371, p1=Number(a.lat)*Math.PI/180,p2=Number(b.lat)*Math.PI/180,dp=(Number(b.lat)-Number(a.lat))*Math.PI/180,dl=(Number(b.lon)-Number(a.lon))*Math.PI/180;
+      const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2; return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
+    }
+    function getNearestAvailableVehicle(geo){
+      if(!geo||typeof fleetStatusMap==='undefined') return null;
+      const busy=new Set((ycState.careers||[]).filter(c=>c&&c.status==='active'&&c.driver).map(c=>String(c.driver)));
+      const candidates=[];
+      const units=typeof ALL_UNITS!=='undefined'?ALL_UNITS:[];
+      units.filter(u=>u&&u!=='Modulador').forEach(u=>{
+        if(busy.has(String(u))) return;
+        const st=fleetStatusMap[u];
+        if(!st||!['online','stopped','at-base'].includes(st.state)) return;
+        if(Date.now()-Number(st.lastSeen||0)>60000) return;
+        const d=distanceKm(geo,{lat:st.lat,lon:st.lon});
+        if(Number.isFinite(d)) candidates.push({unit:u,distanceKm:d,state:st.state});
+      });
+      candidates.sort((a,b)=>a.distanceKm-b.distanceKm);
+      return candidates[0]||null;
+    }
     function createCareer(place){
       place=(place||'').trim(); if(!place) return alert('Escribe el lugar de la carrera.');
-      if(window.YadahDestinationMemory?.remember) window.YadahDestinationMemory.remember(place);
+      const geo=getCareerDestinationGeo(place);
+      if(window.YadahDestinationMemory?.remember) window.YadahDestinationMemory.remember(place,undefined,geo);
       ensureDay();
-      ycState.careers.unshift({id:uid(),day:ycState.day,place,createdAt:now(),createdBy:unitName(),status:'pending',driver:null,acceptedAt:null,startedAt:null,finishedAt:null});
+      const nearest=getNearestAvailableVehicle(geo);
+      ycState.careers.unshift({id:uid(),day:ycState.day,place,geo:geo||null,createdAt:now(),createdBy:unitName(),status:'pending',driver:null,acceptedAt:null,startedAt:null,finishedAt:null,nearestUnit:nearest?.unit||null,nearestDistanceKm:Number.isFinite(nearest?.distanceKm)?nearest.distanceKm:null});
       publishState(); closeModal();
     }
     function findCareer(id){ return ycState.careers.find(c=>c.id===id); }
@@ -3224,7 +3270,9 @@ function applyVehicleHistory() {
           action=`<div class="yc-state active">🟡 OCUPADO — ${esc(owner)}</div>`;
           if(c.driver===unitName() || isMod()) action+=`<button class="finish" data-yc-action="finish" data-id="${c.id}">${c.driver===unitName()?'FINALIZAR CARRERA':'Marcar finalizada'}</button>`;
         }
-        card.innerHTML=`<div class="yc-line"><div class="yc-place">🚕 ${esc(c.place)}</div><div class="yc-time">${fmtTime(c.createdAt)}</div></div>${c.status==='pending'?'<div class="yc-state">🔵 PENDIENTE</div>':''}${action}`;
+        const liveNearest=getNearestAvailableVehicle(c.geo);
+        const nearText=c.geo&&liveNearest?`<div class="yc-nearest">🚕 Más cercano: <b>${esc(liveNearest.unit)}</b> · ${liveNearest.distanceKm<1?(liveNearest.distanceKm*1000).toFixed(0)+' m':liveNearest.distanceKm.toFixed(2)+' km'}</div>`:c.geo?'<div class="yc-nearest">📍 Geolocalizado · ningún vehículo disponible</div>':'<div class="yc-nearest">📍 Lugar guardado sin geolocalización</div>';
+        card.innerHTML=`<div class="yc-line"><div class="yc-place">🚕 ${esc(c.place)}</div><div class="yc-time">${fmtTime(c.createdAt)}</div></div>${nearText}${c.status==='pending'?'<div class="yc-state">🔵 PENDIENTE</div>':''}${action}`;
         stack.appendChild(card);
       });
     }
@@ -3345,13 +3393,13 @@ function applyVehicleHistory() {
       const memory=window.YadahDestinationMemory;
       const arr=memory&&typeof memory.suggest==='function'?memory.suggest(query):[];
       if(!arr.length){box.style.display='none';box.innerHTML='';return;}
-      box.innerHTML=arr.map((x,i)=>`<button type="button" data-call-dest-index="${i}" style="display:block;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #e5e7eb;background:#fff;color:#111827;text-align:left;font-size:15px;font-weight:600;cursor:pointer">${String(x.text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</button>`).join('');
+      box.innerHTML=arr.map((x,i)=>`<button type="button" data-call-dest-index="${i}" style="display:block;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #e5e7eb;background:#fff;color:#111827;text-align:left;font-size:15px;font-weight:600;cursor:pointer">${x.isLocalPoint?'📍⭐ ':x.geo?'📍 ':''}${String(x.text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}${x.isLocalPoint?' <span style="float:right;color:#16a34a;font-size:12px">PUNTO</span>':x.geo?' <span style="float:right;color:#16a34a;font-size:12px">GEO</span>':''}</button>`).join('');
       box.style.display='block';
-      box.querySelectorAll('[data-call-dest-index]').forEach((b,i)=>b.addEventListener('mousedown',e=>{e.preventDefault();$('yc-place-input').value=arr[i].text;box.style.display='none';}));
+      box.querySelectorAll('[data-call-dest-index]').forEach((b,i)=>b.addEventListener('mousedown',e=>{e.preventDefault();const chosen=arr[i];$('yc-place-input').value=chosen.text;const g=chosen.geo||null;if(g){$('yc-place-input').dataset.lat=g.lat;$('yc-place-input').dataset.lon=g.lon;$('yc-place-input').dataset.geoSource=g.source||'memoria';if(window.YadahDestinationMemory?.remember)window.YadahDestinationMemory.remember(chosen.text,undefined,g);}else{delete $('yc-place-input').dataset.lat;delete $('yc-place-input').dataset.lon;delete $('yc-place-input').dataset.geoSource;}box.style.display='none';}));
     }
     function bind(){
       $('yc-new-btn')?.addEventListener('click',openNew); $('yc-history-btn')?.addEventListener('click',openHistory); $('yc-close')?.addEventListener('click',closeModal); $('yc-cancel')?.addEventListener('click',closeModal); $('yc-history-close')?.addEventListener('click',closeModal); $('yc-create')?.addEventListener('click',()=>createCareer($('yc-place-input').value));
-      $('yc-place-input')?.addEventListener('keydown',e=>{if(e.key==='Enter')createCareer(e.target.value);}); $('yc-place-input')?.addEventListener('input',e=>updateCallDestinationSuggestions(e.target.value)); $('yc-place-input')?.addEventListener('focus',e=>updateCallDestinationSuggestions(e.target.value)); document.addEventListener('click',e=>{const box=$('yc-place-dropdown');if(box&&!e.target.closest('#yc-place-input')&&!e.target.closest('#yc-place-dropdown'))box.style.display='none';});
+      $('yc-place-input')?.addEventListener('keydown',e=>{if(e.key==='Enter')createCareer(e.target.value);}); $('yc-place-input')?.addEventListener('input',e=>{delete e.target.dataset.lat;delete e.target.dataset.lon;delete e.target.dataset.geoSource;updateCallDestinationSuggestions(e.target.value);}); $('yc-place-input')?.addEventListener('focus',e=>updateCallDestinationSuggestions(e.target.value)); document.addEventListener('click',e=>{const box=$('yc-place-dropdown');if(box&&!e.target.closest('#yc-place-input')&&!e.target.closest('#yc-place-dropdown'))box.style.display='none';});
       $('yc-mic')?.addEventListener('click',startCareerVoice);
       $('yadah-career-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-career-modal')closeModal();});
       $('yadah-career-stack')?.addEventListener('click',e=>{const b=e.target.closest('[data-yc-action]');if(!b)return; const id=b.dataset.id; if(b.dataset.ycAction==='accept')acceptCareer(id); else if(b.dataset.ycAction==='finish')finishCareer(id); else if(b.dataset.ycAction==='cancel')cancelCareer(id);});
@@ -3373,11 +3421,69 @@ function applyVehicleHistory() {
   const DEST_MEMORY_KEY='yadah_destination_memory_v2';
   function loadDestinationMemory(){try{const x=JSON.parse(localStorage.getItem(DEST_MEMORY_KEY)||'{}');return x&&typeof x==='object'?x:{}}catch(e){return {}}}
   function saveDestinationMemory(m){try{localStorage.setItem(DEST_MEMORY_KEY,JSON.stringify(m))}catch(e){}}
-  function rememberDestination(place,price){place=(place||'').trim();if(!place)return;const m=loadDestinationMemory();const key=place.toLocaleLowerCase('es-SV');const old=m[key]||{text:place,count:0,lastUsed:0,prices:{}};old.text=place;old.count=Number(old.count||0)+1;old.lastUsed=Date.now();old.prices=old.prices&&typeof old.prices==='object'?old.prices:{};if(Number.isFinite(Number(price))&&Number(price)>0){const p=(Math.round(Number(price)*100)/100).toFixed(2);const po=old.prices[p]||{count:0,lastUsed:0};po.count=Number(po.count||0)+1;po.lastUsed=Date.now();old.prices[p]=po;}m[key]=old;saveDestinationMemory(m)}
+  function rememberDestination(place,price,geo){place=(place||'').trim();if(!place)return;const m=loadDestinationMemory();const key=place.toLocaleLowerCase('es-SV');const old=m[key]||{text:place,count:0,lastUsed:0,prices:{},geo:null};old.text=place;old.count=Number(old.count||0)+1;old.lastUsed=Date.now();old.prices=old.prices&&typeof old.prices==='object'?old.prices:{};if(geo&&Number.isFinite(Number(geo.lat))&&Number.isFinite(Number(geo.lon))){old.geo={lat:Number(geo.lat),lon:Number(geo.lon),source:geo.source||'memoria'};}if(Number.isFinite(Number(price))&&Number(price)>0){const p=(Math.round(Number(price)*100)/100).toFixed(2);const po=old.prices[p]||{count:0,lastUsed:0};po.count=Number(po.count||0)+1;po.lastUsed=Date.now();old.prices[p]=po;}m[key]=old;saveDestinationMemory(m)}
   function getLearnedPrice(x){if(!x||!x.prices||typeof x.prices!=='object')return null;const rows=Object.entries(x.prices).filter(([p,v])=>Number(p)>0&&v&&Number(v.count)>0);if(!rows.length)return null;rows.sort((a,b)=>(Number(b[1].count||0)-Number(a[1].count||0))||(Number(b[1].lastUsed||0)-Number(a[1].lastUsed||0)));return Number(rows[0][0]);}
   function syncDestinationMemoryFromBaseState(){const m=loadDestinationMemory();(state.items||[]).forEach(i=>{const place=String(i?.place||'').trim();if(!place)return;const key=place.toLocaleLowerCase('es-SV');if(!m[key])m[key]={text:place,count:0,lastUsed:0,prices:{}};const x=m[key];x.text=place;x.count=Math.max(Number(x.count||0),1);x.lastUsed=Math.max(Number(x.lastUsed||0),Number(i.createdAt||0));x.prices=x.prices&&typeof x.prices==='object'?x.prices:{};if(Number.isFinite(Number(i.price))&&Number(i.price)>0){const p=(Math.round(Number(i.price)*100)/100).toFixed(2);const po=x.prices[p]||{count:0,lastUsed:0};po.count=Math.max(Number(po.count||0),1);po.lastUsed=Math.max(Number(po.lastUsed||0),Number(i.createdAt||0));x.prices[p]=po;}});saveDestinationMemory(m)}
-  function getDestinationSuggestions(query){syncDestinationMemoryFromBaseState();const q=(query||'').trim().toLocaleLowerCase('es-SV');const m=loadDestinationMemory();return Object.values(m).filter(x=>x&&x.text&&(!q||x.text.toLocaleLowerCase('es-SV').includes(q))).sort((a,b)=>(Number(b.count||0)-Number(a.count||0))||(Number(b.lastUsed||0)-Number(a.lastUsed||0))).slice(0,10)}
-  function updateBaseDestinationSuggestions(query){const box=$('yb-destination-dropdown');if(!box)return;const arr=getDestinationSuggestions(query);if(!arr.length){box.style.display='none';box.innerHTML='';return}box.innerHTML=arr.map((x,i)=>{const price=getLearnedPrice(x);const priceText=price!=null?` <span style="float:right;color:#0f766e;font-weight:900">$${price.toFixed(2)}</span>`:'';return `<button type="button" data-dest-index="${i}" style="display:block;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #e5e7eb;background:#fff;color:#111827;text-align:left;font-size:15px;font-weight:600;cursor:pointer">${String(x.text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}${priceText}</button>`}).join('');box.style.display='block';box.querySelectorAll('[data-dest-index]').forEach((b,i)=>b.addEventListener('mousedown',e=>{e.preventDefault();$('yb-destination').value=arr[i].text;const price=getLearnedPrice(arr[i]);if(price!=null){const sel=$('yb-price');const ps=price.toFixed(2);const opt=Array.from(sel.options).find(o=>Number(o.value).toFixed(2)===ps);if(opt){sel.value=opt.value;$('yb-custom-price').style.display='none';$('yb-custom-price').value='';}else{sel.value='__custom__';$('yb-custom-price').style.display='block';$('yb-custom-price').value=ps;}}box.style.display='none';}))}
+  function getDestinationSuggestions(query){
+    syncDestinationMemoryFromBaseState();
+    const q=(query||'').trim().toLocaleLowerCase('es-SV');
+    const m=loadDestinationMemory();
+    const merged={};
+    Object.values(m).forEach(x=>{
+      if(!x||!x.text)return;
+      const key=String(x.text).trim().toLocaleLowerCase('es-SV');
+      merged[key]={...x};
+    });
+    // 2) Los puntos locales geolocalizados SIEMPRE se incorporan directamente.
+    //    No dependemos de que previamente hayan sido escritos en la memoria.
+    try{
+      const pois=typeof getCustomPOIs==='function'?getCustomPOIs():[];
+      pois.forEach(p=>{
+        if(!p||!p.name)return;
+        const name=String(p.name).trim();
+        const lat=Number(p.lat), lon=Number(p.lon);
+        if(!name||!Number.isFinite(lat)||!Number.isFinite(lon))return;
+        const key=name.toLocaleLowerCase('es-SV');
+        const old=merged[key]||{text:name,count:0,lastUsed:0,prices:{}};
+        old.text=name;
+        old.geo={lat,lon,source:'punto-local'};
+        old.isLocalPoint=true;
+        merged[key]=old;
+      });
+    }catch(e){}
+    try{
+      const fences=JSON.parse(localStorage.getItem('yadah_geofences_v1')||'[]');
+      fences.forEach(f=>{
+        if(!f||!f.name||!Array.isArray(f.points)||f.points.length<3)return;
+        const name=String(f.name).trim(); if(!name)return;
+        const pts=f.points.map(p=>[Number(p[0]),Number(p[1])]).filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));
+        if(pts.length<3)return;
+        const key=name.toLocaleLowerCase('es-SV');
+        const old=merged[key]||{text:name,count:0,lastUsed:0,prices:{}};
+        if(!old.geo){
+          old.geo={lat:pts.reduce((a,p)=>a+p[1],0)/pts.length,lon:pts.reduce((a,p)=>a+p[0],0)/pts.length,source:'geocerca'};
+        }
+        merged[key]=old;
+      });
+    }catch(e){}
+    return Object.values(merged)
+      .filter(x=>x&&x.text&&(!q||x.text.toLocaleLowerCase('es-SV').includes(q)))
+      .sort((a,b)=>{
+        const an=String(a.text).toLocaleLowerCase('es-SV'), bn=String(b.text).toLocaleLowerCase('es-SV');
+        const rank=(x,n)=>{
+          if(q && n===q) return 0;
+          if(q && n.startsWith(q)) return x.isLocalPoint ? 1 : 2;
+          if(q && n.includes(q)) return x.isLocalPoint ? 3 : 4;
+          return x.isLocalPoint ? 5 : 6;
+        };
+        return rank(a,an)-rank(b,bn)
+          || (a.geo?0:1)-(b.geo?0:1)
+          || (Number(b.count||0)-Number(a.count||0))
+          || (Number(b.lastUsed||0)-Number(a.lastUsed||0));
+      })
+      .slice(0,10);
+  }
+  function updateBaseDestinationSuggestions(query){const box=$('yb-destination-dropdown');if(!box)return;const arr=getDestinationSuggestions(query);if(!arr.length){box.style.display='none';box.innerHTML='';return}box.innerHTML=arr.map((x,i)=>{const price=getLearnedPrice(x);const priceText=price!=null?` <span style="float:right;color:#0f766e;font-weight:900">$${price.toFixed(2)}</span>`:'';const geoText=x.geo?` <span style="float:right;color:#16a34a;font-size:11px;font-weight:900;margin-right:${price!=null?'58px':'0'}">📍 GEO</span>`:'';return `<button type="button" data-dest-index="${i}" style="display:block;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #e5e7eb;background:#fff;color:#111827;text-align:left;font-size:15px;font-weight:600;cursor:pointer">${String(x.text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}${geoText}${priceText}</button>`}).join('');box.style.display='block';box.querySelectorAll('[data-dest-index]').forEach((b,i)=>b.addEventListener('mousedown',e=>{e.preventDefault();$('yb-destination').value=arr[i].text;const price=getLearnedPrice(arr[i]);if(price!=null){const sel=$('yb-price');const ps=price.toFixed(2);const opt=Array.from(sel.options).find(o=>Number(o.value).toFixed(2)===ps);if(opt){sel.value=opt.value;$('yb-custom-price').style.display='none';$('yb-custom-price').value='';}else{sel.value='__custom__';$('yb-custom-price').style.display='block';$('yb-custom-price').value=ps;}}box.style.display='none';}))}
   window.YadahDestinationMemory={remember:rememberDestination,suggest:getDestinationSuggestions};
   function ensureDay(){const d=dayKey(now());if(state.day!==d){state=fresh();save()}}function getBaseForm(){const dest=$('yb-destination'),priceSel=$('yb-price'),customPrice=$('yb-custom-price');const place=(dest?.value||'').trim();if(!place){alert('Escribe el destino.');return null}let price=priceSel&&priceSel.value==='__custom__'?Number(customPrice?.value||0):Number(priceSel?.value||0);if(!Number.isFinite(price)||price<=0){alert('Agrega un precio válido.');return null}price=Math.round(price*100)/100;return{place,price}}function find(id){return state.items.find(i=>i.id===id)}
   function vehicleAtBase(){try{const arr=Object.entries(fleetStatusMap||{}).filter(([u,v])=>u&&u!=='Modulador'&&v&&v.state==='at-base');arr.sort((a,b)=>(Number(a[1].arrivalTime||Infinity)-Number(b[1].arrivalTime||Infinity)));return arr.length?arr[0][0]:null}catch(e){return null}}function sendAssignment(item,target){if(typeof mqttClient!=='undefined'&&mqttClient&&mqttClient.connected)mqttClient.publish('yadah/radio/flota/assignment',JSON.stringify({targetUnit:target,lon:defaultBaseCoords[0],lat:defaultBaseCoords[1],label:item.place,price:item.price,source:'base',baseQueueId:item.id}))}
