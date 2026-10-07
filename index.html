@@ -1064,6 +1064,7 @@
     <div style="font-size:0.75rem; color:#94a3b8;">Trazar ruta de las últimas 24 horas:</div>
     <div class="vh-actions">
       <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory()">Ver Recorrido 🗺️</button>
+      <button class="btn-vh btn-vh-apply" onclick="shareVehicleTrackingLink()">Compartir recorrido 📲</button>
       <button class="btn-vh btn-vh-close" onclick="closeVehicleHistory()">Cerrar ✕</button>
     </div>
     <div id="vh-status-info" style="font-size:0.7rem; color:#0284c7; text-align:center; margin-top:4px;"></div>
@@ -1834,15 +1835,30 @@
 
     function openVehicleHistoryFromList(unitId) {
       if (!isModulator()) return;
-      if (confirm(`Opciones para ${unitId}:\n¿Copiar enlace de seguimiento para el cliente?`)) {
-        toggleFleetDrawer(false);
-        const clientLink = `${window.location.href.split('?')[0]}?track=${encodeURIComponent(unitId)}`;
-        navigator.clipboard.writeText(clientLink).then(() => alert(`📋 ¡Enlace copiado!\n${clientLink}`));
+      toggleFleetDrawer(false);
+      activeHistoryUnit = unitId;
+      document.getElementById('vh-unit-name').textContent = unitId;
+      const rangeBox = document.getElementById('vh-range-options');
+      if (rangeBox) rangeBox.style.display = 'none';
+      const statusDiv = document.getElementById('vh-status-info');
+      if (statusDiv) statusDiv.textContent = '';
+      if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'flex';
+    }
+
+    function shareVehicleTrackingLink() {
+      if (!activeHistoryUnit) return;
+      const clientLink = `${window.location.href.split('?')[0]}?track=${encodeURIComponent(activeHistoryUnit)}`;
+      const shareText = `🚕 Yadah: puede seguir en tiempo real el recorrido de ${activeHistoryUnit}.\n\n${clientLink}`;
+      if (navigator.share) {
+        navigator.share({
+          title: `Seguimiento ${activeHistoryUnit}`,
+          text: `🚕 Yadah: seguimiento de ${activeHistoryUnit}`,
+          url: clientLink
+        }).catch(() => {});
         return;
       }
-      toggleFleetDrawer(false); activeHistoryUnit = unitId;
-      document.getElementById('vh-unit-name').textContent = unitId;
-      if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'flex';
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+      window.open(whatsappUrl, '_blank');
     }
 
     let audioCtx = null;
