@@ -423,6 +423,7 @@
     .btn-nav-start { background: #0284c7; color: #ffffff; }
     .btn-nav-cancel { background: #ef4444; color: #ffffff; }
 
+
     .map-floating-controls {
       position: absolute;
       top: 65px;
@@ -1106,7 +1107,7 @@
       <span>📻</span> Yadah PTT
     </div>
     <div class="header-actions">
-      <button class="btn-header header-icon-btn driver-view-top-btn" id="btn-view-top" type="button" title="Vista desde arriba" aria-label="Vista desde arriba" style="display:none;" onclick="toggleDriverView()">⬇️</button>
+      <button class="btn-header header-icon-btn driver-view-top-btn" id="btn-view-top" type="button" title="Explorar mapa desde arriba" aria-label="Explorar mapa desde arriba" style="display:none;" onclick="toggleDriverView()">⬇️</button>
       <button class="btn-header header-icon-btn" id="connected-people-btn" type="button" title="Personas conectadas" onclick="toggleConnectedPeople()">👥<span class="header-badge" id="connected-people-count">0</span></button>
       <button class="btn-header header-icon-btn" id="replay-last-audio-btn" type="button" title="Escuchar último audio" aria-label="Escuchar último audio" onclick="replayLatestVoice()">↻</button>
       <button class="btn-header header-icon-btn" id="message-inbox-btn" type="button" title="Mensajes de radio" onclick="openMessageInbox()">💬<span class="header-badge" id="missed-message-count">0</span></button>
@@ -1143,7 +1144,7 @@
         <button class="btn-float-action" id="btn-recenter" title="Re-centrar" style="display:none;"><span class="option-icon">🎯</span><span>Recentrar mapa</span></button>
         <button class="btn-float-action" title="Acercar Zoom" onclick="zoomIn()" style="display:none;"><span class="option-icon">➕</span><span>Acercar</span></button>
         <button class="btn-float-action" title="Alejar Zoom" onclick="zoomOut()" style="display:none;"><span class="option-icon">➖</span><span>Alejar</span></button>
-        <button class="btn-float-action" title="Pantalla Completa" onclick="toggleFullScreen()" style="display:none;"><span class="option-icon">⛶</span><span>Pantalla completa</span></button>
+        <button class="btn-float-action" id="btn-fullscreen" title="Pantalla Completa" onclick="toggleFullScreen()" style="display:none;"><span class="option-icon">⛶</span><span>Pantalla completa</span></button>
         <button class="btn-float-action" id="btn-unlock-base" title="Desbloquear para Mover Base" onclick="toggleBaseUnlock(); closeMapOptions();" style="display:none;"><span class="option-icon">🔒</span><span>Bloquear / mover base</span></button>
       </div>
     </div>
@@ -1548,6 +1549,7 @@
     const btnSos = document.getElementById('btn-sos');
     const btnToggleFleet = document.getElementById('btn-toggle-fleet');
     const btnUnlockBase = document.getElementById('btn-unlock-base');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
     const mapContainer = document.getElementById('map-container');
     const vehicleHistoryCard = document.getElementById('vehicle-history-card');
     const navSearchBar = document.getElementById('nav-search-bar');
@@ -1560,6 +1562,8 @@
     const btnPtt = document.getElementById('btn-ptt');
 
     let firstPersonMode = false;
+    // En modo explorar, el motorista puede mover y recorrer libremente el mapa sin que el GPS lo recentre.
+    let driverMapExploreMode = false;
     let isNightMode = localStorage.getItem('yadah_night_mode') === 'true';
     let showTraffic = false;
     let activeHistoryUnit = null;
@@ -1733,11 +1737,12 @@
         if(document.querySelector('.controls-panel'))document.querySelector('.controls-panel').style.display='';
         if(lblUnit)lblUnit.textContent=currentUnit;
         firstPersonMode=isDriver();
+        driverMapExploreMode=false;
         if(btnSos)btnSos.style.display=isDriver()?'flex':'none';
         if(navSearchBar)navSearchBar.style.display=isDriver()?'flex':'none';
         if(btnToggleFleet)btnToggleFleet.style.display=isModulator()?'block':'none';
         if(fleetSummaryBar)fleetSummaryBar.style.display=isModulator()?'flex':'none';
-        if(btnUnlockBase)btnUnlockBase.style.display=isModulator()?'flex':'none'; if(btnViewMode)btnViewMode.style.display='none'; if(btnViewTop)btnViewTop.style.display=isDriver()?'flex':'none';
+        if(btnUnlockBase)btnUnlockBase.style.display=isModulator()?'flex':'none'; if(btnFullscreen)btnFullscreen.style.display=isModulator()?'flex':'none'; if(btnViewMode)btnViewMode.style.display='none'; if(btnViewTop)btnViewTop.style.display=isDriver()?'flex':'none'; 
         if(!isModulator()&&vehicleHistoryCard)vehicleHistoryCard.style.display='none';
         updateViewButtonUI();applyNightModeTheme();
         if(btnTrafficToggle)btnTrafficToggle.classList.toggle('active',showTraffic);
@@ -1778,8 +1783,10 @@
       if (fleetSummaryBar) fleetSummaryBar.style.display = 'none';
       if (btnToggleFleet) btnToggleFleet.style.display = 'none';
       if (btnUnlockBase) btnUnlockBase.style.display = 'none';
+      if (btnFullscreen) btnFullscreen.style.display = 'none';
       if (navSearchBar) navSearchBar.style.display = 'none';
       if (btnSos) btnSos.style.display = 'none';
+      if (btnViewTop) btnViewTop.style.display = 'none';
     }
 
     function toggleBaseUnlock() {
@@ -1791,7 +1798,7 @@
       } else { baseUnlocked = false; if (btnUnlockBase) { btnUnlockBase.textContent = '🔒'; btnUnlockBase.classList.remove('unlocked'); } alert("🔒 Base bloqueada."); }
     }
 
-    function updateViewButtonUI() { if (btnViewMode) { btnViewMode.textContent = firstPersonMode ? '🗺️ Ver desde arriba' : '🚘 Volver a conducción'; btnViewMode.classList.toggle('active', firstPersonMode); } if (btnViewTop) { btnViewTop.textContent = firstPersonMode ? '🗺️' : '🚘'; btnViewTop.title = firstPersonMode ? 'Ver desde arriba' : 'Volver a vista de conducción'; btnViewTop.setAttribute('aria-label', btnViewTop.title); btnViewTop.classList.toggle('active', !firstPersonMode); } }
+    function updateViewButtonUI() { if (btnViewMode) { btnViewMode.textContent = driverMapExploreMode ? '🚘 Volver a conducción' : '🗺️ Explorar mapa'; btnViewMode.classList.toggle('active', driverMapExploreMode); } if (btnViewTop) { btnViewTop.textContent = driverMapExploreMode ? '🚘' : '🗺️'; btnViewTop.title = driverMapExploreMode ? 'Volver a vista de conducción' : 'Explorar mapa desde arriba'; btnViewTop.setAttribute('aria-label', btnViewTop.title); btnViewTop.classList.toggle('active', driverMapExploreMode); } }
     function applyNightModeTheme() {
       if (isNightMode) { if (mapContainer) mapContainer.classList.add('map-night-mode'); if (btnThemeMode) { btnThemeMode.textContent = '☀️'; btnThemeMode.classList.add('active'); } }
       else { if (mapContainer) mapContainer.classList.remove('map-night-mode'); if (btnThemeMode) { btnThemeMode.textContent = '🌙'; btnThemeMode.classList.remove('active'); } }
@@ -2126,27 +2133,50 @@ function applyVehicleHistory() {
 
     function toggleDriverView() {
       if (!isDriver() || !map) return;
-      if (!myLastCoords) { alert("⚠️ Aún no hay ubicación GPS del vehículo."); return; }
-      firstPersonMode = !firstPersonMode;
+      // La exploración libre NO depende del GPS: se puede abrir en cualquier momento.
+
+      // Un toque cambia entre conducción automática y exploración libre.
+      driverMapExploreMode = !driverMapExploreMode;
+      firstPersonMode = !driverMapExploreMode;
       updateViewButtonUI();
       map.resize();
-      if (!firstPersonMode) {
+      map.stop();
+
+      if (driverMapExploreMode) {
+        // Vista completamente cenital y controles libres: el mapa ya no sigue al GPS.
         map.dragPan.enable();
-        map.touchZoomRotate.enable();
         map.scrollZoom.enable();
-        map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], zoom: 16.5, pitch: 0, bearing: 0, offset: [0, 0], duration: 500 });
+        map.doubleClickZoom.enable();
+        map.touchZoomRotate.enable();
+        map.dragRotate.disable();
+        const currentCenter = map.getCenter();
+        map.easeTo({
+          center: [currentCenter.lng, currentCenter.lat],
+          zoom: 16.5,
+          pitch: 0,
+          bearing: 0,
+          offset: [0, 0],
+          duration: 500
+        });
       } else {
+        // Regresar a la vista de conducción, siguiendo nuevamente al vehículo.
+        map.dragPan.enable();
+        map.scrollZoom.enable();
+        map.doubleClickZoom.enable();
+        map.touchZoomRotate.enable();
+        map.dragRotate.enable();
         applyCameraPerspective();
       }
       closeMapOptions();
     }
-    if (btnViewMode) btnViewMode.addEventListener('click', toggleDriverView);
-    if (btnViewTop) btnViewTop.addEventListener('click', toggleDriverView);
+    // Los botones de exploración ya llaman toggleDriverView() mediante onclick.
+    // No agregamos otro listener aquí para evitar que un toque haga el cambio dos veces.
 
     function applyCameraPerspective() {
       if (!map) return;
       if (isModulator()) { map.easeTo({ center: defaultBaseCoords, zoom: 16.5, pitch: 0, bearing: 0, offset: [0, 0], duration: 600 }); return; }
       if (!myLastCoords) return;
+      if (driverMapExploreMode) return;
       if (firstPersonMode) {
         map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], bearing: myHeading, pitch: 75, zoom: 17.2, offset: [0, window.innerHeight * 0.35 || 220], duration: 600 });
       } else { map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], zoom: 16.0, pitch: 0, bearing: 0, offset: [0, 0], duration: 600 }); }
@@ -2707,7 +2737,7 @@ function applyVehicleHistory() {
       window.addEventListener('click', unlockAudioHardware, { once: false, passive: true });
 
       window.addEventListener('keydown', (event) => {
-        unlockAudioAudio();
+        unlockRadioAudio();
         const tag = document.activeElement && document.activeElement.tagName;
         if (event.code === 'Space' && !event.repeat && !['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) {
           pressed = true;
