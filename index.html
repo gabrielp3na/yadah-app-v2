@@ -2946,7 +2946,13 @@ function applyVehicleHistory() {
     }
 
     bindRadioPTT();
-    checkAuth();
+
+    // Verificación explícita al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!trackingUnit) {
+        checkAuth();
+      }
+    });
   </script>
 
   <script>
