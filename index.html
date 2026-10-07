@@ -1106,7 +1106,7 @@
       <span>📻</span> Yadah PTT
     </div>
     <div class="header-actions">
-      <button class="btn-header header-icon-btn driver-view-top-btn" id="btn-view-top" type="button" title="Ver desde arriba" aria-label="Ver desde arriba" style="display:none;" onclick="toggleDriverView()">🗺️</button>
+      <button class="btn-header header-icon-btn driver-view-top-btn" id="btn-view-top" type="button" title="Vista desde arriba" aria-label="Vista desde arriba" style="display:none;" onclick="toggleDriverView()">⬇️</button>
       <button class="btn-header header-icon-btn" id="connected-people-btn" type="button" title="Personas conectadas" onclick="toggleConnectedPeople()">👥<span class="header-badge" id="connected-people-count">0</span></button>
       <button class="btn-header header-icon-btn" id="replay-last-audio-btn" type="button" title="Escuchar último audio" aria-label="Escuchar último audio" onclick="replayLatestVoice()">↻</button>
       <button class="btn-header header-icon-btn" id="message-inbox-btn" type="button" title="Mensajes de radio" onclick="openMessageInbox()">💬<span class="header-badge" id="missed-message-count">0</span></button>
@@ -1135,7 +1135,7 @@
     <div class="map-floating-controls" id="map-options-wrapper">
       <button class="map-menu-button" id="btn-map-options" type="button" title="Opciones del mapa" aria-label="Abrir menú de opciones">☰</button>
       <div class="map-options-menu" id="map-options-menu" aria-label="Opciones">
-        <button class="btn-float-action" id="btn-geofences" title="Administrar sectores"><span class="option-icon">🗺️</span><span>Sectores / geocercas</span></button>
+        <button class="btn-float-action" id="btn-geofences" title="Administrar geocercas"><span class="option-icon">📍</span><span>Sectores / geocercas</span></button>
  <button class="btn-float-action btn-float-exit" id="btn-float-logout" title="Cambiar Perfil / Cerrar Sesión" onclick="logoutUnit(); closeMapOptions();"><span class="option-icon">🚪</span><span>Salir / cerrar sesión</span></button>
         <button class="btn-float-action" id="btn-traffic-toggle" title="Tráfico en Vivo"><span class="option-icon">🚦</span><span>Ver tráfico</span></button>
         <button class="btn-float-action" id="btn-theme-mode" title="Modo Día / Noche"><span class="option-icon">🌙</span><span>Modo noche</span></button>
@@ -2124,7 +2124,22 @@ function applyVehicleHistory() {
       if (document.getElementById('stat-offline')) document.getElementById('stat-offline').textContent = `${offline} Apagados`;
     }
 
-    function toggleDriverView() { firstPersonMode = !firstPersonMode; updateViewButtonUI(); applyCameraPerspective(); if (!firstPersonMode && map) { map.dragPan.enable(); map.touchZoomRotate.enable(); map.scrollZoom.enable(); } closeMapOptions(); }
+    function toggleDriverView() {
+      if (!isDriver() || !map) return;
+      if (!myLastCoords) { alert("⚠️ Aún no hay ubicación GPS del vehículo."); return; }
+      firstPersonMode = !firstPersonMode;
+      updateViewButtonUI();
+      map.resize();
+      if (!firstPersonMode) {
+        map.dragPan.enable();
+        map.touchZoomRotate.enable();
+        map.scrollZoom.enable();
+        map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], zoom: 16.5, pitch: 0, bearing: 0, offset: [0, 0], duration: 500 });
+      } else {
+        applyCameraPerspective();
+      }
+      closeMapOptions();
+    }
     if (btnViewMode) btnViewMode.addEventListener('click', toggleDriverView);
     if (btnViewTop) btnViewTop.addEventListener('click', toggleDriverView);
 
