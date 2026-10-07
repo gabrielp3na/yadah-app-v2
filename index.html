@@ -2736,16 +2736,33 @@ function applyVehicleHistory() {
       window.addEventListener('touchstart', unlockAudioHardware, { once: false, passive: true });
       window.addEventListener('click', unlockAudioHardware, { once: false, passive: true });
 
+      let keyboardPressed = false;
+
       window.addEventListener('keydown', (event) => {
-        unlockRadioAudio();
         const tag = document.activeElement && document.activeElement.tagName;
-        if (event.code === 'Space' && !event.repeat && !['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) {
-          pressed = true;
-          startRadioTalking(event);
-        }
+        if (event.code !== 'Space' || event.repeat || ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        if (keyboardPressed) return;
+
+        keyboardPressed = true;
+        pressed = true;
+
+        // La tecla Espacio usa exactamente el mismo flujo PTT que el botón:
+        // desbloquea audio, prepara el micrófono y conecta la pista a los peers.
+        unlockRadioAudio();
+        void startRadioTalking(event);
       });
+
       window.addEventListener('keyup', (event) => {
-        if (event.code === 'Space') release(event);
+        if (event.code !== 'Space') return;
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!keyboardPressed) return;
+        keyboardPressed = false;
+        release(event);
       });
       window.addEventListener('blur', () => release(null));
       document.addEventListener('visibilitychange', () => {
