@@ -1,4 +1,3 @@
-Gabo cod 13 - Sectores y geocercas - cierre corregido
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -147,6 +146,10 @@ Gabo cod 13 - Sectores y geocercas - cierre corregido
       font-size: 1.2rem;
       border-radius: 9px;
     }
+    .driver-view-top-btn {
+      margin-right: 8px;
+    }
+
     .header-icon-btn .header-badge {
       position: absolute; top: -5px; right: -5px;
       min-width: 18px; height: 18px; padding: 0 4px;
@@ -995,7 +998,7 @@ Gabo cod 13 - Sectores y geocercas - cierre corregido
 
 /* ===== GABO COD 12: SECTORES / GEOCERCAS ===== */
 .geofence-panel{position:fixed;right:12px;top:70px;width:min(340px,calc(100vw - 24px));background:#111827;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.55);z-index:5000;display:none;padding:14px;color:#f8fafc}
-.geofence-panel.open{display:block}.geofence-panel h3{font-size:1rem;color:#38bdf8;margin-bottom:8px}.geofence-panel p{font-size:.78rem;color:#cbd5e1;line-height:1.35;margin-bottom:10px}.geofence-panel input{width:100%;padding:9px;border-radius:7px;border:1px solid #475569;background:#0f172a;color:#fff;margin-bottom:8px}.geofence-actions{display:flex;gap:6px;flex-wrap:wrap}.geofence-actions button{border:0;border-radius:7px;padding:8px 10px;font-weight:700;cursor:pointer}.gf-primary{background:#38bdf8;color:#07111d}.gf-save{background:#22c55e;color:#052e16}.gf-cancel{background:#475569;color:#fff}.gf-danger{background:#ef4444;color:#fff}.gf-list{max-height:180px;overflow:auto;margin-top:10px;border-top:1px solid #334155;padding-top:8px}.gf-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 0;border-bottom:1px solid #1f2937;font-size:.8rem}.gf-status{font-size:.75rem;color:#fbbf24;margin-top:8px}.geofence-drawing{cursor:crosshair!important}
+.geofence-panel.open{display:block}.geofence-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.geofence-panel h3{font-size:1rem;color:#38bdf8;margin-bottom:8px}.geofence-close{border:1px solid #475569;background:#1e293b;color:#fff;border-radius:7px;width:34px;height:34px;font-size:1rem;font-weight:800;cursor:pointer;flex:0 0 auto}.geofence-close:hover{background:#334155}.geofence-panel p{font-size:.78rem;color:#cbd5e1;line-height:1.35;margin-bottom:10px}.geofence-panel input{width:100%;padding:9px;border-radius:7px;border:1px solid #475569;background:#0f172a;color:#fff;margin-bottom:8px}.geofence-actions{display:flex;gap:6px;flex-wrap:wrap}.geofence-actions button{border:0;border-radius:7px;padding:8px 10px;font-weight:700;cursor:pointer}.gf-primary{background:#38bdf8;color:#07111d}.gf-save{background:#22c55e;color:#052e16}.gf-cancel{background:#475569;color:#fff}.gf-danger{background:#ef4444;color:#fff}.gf-list{max-height:180px;overflow:auto;margin-top:10px;border-top:1px solid #334155;padding-top:8px}.gf-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 0;border-bottom:1px solid #1f2937;font-size:.8rem}.gf-status{font-size:.75rem;color:#fbbf24;margin-top:8px}.geofence-drawing{cursor:crosshair!important}
 #geofence-sector-badge{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f172aee;border:1px solid #38bdf8;border-radius:20px;padding:7px 14px;z-index:4900;font-size:.78rem;display:none;box-shadow:0 6px 20px rgba(0,0,0,.4)}
 </style>
 </head>
@@ -1103,8 +1106,8 @@ Gabo cod 13 - Sectores y geocercas - cierre corregido
       <span>📻</span> Yadah PTT
     </div>
     <div class="header-actions">
+      <button class="btn-header header-icon-btn driver-view-top-btn" id="btn-view-top" type="button" title="Ver desde arriba" aria-label="Ver desde arriba" style="display:none;" onclick="toggleDriverView()">🗺️</button>
       <button class="btn-header header-icon-btn" id="connected-people-btn" type="button" title="Personas conectadas" onclick="toggleConnectedPeople()">👥<span class="header-badge" id="connected-people-count">0</span></button>
-      <button class="btn-header header-icon-btn" id="btn-view-top" type="button" title="Ver desde arriba" aria-label="Ver desde arriba" style="display:none;" onclick="toggleDriverView()">🗺️</button>
       <button class="btn-header header-icon-btn" id="replay-last-audio-btn" type="button" title="Escuchar último audio" aria-label="Escuchar último audio" onclick="replayLatestVoice()">↻</button>
       <button class="btn-header header-icon-btn" id="message-inbox-btn" type="button" title="Mensajes de radio" onclick="openMessageInbox()">💬<span class="header-badge" id="missed-message-count">0</span></button>
       <button class="btn-header" id="btn-toggle-fleet" onclick="toggleFleetDrawer(true)" style="display:none; border-color:#38bdf8; color:#38bdf8;">📋 Flota</button>
@@ -1136,7 +1139,7 @@ Gabo cod 13 - Sectores y geocercas - cierre corregido
  <button class="btn-float-action btn-float-exit" id="btn-float-logout" title="Cambiar Perfil / Cerrar Sesión" onclick="logoutUnit(); closeMapOptions();"><span class="option-icon">🚪</span><span>Salir / cerrar sesión</span></button>
         <button class="btn-float-action" id="btn-traffic-toggle" title="Tráfico en Vivo"><span class="option-icon">🚦</span><span>Ver tráfico</span></button>
         <button class="btn-float-action" id="btn-theme-mode" title="Modo Día / Noche"><span class="option-icon">🌙</span><span>Modo noche</span></button>
-        <!-- Vista rápida para motorista: ahora está junto a Personas conectadas -->
+        <!-- Vista rápida del motorista: el botón está en el encabezado -->
         <button class="btn-float-action" id="btn-recenter" title="Re-centrar" style="display:none;"><span class="option-icon">🎯</span><span>Recentrar mapa</span></button>
         <button class="btn-float-action" title="Acercar Zoom" onclick="zoomIn()" style="display:none;"><span class="option-icon">➕</span><span>Acercar</span></button>
         <button class="btn-float-action" title="Alejar Zoom" onclick="zoomOut()" style="display:none;"><span class="option-icon">➖</span><span>Alejar</span></button>
@@ -1240,7 +1243,7 @@ Gabo cod 13 - Sectores y geocercas - cierre corregido
 
   
 <div id="geofence-panel" class="geofence-panel">
-  <h3>🗺️ Sectores / geocercas</h3>
+  <div class="geofence-head"><h3>🗺️ Sectores / geocercas</h3><button type="button" class="geofence-close" id="gf-close" title="Cerrar">✕</button></div>
   <p>Dibuje una zona directamente sobre el mapa. Toque <b>Nuevo sector</b>, coloque los puntos alrededor de la zona y luego pulse <b>Cerrar y guardar</b>.</p>
   <input id="geofence-name" type="text" maxlength="40" placeholder="Nombre del sector (ej. Las Marías)">
   <div class="geofence-actions">
@@ -3390,6 +3393,8 @@ function applyVehicleHistory() {
   function detect(){if(!myLastCoords||!fences.length)return;const p=[myLastCoords.lon,myLastCoords.lat];const found=fences.find(f=>inside(p,f.points));const b=document.getElementById('geofence-sector-badge');if(found){b.textContent='📍 Sector: '+found.name;b.style.display='block'}else b.style.display='none'}
   window.yadahDeleteGeofence=function(id){if(!confirm('¿Eliminar este sector?'))return;fences=fences.filter(f=>f.id!==id);save();render()};
   document.getElementById('btn-geofences')?.addEventListener('click',()=>{if(!isModulator()){alert('Solo el Modulador puede administrar sectores.');return}panel().classList.toggle('open');render()});
+  document.getElementById('gf-close')?.addEventListener('click',()=>{if(drawing){cancel()} panel().classList.remove('open');});
+  document.addEventListener('click',(e)=>{if(!drawing){const p=panel();const b=document.getElementById('btn-geofences');if(p?.classList.contains('open') && !p.contains(e.target) && e.target!==b && !b?.contains(e.target)) p.classList.remove('open');}});
   document.getElementById('gf-new')?.addEventListener('click',start);document.getElementById('gf-finish')?.addEventListener('click',finish);document.getElementById('gf-cancel')?.addEventListener('click',cancel);
   if(map){map.on('click',e=>{if(!drawing)return;points.push(pointLngLat(e));const m=new maplibregl.Marker({color:'#38bdf8'}).setLngLat(points[points.length-1]).addTo(map);tempMarkers.push(m);redrawTemp();document.getElementById('gf-finish').disabled=points.length<3;status().textContent=`Puntos colocados: ${points.length}`});map.on('load',render)}
   setInterval(detect,1500);setTimeout(render,1000);
