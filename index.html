@@ -991,6 +991,11 @@
         justify-content: center;
       }
     }
+
+/* ===== GABO COD 12: SECTORES / GEOCERCAS ===== */
+.geofence-panel{position:fixed;right:12px;top:70px;width:min(340px,calc(100vw - 24px));background:#111827;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.55);z-index:5000;display:none;padding:14px;color:#f8fafc}
+.geofence-panel.open{display:block}.geofence-panel h3{font-size:1rem;color:#38bdf8;margin-bottom:8px}.geofence-panel p{font-size:.78rem;color:#cbd5e1;line-height:1.35;margin-bottom:10px}.geofence-panel input{width:100%;padding:9px;border-radius:7px;border:1px solid #475569;background:#0f172a;color:#fff;margin-bottom:8px}.geofence-actions{display:flex;gap:6px;flex-wrap:wrap}.geofence-actions button{border:0;border-radius:7px;padding:8px 10px;font-weight:700;cursor:pointer}.gf-primary{background:#38bdf8;color:#07111d}.gf-save{background:#22c55e;color:#052e16}.gf-cancel{background:#475569;color:#fff}.gf-danger{background:#ef4444;color:#fff}.gf-list{max-height:180px;overflow:auto;margin-top:10px;border-top:1px solid #334155;padding-top:8px}.gf-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 0;border-bottom:1px solid #1f2937;font-size:.8rem}.gf-status{font-size:.75rem;color:#fbbf24;margin-top:8px}.geofence-drawing{cursor:crosshair!important}
+#geofence-sector-badge{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f172aee;border:1px solid #38bdf8;border-radius:20px;padding:7px 14px;z-index:4900;font-size:.78rem;display:none;box-shadow:0 6px 20px rgba(0,0,0,.4)}
 </style>
 </head>
 <body>
@@ -1125,7 +1130,8 @@
     <div class="map-floating-controls" id="map-options-wrapper">
       <button class="map-menu-button" id="btn-map-options" type="button" title="Opciones del mapa" aria-label="Abrir menú de opciones">☰</button>
       <div class="map-options-menu" id="map-options-menu" aria-label="Opciones">
-        <button class="btn-float-action btn-float-exit" id="btn-float-logout" title="Cambiar Perfil / Cerrar Sesión" onclick="logoutUnit(); closeMapOptions();"><span class="option-icon">🚪</span><span>Salir / cerrar sesión</span></button>
+        <button class="btn-float-action" id="btn-geofences" title="Administrar sectores"><span class="option-icon">🗺️</span><span>Sectores / geocercas</span></button>
+ <button class="btn-float-action btn-float-exit" id="btn-float-logout" title="Cambiar Perfil / Cerrar Sesión" onclick="logoutUnit(); closeMapOptions();"><span class="option-icon">🚪</span><span>Salir / cerrar sesión</span></button>
         <button class="btn-float-action" id="btn-traffic-toggle" title="Tráfico en Vivo"><span class="option-icon">🚦</span><span>Ver tráfico</span></button>
         <button class="btn-float-action" id="btn-theme-mode" title="Modo Día / Noche"><span class="option-icon">🌙</span><span>Modo noche</span></button>
         <button class="btn-float-action" id="btn-view-mode" title="Cambiar Vista 1ª Persona / Cenital Plano" style="display:none;"><span class="option-icon">🚘</span><span>Cambiar vista</span></button>
@@ -1230,7 +1236,21 @@
     </div>
   </div>
 
-  <script>
+  
+<div id="geofence-panel" class="geofence-panel">
+  <h3>🗺️ Sectores / geocercas</h3>
+  <p>Dibuje una zona directamente sobre el mapa. Toque <b>Nuevo sector</b>, coloque los puntos alrededor de la zona y luego pulse <b>Cerrar y guardar</b>.</p>
+  <input id="geofence-name" type="text" maxlength="40" placeholder="Nombre del sector (ej. Las Marías)">
+  <div class="geofence-actions">
+    <button class="gf-primary" id="gf-new">＋ Nuevo sector</button>
+    <button class="gf-save" id="gf-finish" disabled>✓ Cerrar y guardar</button>
+    <button class="gf-cancel" id="gf-cancel">Cancelar</button>
+  </div>
+  <div id="gf-status" class="gf-status">Listo.</div>
+  <div id="gf-list" class="gf-list"></div>
+</div>
+<div id="geofence-sector-badge"></div>
+<script>
 
 
 
@@ -3336,5 +3356,39 @@ function applyVehicleHistory() {
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   })();
   </script>
+<script>
+// ===== GABO COD 12: MÓDULO DE SECTORES / GEOCERCAS =====
+(function(){
+  'use strict';
+  const KEY='yadah_geofences_v1';
+  let fences=load(); let drawing=false; let points=[]; let tempMarkers=[]; let tempLine=null; let tempFill=null;
+  const panel=()=>document.getElementById('geofence-panel');
+  const status=()=>document.getElementById('gf-status');
+  function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x&&x.id&&Array.isArray(x.points)&&x.points.length>=3)}catch(e){return[]}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(fences))}catch(e){}}
+  function color(i){const c=['#38bdf8','#22c55e','#f59e0b','#a78bfa','#f472b6','#2dd4bf'];return c[i%c.length]}
+  function pointLngLat(e){const p=map.unproject(e.point);return [p.lng,p.lat]}
+  function render(){
+    if(!map||!map.isStyleLoaded())return;
+    const fc={type:'FeatureCollection',features:fences.map((f,i)=>({type:'Feature',properties:{id:f.id,name:f.name,color:color(i)},geometry:{type:'Polygon',coordinates:[[...f.points,f.points[0]]]}}))};
+    if(map.getSource('yadah-geofences')) map.getSource('yadah-geofences').setData(fc); else {map.addSource('yadah-geofences',{type:'geojson',data:fc});map.addLayer({id:'yadah-geofences-fill',type:'fill',source:'yadah-geofences',paint:{'fill-color':['get','color'],'fill-opacity':0.16}});map.addLayer({id:'yadah-geofences-line',type:'line',source:'yadah-geofences',paint:{'line-color':['get','color'],'line-width':3,'line-opacity':0.9}})}
+    renderList();
+  }
+  function renderList(){const el=document.getElementById('gf-list');if(!el)return;el.innerHTML=fences.length?fences.map(f=>`<div class="gf-item"><span>📍 ${escapeHtml(f.name)}</span><button class="gf-danger" onclick="window.yadahDeleteGeofence('${f.id}')">Eliminar</button></div>`).join(''):'<div style="color:#94a3b8;font-size:.76rem">No hay sectores guardados.</div>'}
+  function escapeHtml(s){return String(s).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]))}
+  function clearTemp(){tempMarkers.forEach(m=>m.remove());tempMarkers=[];if(tempLine&&map.getLayer('gf-temp-line'))map.removeLayer('gf-temp-line');if(tempFill&&map.getLayer('gf-temp-fill'))map.removeLayer('gf-temp-fill');if(map.getSource('gf-temp'))map.removeSource('gf-temp');tempLine=tempFill=null;points=[]}
+  function redrawTemp(){if(!map)return;const coords=points.slice();if(coords.length>1)coords.push(coords[0]);const data={type:'FeatureCollection',features:coords.length>=2?[{type:'Feature',geometry:{type:'LineString',coordinates:coords},properties:{}}]:[]};if(coords.length>=3)data.features.push({type:'Feature',geometry:{type:'Polygon',coordinates:[coords]},properties:{}});if(map.getSource('gf-temp'))map.getSource('gf-temp').setData(data);else{map.addSource('gf-temp',{type:'geojson',data});map.addLayer({id:'gf-temp-fill',type:'fill',source:'gf-temp',filter:['==','$type','Polygon'],paint:{'fill-color':'#38bdf8','fill-opacity':0.12}});map.addLayer({id:'gf-temp-line',type:'line',source:'gf-temp',filter:['==','$type','LineString'],paint:{'line-color':'#38bdf8','line-width':3,'line-dasharray':[2,1]}})}}
+  function start(){if(!isModulator()){alert('Solo el Modulador puede administrar sectores.');return}const name=document.getElementById('geofence-name').value.trim();if(!name){alert('Escriba primero el nombre del sector.');return}clearTemp();drawing=true;map.getCanvas().classList.add('geofence-drawing');document.getElementById('gf-finish').disabled=true;status().textContent='Toque el mapa para colocar los puntos. Mínimo 3.'}
+  function finish(){if(!drawing||points.length<3){alert('Debe colocar al menos 3 puntos.');return}const name=document.getElementById('geofence-name').value.trim();if(!name){alert('Escriba el nombre del sector.');return}fences.push({id:'gf_'+Date.now()+'_'+Math.random().toString(16).slice(2),name,points:points.slice()});save();drawing=false;map.getCanvas().classList.remove('geofence-drawing');clearTemp();render();status().textContent='Sector guardado correctamente.'}
+  function cancel(){drawing=false;map.getCanvas().classList.remove('geofence-drawing');clearTemp();status().textContent='Listo.'}
+  function inside(pt,poly){let x=pt[0],y=pt[1],inside=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){let xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];let hit=((yi>y)!=(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi);if(hit)inside=!inside}return inside}
+  function detect(){if(!myLastCoords||!fences.length)return;const p=[myLastCoords.lon,myLastCoords.lat];const found=fences.find(f=>inside(p,f.points));const b=document.getElementById('geofence-sector-badge');if(found){b.textContent='📍 Sector: '+found.name;b.style.display='block'}else b.style.display='none'}
+  window.yadahDeleteGeofence=function(id){if(!confirm('¿Eliminar este sector?'))return;fences=fences.filter(f=>f.id!==id);save();render()};
+  document.getElementById('btn-geofences')?.addEventListener('click',()=>{if(!isModulator()){alert('Solo el Modulador puede administrar sectores.');return}panel().classList.toggle('open');render()});
+  document.getElementById('gf-new')?.addEventListener('click',start);document.getElementById('gf-finish')?.addEventListener('click',finish);document.getElementById('gf-cancel')?.addEventListener('click',cancel);
+  if(map){map.on('click',e=>{if(!drawing)return;points.push(pointLngLat(e));const m=new maplibregl.Marker({color:'#38bdf8'}).setLngLat(points[points.length-1]).addTo(map);tempMarkers.push(m);redrawTemp();document.getElementById('gf-finish').disabled=points.length<3;status().textContent=`Puntos colocados: ${points.length}`});map.on('load',render)}
+  setInterval(detect,1500);setTimeout(render,1000);
+})();
+</script>
 </body>
 </html>
