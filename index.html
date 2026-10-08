@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Yadah Radio 3D Flota — Gabo cod 31</title>
-
+  <title>Yadah Radio 3D Flota — Mi propuesta 01</title>
+ 
   <!-- MapLibre GL JS -->
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
-
+ 
   <!-- MQTT WebSockets -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
+ 
   <style>
     * {
       box-sizing: border-box;
@@ -20,7 +20,7 @@
       user-select: none;
       -webkit-user-select: none;
     }
-
+ 
     body {
       background-color: #0b0f19;
       color: #f8fafc;
@@ -31,7 +31,7 @@
       flex-direction: column;
       overflow: hidden;
     }
-
+ 
     #login-screen {
       position: fixed;
       inset: 0;
@@ -42,23 +42,23 @@
       padding: 20px;
       overflow-y: auto;
     }
-
+ 
     .login-header {
       text-align: center;
       margin-bottom: 16px;
     }
-
+ 
     .login-header h1 {
       color: #38bdf8;
       font-size: 1.4rem;
       margin-bottom: 4px;
     }
-
+ 
     .login-header p {
       color: #94a3b8;
       font-size: 0.85rem;
     }
-
+ 
     .grid-units {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -68,7 +68,7 @@
       width: 100%;
       padding-bottom: 30px;
     }
-
+ 
     .btn-unit-select {
       background: #1e293b;
       border: 1px solid #334155;
@@ -83,7 +83,7 @@
       align-items: center;
       gap: 4px;
     }
-
+ 
     .btn-unit-select.modulador {
       grid-column: span 2;
       background: #1e3a8a;
@@ -91,12 +91,12 @@
       color: #dbeafe;
       font-size: 1rem;
     }
-
+ 
     .btn-unit-select:active {
       background: #38bdf8;
       color: #0b0f19;
     }
-
+ 
     header {
       background-color: #111827;
       padding: 8px 12px;
@@ -107,7 +107,7 @@
       z-index: 1000;
       flex-shrink: 0;
     }
-
+ 
     .brand {
       display: flex;
       align-items: center;
@@ -117,14 +117,14 @@
       color: #38bdf8;
       white-space: nowrap;
     }
-
+ 
     .header-actions {
       display: flex;
       gap: 6px;
       overflow-x: auto;
       align-items: center;
     }
-
+ 
     .btn-header {
       background: #1f2937;
       border: 1px solid #374151;
@@ -136,7 +136,7 @@
       cursor: pointer;
       white-space: nowrap;
     }
-
+ 
     .header-icon-btn {
       position: relative;
       width: 42px; height: 38px;
@@ -149,7 +149,7 @@
     .driver-view-top-btn {
       margin-right: 8px;
     }
-
+ 
     .header-icon-btn .header-badge {
       position: absolute; top: -5px; right: -5px;
       min-width: 18px; height: 18px; padding: 0 4px;
@@ -170,7 +170,7 @@
     .connected-person { display:flex; align-items:center; gap:8px; padding:7px 6px; border-bottom:1px solid #1f2937; color:#e2e8f0; font-size:.78rem; }
     .connected-dot { width:8px; height:8px; border-radius:50%; background:#22c55e; flex:none; }
     .connected-empty { color:#64748b; font-size:.75rem; padding:8px 4px; }
-
+ 
     #gps-lock-banner {
       background: #dc2626;
       color: #ffffff;
@@ -182,7 +182,7 @@
       justify-content: space-between;
       z-index: 2200;
     }
-
+ 
     #map-context-menu {
       position: absolute;
       bottom: 90px;
@@ -200,14 +200,14 @@
       width: 270px;
       text-align: center;
     }
-
+ 
     .menu-title {
       font-size: 0.8rem;
       font-weight: bold;
       color: #38bdf8;
       margin-bottom: 2px;
     }
-
+ 
     .btn-ctx {
       padding: 10px;
       border-radius: 8px;
@@ -216,12 +216,12 @@
       font-size: 0.78rem;
       cursor: pointer;
     }
-
+ 
     .btn-ctx-nav { background: #0284c7; color: #ffffff; }
     .btn-ctx-save { background: #38bdf8; color: #0b0f19; }
     .btn-ctx-assign { background: #3b82f6; color: #ffffff; }
     .btn-ctx-cancel { background: #374151; color: #cbd5e1; }
-
+ 
     #fleet-summary-bar {
       background: #0f172a;
       border-bottom: 1px solid #334155;
@@ -233,7 +233,7 @@
       cursor: pointer;
       z-index: 999;
     }
-
+ 
     .badge-stat {
       padding: 2px 6px;
       border-radius: 4px;
@@ -243,7 +243,7 @@
     .badge-stat.stopped { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
     .badge-stat.offline { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
     .badge-stat.at-base { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
-
+ 
     #fleet-list-drawer {
       position: fixed;
       top: 0;
@@ -258,7 +258,7 @@
       flex-direction: column;
       box-shadow: 4px 0 20px rgba(0,0,0,0.8);
     }
-
+ 
     .drawer-header {
       padding: 14px;
       background: #030712;
@@ -270,7 +270,7 @@
       font-weight: 800;
       font-size: 0.95rem;
     }
-
+ 
     .fleet-items-container {
       flex: 1;
       overflow-y: auto;
@@ -279,7 +279,7 @@
       flex-direction: column;
       gap: 8px;
     }
-
+ 
     .unit-card-row {
       background: #1e293b;
       border: 1px solid #334155;
@@ -292,10 +292,10 @@
       transition: background 0.15s;
     }
     .unit-card-row:active { background: #334155; }
-
+ 
     .unit-card-info b { font-size: 0.85rem; color: #f8fafc; }
     .unit-card-info div { font-size: 0.7rem; color: #94a3b8; margin-top: 2px; }
-
+ 
     #map-container {
       flex: 1;
       width: 100%;
@@ -303,16 +303,16 @@
       overflow: hidden;
       background-color: #0f172a;
     }
-
+ 
     #map {
       width: 100%;
       height: 100%;
     }
-
+ 
     .map-night-mode .maplibregl-canvas {
       filter: invert(90%) hue-rotate(180deg) brightness(85%) contrast(110%);
     }
-
+ 
     #nav-search-bar {
       position: absolute;
       top: 10px;
@@ -324,7 +324,7 @@
       gap: 2px;
       max-width: 400px;
     }
-
+ 
     .search-input-box {
       display: flex;
       background: #111827;
@@ -333,11 +333,11 @@
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.6);
     }
-
+ 
     .mobile-search-toggle {
       display: none;
     }
-
+ 
     .search-close {
       display: none;
       background: #1f2937;
@@ -347,7 +347,7 @@
       padding: 0 12px;
       cursor: pointer;
     }
-
+ 
     .search-input-box input {
       flex: 1;
       background: transparent;
@@ -357,7 +357,7 @@
       font-size: 0.85rem;
       outline: none;
     }
-
+ 
     .search-input-box button {
       background: #38bdf8;
       border: none;
@@ -366,7 +366,7 @@
       padding: 0 14px;
       cursor: pointer;
     }
-
+ 
     #search-suggestions {
       background: #111827;
       border: 1px solid #38bdf8;
@@ -378,7 +378,7 @@
       box-shadow: 0 6px 16px rgba(0,0,0,0.8);
       margin-top: 2px;
     }
-
+ 
     .suggestion-item {
       padding: 10px 12px;
       font-size: 0.78rem;
@@ -390,7 +390,7 @@
       background: #1e3a8a;
       color: #ffffff;
     }
-
+ 
     .nav-route-info {
       background: #030712;
       border: 1px solid #38bdf8;
@@ -404,12 +404,12 @@
       font-weight: 700;
       margin-top: 4px;
     }
-
+ 
     .nav-route-actions {
       display: flex;
       gap: 6px;
     }
-
+ 
     .btn-nav-action {
       flex: 1;
       padding: 6px;
@@ -419,18 +419,18 @@
       font-size: 0.75rem;
       cursor: pointer;
     }
-
+ 
     .btn-nav-start { background: #0284c7; color: #ffffff; }
     .btn-nav-cancel { background: #ef4444; color: #ffffff; }
-
-
+ 
+ 
     .map-floating-controls {
       position: absolute;
       top: 65px;
       right: 12px;
       z-index: 2500;
     }
-
+ 
     .map-menu-button {
       width: 48px;
       height: 48px;
@@ -446,12 +446,12 @@
       cursor: pointer;
       touch-action: manipulation;
     }
-
+ 
     .map-menu-button.active {
       background: #38bdf8;
       color: #07111f;
     }
-
+ 
     .map-options-menu {
       position: absolute;
       top: 56px;
@@ -467,9 +467,9 @@
       box-shadow: 0 10px 28px rgba(0,0,0,0.7);
       backdrop-filter: blur(8px);
     }
-
+ 
     .map-options-menu.open { display: flex; }
-
+ 
     .map-option {
       width: 100%;
       min-height: 42px;
@@ -487,11 +487,11 @@
       text-align: left;
       touch-action: manipulation;
     }
-
+ 
     .map-option:active { background: #1e293b; }
     .map-option.danger { color: #fecaca; border-color: #7f1d1d; }
     .map-option .option-icon { width: 24px; text-align: center; font-size: 1.05rem; }
-
+ 
     .map-options-menu .btn-float-action {
       width: 100%;
       height: 42px;
@@ -509,26 +509,26 @@
       box-shadow: none;
       text-align: left;
     }
-
+ 
     .map-options-menu .btn-float-action.active {
       background: #164e63;
       color: #bae6fd;
       border-color: #38bdf8;
     }
-
+ 
     .map-options-menu .btn-float-action.btn-float-exit {
       background: #2a1115;
       border-color: #7f1d1d;
       color: #fecaca;
     }
-
+ 
     .map-options-menu .btn-float-action.unlocked {
       background: #064e3b;
       border-color: #38bdf8;
       color: #d1fae5;
       animation: none;
     }
-
+ 
     .btn-sos {
       position: absolute;
       bottom: 20px;
@@ -548,23 +548,23 @@
       z-index: 2500;
       touch-action: manipulation;
     }
-
+ 
     .btn-sos.active { animation: pulse-sos 0.7s infinite alternate; }
-
+ 
     @keyframes pulse-sos {
       from { transform: scale(1); background: #dc2626; }
       to { transform: scale(1.15); background: #991b1b; }
     }
-
+ 
     @keyframes pulse-base {
       from { transform: scale(1); filter: drop-shadow(0 0 4px #38bdf8); }
       to { transform: scale(1.12); filter: drop-shadow(0 0 14px #38bdf8); }
     }
-
+ 
     .base-active-glow {
       animation: pulse-base 0.9s infinite alternate;
     }
-
+ 
     #sos-alert-banner {
       position: absolute;
       top: 10px;
@@ -584,7 +584,7 @@
       box-shadow: 0 4px 15px rgba(220,38,38,0.8);
       animation: pulse-sos 0.8s infinite alternate;
     }
-
+ 
     .controls-panel {
       background-color: #111827;
       padding: 10px 14px;
@@ -596,17 +596,17 @@
       z-index: 1000;
       flex-shrink: 0;
     }
-
+ 
     .status-bar {
       display: flex;
       justify-content: space-between;
       font-size: 0.72rem;
       color: #94a3b8;
     }
-
+ 
     .status-active { color: #38bdf8; font-weight: 600; }
     .status-warning { color: #ef4444; font-weight: 700; }
-
+ 
     .channel-status {
       background-color: #030712;
       text-align: center;
@@ -618,28 +618,28 @@
       color: #94a3b8;
       border: 1px solid #1f2937;
     }
-
+ 
     .channel-status.transmitting {
       background-color: #dc2626;
       color: #ffffff;
       border-color: #ef4444;
       animation: pulse 0.8s infinite alternate;
     }
-
+ 
     .channel-status.receiving {
       background-color: #0284c7;
       color: #ffffff;
       border-color: #38bdf8;
     }
-
+ 
     .channel-status.blocked {
       background-color: #450a0a;
       color: #fca5a5;
       border-color: #dc2626;
     }
-
+ 
     @keyframes pulse { from { opacity: 0.8; } to { opacity: 1; } }
-
+ 
     .btn-ptt {
       width: 100%;
       height: 54px;
@@ -657,9 +657,9 @@
       cursor: pointer;
       touch-action: none;
     }
-
+ 
     .btn-ptt.active { background-color: #38bdf8; color: #0b0f19; }
-
+ 
     .btn-ptt.gps-disabled {
       background-color: #1e293b !important;
       border-color: #475569 !important;
@@ -667,7 +667,7 @@
       cursor: not-allowed !important;
       opacity: 0.65;
     }
-
+ 
     #history-modal {
       position: fixed;
       inset: 0;
@@ -676,7 +676,7 @@
       display: none;
       align-items: flex-end;
     }
-
+ 
     .history-card {
       width: 100%;
       background: #111827;
@@ -688,7 +688,7 @@
       flex-direction: column;
       gap: 12px;
     }
-
+ 
     .history-head {
       display: flex;
       justify-content: space-between;
@@ -696,7 +696,7 @@
       font-weight: bold;
       color: #38bdf8;
     }
-
+ 
     .message-composer { background:#0b1220; border:1px solid #334155; border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:8px; }
     .message-recipient-row { display:flex; gap:7px; align-items:center; }
     .message-recipient { flex:1; background:#111827; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:8px 10px; }
@@ -714,7 +714,7 @@
     .history-message-text { color:#f8fafc; white-space:pre-wrap; word-break:break-word; margin-top:4px; }
     .history-message-photo { max-width:min(230px,65vw); max-height:230px; border-radius:9px; margin-top:7px; display:block; cursor:pointer; }
     .history-message-type { font-size:.64rem; color:#38bdf8; margin-left:6px; }
-
+ 
     .history-list {
       overflow-y: auto;
       display: flex;
@@ -722,7 +722,7 @@
       gap: 8px;
       padding-bottom: 20px;
     }
-
+ 
     .history-item {
       background: #1e293b;
       padding: 10px 12px;
@@ -733,7 +733,7 @@
       font-size: 0.82rem;
       border: 1px solid #334155;
     }
-
+ 
     .btn-play-audio {
       background: #38bdf8;
       border: none;
@@ -743,20 +743,28 @@
       font-weight: bold;
       cursor: pointer;
     }
-
+ 
     .car-marker-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
     }
-
+ 
     .car-marker-container.sos-active .car-badge {
+    .zoom-responsive-label { transition: transform .18s ease, opacity .18s ease; will-change: transform, opacity; }
+    .yadah-poi-cluster { box-sizing:border-box !important; width:13px !important; min-width:13px !important; max-width:13px !important; height:17px !important; min-height:17px !important; max-height:17px !important; border:0 !important; background:transparent !important; color:inherit !important; cursor:pointer; display:flex !important; align-items:center !important; justify-content:center !important; padding:0 !important; margin:0 !important; appearance:none !important; -webkit-appearance:none !important; outline:none !important; filter:drop-shadow(0 2px 3px rgba(15,23,42,.38)); }
+    .yadah-poi-cluster:active { transform:scale(.94); }
+    .yadah-poi-cluster svg { display:block; width:13px; height:17px; }
+    .poi-zoom-pin { display:none; font-size:20px; line-height:1; filter:drop-shadow(0 1px 2px rgba(0,0,0,.75)); cursor:pointer; }
+    .poi-zoom-label { transition: transform .18s ease, opacity .18s ease; will-change: transform, opacity; }
+    .poi-zoom-hidden { display:none !important; }
+    .poi-zoom-visible { display:block !important; }
       background: #dc2626 !important;
       border-color: #ffffff !important;
       animation: pulse-sos 0.5s infinite alternate;
     }
-
+ 
     .car-badge {
       background: #030712;
       border: 1px solid #38bdf8;
@@ -770,30 +778,30 @@
       white-space: nowrap;
       text-align: center;
     }
-
+ 
     .car-badge.base-station {
       border-color: #38bdf8;
       background: #0f172a;
     }
-
+ 
     .car-badge.custom-poi {
       border-color: #38bdf8;
       background: #082f49;
       color: #38bdf8;
     }
-
+ 
     .car-svg-rotator {
       width: 44px;
       height: 44px;
       transition: transform 0.15s linear;
       transform-origin: center center;
     }
-
+ 
     .base-icon {
       font-size: 1.8rem;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.7));
     }
-
+ 
     #vehicle-history-card {
       position: absolute;
       top: 65px;
@@ -809,7 +817,7 @@
       flex-direction: column;
       gap: 8px;
     }
-
+ 
     .vh-header {
       display: flex;
       justify-content: space-between;
@@ -818,9 +826,9 @@
       font-weight: 700;
       color: #38bdf8;
     }
-
+ 
     .vh-actions { display: flex; gap: 6px; margin-top: 4px; }
-
+ 
     .btn-vh {
       flex: 1;
       padding: 8px;
@@ -830,10 +838,10 @@
       border: none;
       cursor: pointer;
     }
-
+ 
     .btn-vh-apply { background: #0284c7; color: #ffffff; }
     .btn-vh-close { background: #ef4444; color: #ffffff; }
-
+ 
     #client-tracking-screen {
       position: fixed;
       inset: 0;
@@ -875,7 +883,7 @@
     .cq-row{display:flex;justify-content:space-between;gap:10px;align-items:center}.cq-dest{font-size:1rem;font-weight:900}.cq-time{font-size:.7rem;color:#94a3b8;white-space:nowrap}
     .cq-status{margin-top:7px;font-size:.72rem;font-weight:900;color:#fbbf24}.cq-status.assigned{color:#38bdf8}
     .cq-empty{text-align:center;color:#64748b;padding:40px 20px}.cq-logout{margin:10px 12px 18px;padding:12px;border:0;border-radius:10px;background:#374151;color:#fff;font-weight:900}
-
+ 
     /* ===== YADAH: NOTIFICACIONES BASE ULTRA COMPACTAS ===== */
     #yadah-base-notifications{
       --base-panel-width:min(320px,86vw);
@@ -913,7 +921,7 @@
     .yb-notify-finish{width:100%;margin-top:5px;border:0;border-radius:6px;padding:6px;background:#0284c7;color:#fff;font-weight:900;font-size:.66rem;min-height:29px;cursor:pointer}
     .yb-base-empty{padding:14px 7px;text-align:center;color:#94a3b8;font-size:.72rem}
     @media(max-width:799px){#yadah-base-notifications{max-height:42vh;padding:7px}.yb-notify-place{font-size:.80rem}.yb-notify-meta{font-size:.57rem}}
-
+ 
     
 .yb-notify-nav{width:100%;margin:5px 0;padding:9px 10px;border:1px solid #38bdf8;border-radius:9px;background:#0b3954;color:#fff;font-weight:900;font-size:.72rem;cursor:pointer}
 .yb-notify-nav:active{transform:scale(.98)}
@@ -946,11 +954,11 @@
         max-width: none;
         align-items: flex-start;
       }
-
+ 
       #nav-search-bar:not(.mobile-search-open) .search-input-box {
         display: none;
       }
-
+ 
       #nav-search-bar:not(.mobile-search-open) .mobile-search-toggle {
         display: flex;
         width: 46px;
@@ -971,52 +979,205 @@
         cursor: pointer;
         touch-action: manipulation;
       }
-
+ 
       #nav-search-bar:not(.mobile-search-open) .mobile-search-toggle:active {
         opacity: 1;
         background: #111827;
         border-color: #38bdf8;
         transform: scale(0.96);
       }
-
+ 
       #nav-search-bar.mobile-search-open {
         width: calc(100vw - 20px);
         max-width: 400px;
       }
-
+ 
       #nav-search-bar.mobile-search-open .mobile-search-toggle {
         display: none;
       }
-
+ 
       #nav-search-bar.mobile-search-open .search-input-box {
         display: flex;
         width: 100%;
         min-height: 44px;
         border-radius: 13px;
       }
-
+ 
       #nav-search-bar.mobile-search-open .search-close {
         display: flex;
         align-items: center;
         justify-content: center;
       }
     }
-
+ 
 /* ===== GABO COD 12: SECTORES / GEOCERCAS ===== */
 .geofence-panel{position:fixed;right:12px;top:70px;width:min(340px,calc(100vw - 24px));background:#111827;border:1px solid #38bdf8;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.55);z-index:5000;display:none;padding:14px;color:#f8fafc}
 .geofence-panel.open{display:block}.geofence-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.geofence-panel h3{font-size:1rem;color:#38bdf8;margin-bottom:8px}.geofence-close{border:1px solid #475569;background:#1e293b;color:#fff;border-radius:7px;width:34px;height:34px;font-size:1rem;font-weight:800;cursor:pointer;flex:0 0 auto}.geofence-close:hover{background:#334155}.geofence-panel p{font-size:.78rem;color:#cbd5e1;line-height:1.35;margin-bottom:10px}.geofence-panel input{width:100%;padding:9px;border-radius:7px;border:1px solid #475569;background:#0f172a;color:#fff;margin-bottom:8px}.geofence-actions{display:flex;gap:6px;flex-wrap:wrap}.geofence-actions button{border:0;border-radius:7px;padding:8px 10px;font-weight:700;cursor:pointer}.gf-primary{background:#38bdf8;color:#07111d}.gf-save{background:#22c55e;color:#052e16}.gf-cancel{background:#475569;color:#fff}.gf-danger{background:#ef4444;color:#fff}.gf-list{max-height:180px;overflow:auto;margin-top:10px;border-top:1px solid #334155;padding-top:8px}.gf-item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 0;border-bottom:1px solid #1f2937;font-size:.8rem}.gf-status{font-size:.75rem;color:#fbbf24;margin-top:8px}.geofence-drawing{cursor:crosshair!important}
 #geofence-sector-badge{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#0f172aee;border:1px solid #38bdf8;border-radius:20px;padding:7px 14px;z-index:4900;font-size:.78rem;display:none;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+ 
+ 
+    /* =========================================================
+       MI PROPUESTA 01 — RENOVACIÓN ESTÉTICA
+       Solo apariencia. No modifica lógica ni funciones.
+       ========================================================= */
+    :root{
+      --mp-bg:#07111f;
+      --mp-panel:rgba(9,18,32,.94);
+      --mp-panel-soft:rgba(15,28,46,.92);
+      --mp-line:rgba(56,189,248,.28);
+      --mp-blue:#38bdf8;
+      --mp-blue-strong:#0ea5e9;
+      --mp-text:#f8fafc;
+      --mp-muted:#94a3b8;
+    }
+ 
+    header{
+      min-height:58px;
+      padding:7px 12px;
+      background:rgba(7,17,31,.96);
+      border-bottom:1px solid rgba(56,189,248,.16);
+      box-shadow:0 4px 18px rgba(0,0,0,.22);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+    .brand{
+      gap:8px;
+      font-size:1rem;
+      letter-spacing:.2px;
+    }
+    .brand span{font-size:1.15rem;filter:drop-shadow(0 2px 5px rgba(56,189,248,.28));}
+    .header-actions{gap:5px;overflow:visible;}
+    .btn-header{
+      background:rgba(20,34,52,.88);
+      border:1px solid rgba(148,163,184,.18);
+      color:#dbeafe;
+      min-width:40px;
+      height:40px;
+      padding:5px 9px;
+      border-radius:12px;
+      box-shadow:0 3px 10px rgba(0,0,0,.22);
+    }
+    .header-icon-btn{width:40px;height:40px;font-size:.82rem;}
+    .btn-header:active{transform:scale(.96);background:#17324a;}
+ 
+    #map-container{background:#dfe7ef;}
+    .map-floating-controls{top:16px;right:12px;}
+    .map-menu-button{
+      width:50px;height:50px;border-radius:16px;
+      background:rgba(7,17,31,.92);
+      border:1px solid rgba(56,189,248,.85);
+      box-shadow:0 8px 22px rgba(0,0,0,.35);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+    .map-menu-button.active{background:#38bdf8;}
+ 
+    .btn-sos{
+      left:14px;bottom:16px;width:58px;height:58px;
+      border:2px solid rgba(248,113,113,.9);
+      box-shadow:0 7px 20px rgba(220,38,38,.42);
+    }
+ 
+    #yadah-career-fab{
+      right:12px;bottom:84px;gap:6px;
+    }
+    .yc-btn{
+      min-width:116px;
+      padding:10px 13px;
+      border-radius:12px;
+      border:1px solid rgba(56,189,248,.72);
+      background:rgba(7,17,31,.9);
+      box-shadow:0 7px 18px rgba(0,0,0,.30);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+    }
+    .yc-btn.primary{background:rgba(3,105,161,.92);}
+    .yc-btn.history{background:rgba(7,17,31,.92);}
+    .yc-btn:active{transform:scale(.97);}
+ 
+    .controls-panel{
+      padding:8px 12px calc(9px + env(safe-area-inset-bottom,0px));
+      gap:7px;
+      background:rgba(7,17,31,.97);
+      border-top:1px solid rgba(56,189,248,.15);
+      box-shadow:0 -5px 18px rgba(0,0,0,.22);
+    }
+    .status-bar{
+      padding:2px 3px;
+      font-size:.69rem;
+      color:#9fb0c3;
+    }
+    .status-bar span{white-space:nowrap;}
+    .status-active{color:#67e8f9;font-weight:800;}
+    .channel-status{
+      padding:7px 10px;
+      border-radius:10px;
+      background:rgba(2,6,23,.82);
+      border:1px solid rgba(148,163,184,.15);
+      color:#a9b7c8;
+      font-size:.72rem;
+      letter-spacing:.35px;
+    }
+    .channel-status.transmitting{background:#b91c1c;border-color:#ef4444;}
+    .channel-status.receiving{background:#0369a1;border-color:#38bdf8;}
+ 
+    .btn-ptt{
+      height:58px;
+      border:1px solid rgba(56,189,248,.88);
+      border-radius:14px;
+      background:linear-gradient(180deg,rgba(12,30,48,.98),rgba(5,17,30,.98));
+      color:#67e8f9;
+      font-size:.93rem;
+      letter-spacing:.55px;
+      box-shadow:0 5px 16px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .btn-ptt span{font-size:1.15rem;}
+    .btn-ptt:active{transform:scale(.985);}
+    .btn-ptt.active{background:#38bdf8;color:#06111d;border-color:#7dd3fc;}
+ 
+    /* Menú de opciones más parecido a una app nativa */
+    .map-options-menu{
+      width:224px;
+      padding:8px;
+      border-radius:16px;
+      background:rgba(7,17,31,.96);
+      border:1px solid rgba(56,189,248,.24);
+      box-shadow:0 14px 34px rgba(0,0,0,.42);
+    }
+    .map-options-menu .btn-float-action{
+      height:44px;border-radius:11px;
+      background:rgba(15,28,46,.9);
+      border-color:rgba(148,163,184,.14);
+    }
+    .map-options-menu .btn-float-action:active{background:#17324a;}
+ 
+    /* Tarjetas flotantes: menos pesadas y más limpias */
+    .yc-card,.yb-notify-card{
+      box-shadow:0 10px 28px rgba(0,0,0,.32);
+    }
+ 
+    @media(max-width:520px){
+      header{padding-left:10px;padding-right:10px;}
+      .brand{font-size:.92rem;}
+      .header-actions{gap:4px;}
+      .header-icon-btn,.btn-header{width:38px;min-width:38px;height:38px;padding:4px;}
+      .header-badge{transform:scale(.9);}
+      .status-bar{font-size:.66rem;}
+      .status-bar span:nth-child(4){display:none;}
+      .btn-ptt{height:56px;font-size:.88rem;}
+      #yadah-career-fab{bottom:82px;}
+    }
 </style>
 </head>
 <body>
-
+ 
   <audio id="radio-speaker" autoplay playsinline controls style="display:none;"></audio>
-
+ 
   <div id="client-tracking-screen">
     <div class="client-header" id="client-header-title">🚘 Tu vehículo en camino - Yadah Fleet</div>
     <div class="client-map" id="client-map"></div>
   </div>
-
+ 
   <div id="fleet-list-drawer">
     <div class="drawer-header">
       <span>📋 Flota y Estado en Vivo</span>
@@ -1024,18 +1185,19 @@
     </div>
     <div class="fleet-items-container" id="fleet-items-list"></div>
   </div>
-
+ 
   <div id="gps-lock-banner">
     <span>⚠️️ GPS DENEGADO O APAGADO. La radio está bloqueada hasta activar la ubicación.</span>
   </div>
-
+ 
   <div id="map-context-menu">
     <div class="menu-title" id="menu-title-text">📍 Opción de Ubicación</div>
-    <button class="btn-ctx btn-ctx-nav" id="btn-ctx-action" onclick="ctxMainAction()">🚀 ¡Ir a este lugar!</button>
+    <button class="btn-ctx btn-ctx-nav" id="btn-ctx-action" onclick="ctxNavigateAction()">🚀 Ir a este lugar</button>
+    <button class="btn-ctx" id="btn-ctx-save" onclick="ctxSaveAction()" style="background:#38bdf8;color:#030712;">📍 Guardar este punto</button>
     <button class="btn-ctx btn-ctx-assign" id="btn-ctx-assign" onclick="ctxAssignAction()" style="display:none;">🎯 Asignar a Móvil & Compartir...</button>
     <button class="btn-ctx btn-ctx-cancel" onclick="closeContextMenu()">Cancelar</button>
   </div>
-
+ 
   <div id="sos-alert-banner">
     <span id="sos-banner-text">🚨 ¡ALERTA SOS ACTIVA!</span>
     <div style="display:flex; gap:6px;">
@@ -1043,7 +1205,7 @@
       <button style="background:#ffffff; color:#dc2626; border:none; padding:4px 8px; font-weight:800; border-radius:4px; cursor:pointer;" onclick="silenceSOS()">Silenciar</button>
     </div>
   </div>
-
+ 
   <div id="nav-search-bar">
     <button id="mobile-search-toggle" class="mobile-search-toggle" type="button" aria-label="Abrir buscador" onclick="openMobileSearch(event)">🔍</button>
     <div class="search-input-box">
@@ -1060,7 +1222,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div id="vehicle-history-card">
     <div class="vh-header">
       <span id="vh-unit-name">Móvil</span>
@@ -1074,7 +1236,7 @@
     </div>
     <div id="vh-status-info" style="font-size:0.7rem; color:#0284c7; text-align:center; margin-top:4px;"></div>
   </div>
-
+ 
   <div id="login-screen">
     <div class="login-header">
       <h1>📻 Yadah Radio Flota</h1>
@@ -1101,13 +1263,13 @@
       <button class="btn-unit-select" onclick="solicitarAccesoPerfil('Móvil 14')"><span>🚘</span> Móvil 14</button>
     </div>
   </div>
-
+ 
   <div id="client-queue-screen" aria-live="polite">
     <div class="cq-header"><div class="cq-brand">👥 Clientes / Cola de Base</div><div class="cq-subtitle">Clientes esperando en la sala</div></div>
     <div id="client-queue-list"></div>
     <button class="cq-logout" type="button" onclick="logoutUnit()">Salir</button>
   </div>
-
+ 
   <header>
     <div class="brand">
       <span>📻</span> Yadah PTT
@@ -1120,12 +1282,12 @@
       <button class="btn-header" id="btn-toggle-fleet" onclick="toggleFleetDrawer(true)" style="display:none; border-color:#38bdf8; color:#38bdf8;">📋 Flota</button>
     </div>
   </header>
-
+ 
   <div id="connected-people-panel" onclick="event.stopPropagation()">
     <h3>👥 Personas conectadas</h3>
     <div id="connected-people-list"><div class="connected-empty">Buscando conexiones...</div></div>
   </div>
-
+ 
   <div id="fleet-summary-bar" onclick="toggleFleetDrawer(true)">
     <span>🏢 <b>Supervisión Flota:</b></span>
     <span><span class="badge-stat online" id="stat-online">0 En línea</span></span>
@@ -1133,12 +1295,12 @@
     <span><span class="badge-stat stopped" id="stat-stopped">0 Detenidos</span></span>
     <span><span class="badge-stat offline" id="stat-offline">14 Apagados</span></span>
   </div>
-
+ 
   <div id="map-container">
     <div id="map"></div>
-
+ 
     <button class="btn-sos" id="btn-sos" title="Botón de Pánico SOS" onclick="triggerSOS()">🚨</button>
-
+ 
     <div class="map-floating-controls" id="map-options-wrapper">
       <button class="map-menu-button" id="btn-map-options" type="button" title="Opciones del mapa" aria-label="Abrir menú de opciones">☰</button>
       <div class="map-options-menu" id="map-options-menu" aria-label="Opciones">
@@ -1155,7 +1317,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- ===== YADAH CARRERAS: UI INDEPENDIENTE DE LA RADIO ===== -->
   <div id="yadah-career-stack" aria-live="polite"></div>
   <div id="yadah-career-fab">
@@ -1176,7 +1338,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- ===== YADAH BASE: MODULO INDEPENDIENTE DE CARRERAS POR LLAMADA ===== -->
   <div id="yadah-base-stack" aria-live="polite"></div>
   <div id="yadah-base-fab"><button class="yb-btn yb-menu-btn" id="yb-open-btn" type="button" aria-label="Abrir o cerrar Cola de Base" title="Abrir o cerrar Cola de Base">🏠</button></div>
@@ -1193,13 +1355,13 @@
     </div>
     <div id="yb-assign-view" style="display:none"><div class="yb-label">Selecciona el motorista para esta salida</div><div class="yb-draft-summary" id="yb-draft-summary">—</div><div class="yb-unit-grid" id="yb-unit-grid"></div><div class="yb-actions"><button class="yb-secondary" id="yb-assign-cancel">Volver</button></div></div>
   </div></div>
-
+ 
   <div id="yadah-base-assignment" aria-live="assertive" style="display:none"><div class="yb-assignment-list" id="yb-assignment-list"></div></div>
   <div id="yadah-base-active" aria-live="polite" style="display:none"><div class="yb-active-list" id="yb-active-list"></div></div>
   
   <button id="yadah-career-tab" type="button" aria-label="Abrir carreras libres"><span id="yadah-career-tab-arrow">‹</span><span class="yadah-career-tab-label">CARRERAS</span><span id="yadah-career-tab-count">0</span></button><button id="yadah-base-tab" type="button" aria-label="Abrir carreras asignadas de base"><span id="yadah-base-tab-arrow">›</span><span class="yadah-base-tab-label">BASE</span><span id="yadah-base-tab-count">0</span></button>
   <div id="yadah-base-notifications" aria-live="polite" aria-label="Carreras asignadas de base"></div>
-
+ 
   <div class="controls-panel">
     <div class="status-bar">
       <span>Unidad: <b style="color:#38bdf8;" id="lbl-unit">--</b></span>
@@ -1207,16 +1369,16 @@
       <span>Vel: <b class="status-active" id="lbl-speed">0 km/h</b></span>
       <span>Rumbo: <b class="status-active" id="lbl-heading">0°</b></span>
     </div>
-
+ 
     <div class="channel-status" id="channel-status">
       ● CANAL LIBRE
     </div>
-
+ 
     <button class="btn-ptt" id="btn-ptt">
-      <span>🎙️</span> PULSAR PARA HABLAR (Espacio)
+      <span>🎙️</span> MANTENER PARA HABLAR
     </button>
   </div>
-
+ 
   <div id="history-modal" onclick="toggleHistory(false)">
     <div class="history-card" onclick="event.stopPropagation()">
       <div class="history-head">
@@ -1247,7 +1409,7 @@
       </div>
     </div>
   </div>
-
+ 
   
 <div id="geofence-panel" class="geofence-panel">
   <div class="geofence-head"><h3>🗺️ Sectores / geocercas</h3><button type="button" class="geofence-close" id="gf-close" title="Cerrar">✕</button></div>
@@ -1263,21 +1425,21 @@
 </div>
 <div id="geofence-sector-badge"></div>
 <script>
-
-
-
-
+ 
+ 
+ 
+ 
     // SESION: permanece abierta hasta que el usuario pulse Salir.
     const urlParams = new URLSearchParams(window.location.search);
     const trackingUnit = urlParams.get('track');
-
+ 
     if (trackingUnit) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('client-tracking-screen').style.display = 'flex';
       document.querySelector('header').style.display = 'none';
       document.getElementById('map-container').style.display = 'none';
       document.querySelector('.controls-panel').style.display = 'none';
-
+ 
       window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('client-header-title').textContent = `🚘 Siguiendo a: ${trackingUnit}`;
         const clientMap = new maplibregl.Map({
@@ -1286,14 +1448,14 @@
           center: [-89.3562, 13.7242],
           zoom: 16
         });
-
+ 
         let clientMarker = null;
-
+ 
         const clientMqtt = mqtt.connect('wss://broker.emqx.io:8084/mqtt', { clientId: 'client_' + Math.random().toString(16).substring(2,8) });
         clientMqtt.on('connect', () => {
           clientMqtt.subscribe('yadah/radio/flota/gps');
         });
-
+ 
         clientMqtt.on('message', (top, msg) => {
           try {
             const data = JSON.parse(msg.toString());
@@ -1314,11 +1476,11 @@
         });
       });
     }
-
+ 
     let db = null;
     const DB_NAME = 'YadahFleetDB';
     const STORE_NAME = 'gps_points';
-
+ 
     function initDatabase() {
       const request = indexedDB.open(DB_NAME, 1);
       request.onupgradeneeded = (e) => {
@@ -1334,14 +1496,14 @@
         cleanOldTelemetry();
       };
     }
-
+ 
     function savePointToDB(unit, lon, lat, speed, heading) {
       if (!db) return;
       const tx = db.transaction([STORE_NAME], 'readwrite');
       const store = tx.objectStore(STORE_NAME);
       store.add({ unit, lon, lat, speed, heading, timestamp: Date.now() });
     }
-
+ 
     function cleanOldTelemetry() {
       if (!db) return;
       const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
@@ -1357,12 +1519,12 @@
         }
       };
     }
-
+ 
     if (!trackingUnit) initDatabase();
-
+ 
     const INTENTOS_KEY = 'yadah_intentos_perfiles';
     const BLOQUEO_KEY = 'yadah_bloqueo_perfiles';
-
+ 
     function obtenerIntentosYBloqueos() {
       try {
         return {
@@ -1373,25 +1535,25 @@
         return { intentos: {}, bloqueos: {} };
       }
     }
-
+ 
     function guardarIntentosYBloqueos(intentos, bloqueos) {
       localStorage.setItem(INTENTOS_KEY, JSON.stringify(intentos));
       localStorage.setItem(BLOQUEO_KEY, JSON.stringify(bloqueos));
     }
-
+ 
     function solicitarAccesoPerfil(id) {
       const ahora = Date.now();
       const { intentos, bloqueos } = obtenerIntentosYBloqueos();
-
+ 
       if (bloqueos[id] && ahora < bloqueos[id]) {
         const minutosRestantes = Math.ceil((bloqueos[id] - ahora) / 60000);
         alert(`🔒 El perfil de "${id}" está bloqueado temporalmente por seguridad.\nIntente de nuevo en ${minutosRestantes} minutos.`);
         return;
       }
-
+ 
       const passIngresada = prompt(`🔐 Ingrese la contraseña de seguridad para [ ${id} ]:`);
       if (passIngresada === null) return;
-
+ 
       if (passIngresada === "2021") {
         intentos[id] = 0;
         delete bloqueos[id];
@@ -1400,7 +1562,7 @@
       } else {
         intentos[id] = (intentos[id] || 0) + 1;
         const restantes = 3 - intentos[id];
-
+ 
         if (intentos[id] >= 3) {
           bloqueos[id] = ahora + (15 * 60 * 1000);
           guardarIntentosYBloqueos(intentos, bloqueos);
@@ -1411,15 +1573,15 @@
         }
       }
     }
-
+ 
     let contextMenuCoords = null;
     let tempContextMarker = null;
     let contextMenuMode = 'nav';
-
+ 
     function getCustomPOIs() {
       try { return JSON.parse(localStorage.getItem('yadah_custom_pois') || '[]'); } catch (e) { return []; }
     }
-
+ 
     function saveAllPOIs(pois, broadcast = true) {
       localStorage.setItem('yadah_custom_pois', JSON.stringify(pois));
       renderCustomPoiMarkers();
@@ -1427,33 +1589,40 @@
         mqttClient.publish(TOPIC_POI, JSON.stringify({ action: 'sync', pois: pois }), { retain: true, qos: 1 });
       }
     }
-
+ 
     function closeContextMenu() {
       document.getElementById('map-context-menu').style.display = 'none';
       if (tempContextMarker) { tempContextMarker.remove(); tempContextMarker = null; }
       contextMenuCoords = null;
     }
-
-    function ctxMainAction() {
+ 
+    function ctxNavigateAction() {
       if (!contextMenuCoords) return;
       const { lng, lat } = contextMenuCoords;
-      if (contextMenuMode === 'nav') {
-        closeContextMenu();
-        pendingDestination = { lon: lng, lat: lat, label: 'Punto seleccionado' };
-        lblRouteStats.textContent = `📍 Destino seleccionado. ¿Deseas iniciar marcha?`;
-        navRouteInfo.style.display = 'flex';
-      } else if (contextMenuMode === 'save') {
-        closeContextMenu();
-        const placeName = prompt("📍 Nombre del nuevo punto o negocio local (Visible para toda la flota):");
-        if (placeName && placeName.trim().length > 0) {
-          const pois = getCustomPOIs();
-          pois.unshift({ id: 'poi_' + Date.now(), name: placeName.trim(), lon: lng, lat: lat });
-          saveAllPOIs(pois, true);
-          alert(`✅ ¡Punto "${placeName.trim()}" sincronizado con éxito para todos!`);
-        }
+      closeContextMenu();
+      pendingDestination = { lon: lng, lat: lat, label: 'Punto seleccionado' };
+      lblRouteStats.textContent = `📍 Destino seleccionado. ¿Deseas iniciar marcha?`;
+      navRouteInfo.style.display = 'flex';
+    }
+ 
+    function ctxSaveAction() {
+      if (!contextMenuCoords) return;
+      const { lng, lat } = contextMenuCoords;
+      closeContextMenu();
+      const placeName = prompt("📍 Nombre del nuevo punto o negocio local (Visible para toda la flota):");
+      if (placeName && placeName.trim().length > 0) {
+        const pois = getCustomPOIs();
+        pois.unshift({ id: 'poi_' + Date.now(), name: placeName.trim(), lon: lng, lat: lat });
+        saveAllPOIs(pois, true);
+        alert(`✅ ¡Punto "${placeName.trim()}" sincronizado con éxito para todos!`);
       }
     }
-
+ 
+    function ctxMainAction() {
+      if (contextMenuMode === 'save') return ctxSaveAction();
+      return ctxNavigateAction();
+    }
+ 
     function ctxAssignAction() {
       if (!contextMenuCoords || !isModulator()) return;
       const { lng, lat } = contextMenuCoords;
@@ -1481,36 +1650,90 @@
         } else { alert("❌ Opción de unidad no válida."); }
       }
     }
-
+ 
     let customPoiMarkers = [];
+    let poiClusterRefreshBound = false;
     function renderCustomPoiMarkers() {
       if (!map) return;
       customPoiMarkers.forEach(m => m.remove());
       customPoiMarkers = [];
-      const pois = getCustomPOIs();
-      pois.forEach(poi => {
+      const pois = getCustomPOIs().filter(p => Number.isFinite(Number(p.lon)) && Number.isFinite(Number(p.lat)));
+      if (!poiClusterRefreshBound) {
+        poiClusterRefreshBound = true;
+        // Recalcular agrupaciones cuando el usuario mueve o acerca/aleja el mapa.
+        map.on('moveend', renderCustomPoiMarkers);
+        map.on('zoomend', renderCustomPoiMarkers);
+      }
+ 
+      // Agrupa marcadores cercanos en pantalla, sin alterar ni borrar los puntos guardados.
+      const zoom = map.getZoom();
+      const groups = [];
+      if (zoom >= 18.5) {
+        pois.forEach(poi => groups.push({ items: [poi], point: map.project([Number(poi.lon), Number(poi.lat)]) }));
+      } else {
+        const radius = zoom < 14 ? 54 : 44;
+        pois.forEach(poi => {
+          const point = map.project([Number(poi.lon), Number(poi.lat)]);
+          let group = groups.find(g => Math.hypot(g.point.x - point.x, g.point.y - point.y) < radius);
+          if (!group) { group = { items: [], xSum: 0, ySum: 0, point }; groups.push(group); }
+          group.items.push(poi);
+          group.xSum = (group.xSum || 0) + point.x;
+          group.ySum = (group.ySum || 0) + point.y;
+          group.point = { x: group.xSum / group.items.length, y: group.ySum / group.items.length };
+        });
+      }
+ 
+      groups.forEach(group => {
+        if (group.items.length > 1) {
+          const el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'yadah-poi-cluster';
+          el.style.cssText = 'box-sizing:border-box;width:13px;min-width:13px;height:17px;min-height:17px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;margin:0;appearance:none;-webkit-appearance:none;filter:drop-shadow(0 1px 1.5px rgba(15,23,42,.28));';
+          el.innerHTML = '<svg viewBox="0 0 36 44" aria-hidden="true" focusable="false"><path d="M18 1.8C8.9 1.8 2 8.7 2 17.2c0 11.3 16 25 16 25s16-13.7 16-25C34 8.7 27.1 1.8 18 1.8Z" fill="#0284c7" stroke="#7dd3fc" stroke-width="2.2"/><circle cx="18" cy="17" r="6.1" fill="#e0f2fe" stroke="#075985" stroke-width="2"/></svg>';
+          el.setAttribute('aria-label', 'Grupo de puntos guardados; tocar para acercar');
+          el.title = 'Puntos guardados · tocar para acercar';
+          el.addEventListener('click', e => {
+            e.stopPropagation();
+            const bounds = new maplibregl.LngLatBounds();
+            group.items.forEach(p => bounds.extend([Number(p.lon), Number(p.lat)]));
+            if (group.items.every(p => Number(p.lon) === Number(group.items[0].lon) && Number(p.lat) === Number(group.items[0].lat))) {
+              map.easeTo({ center: [Number(group.items[0].lon), Number(group.items[0].lat)], zoom: Math.min(20, map.getZoom() + 2) });
+              const names = group.items.map(p => `📍 ${String(p.name || 'Punto').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}`).join('<br>');
+              if (window.__yadahPoiPopup) window.__yadahPoiPopup.remove();
+              window.__yadahPoiPopup = new maplibregl.Popup({ closeButton: true, closeOnClick: true, offset: 18 }).setLngLat([Number(group.items[0].lon), Number(group.items[0].lat)]).setHTML(`<div style="font-weight:700;color:#0f172a;line-height:1.8">${names}</div>`).addTo(map);
+            } else {
+              map.fitBounds(bounds, { padding: 70, maxZoom: 18.5, duration: 450 });
+            }
+          });
+          const marker = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(map.unproject([group.point.x, group.point.y])).addTo(map);
+          customPoiMarkers.push(marker);
+          return;
+        }
+ 
+        const poi = group.items[0];
         const container = document.createElement('div');
         container.className = 'car-marker-container';
-        const badge = document.createElement('div');
-        badge.className = 'car-badge custom-poi';
-        badge.innerHTML = `📍 <b>${poi.name}</b>`;
-        container.appendChild(badge);
-        const iconEl = document.createElement('div');
-        iconEl.style.fontSize = '1.6rem';
-        iconEl.style.filter = 'drop-shadow(0 2px 4px rgba(0,0,0,0.7))';
-        iconEl.innerHTML = '⭐';
-        container.appendChild(iconEl);
-
+        const pin = document.createElement('div');
+        pin.className = 'poi-zoom-pin poi-zoom-visible';
+        pin.textContent = '📍';
+        pin.title = poi.name;
+        container.appendChild(pin);
         let pressTimer = null;
+        let longPressTriggered = false;
         container.addEventListener('click', (e) => {
           e.stopPropagation();
-          pendingDestination = { lon: poi.lon, lat: poi.lat, label: poi.name };
-          lblRouteStats.textContent = `📍 [Local] Destino: ${poi.name}. ¿Deseas iniciar marcha?`;
-          navRouteInfo.style.display = 'flex';
+          if (longPressTriggered) { longPressTriggered = false; return; }
+          try {
+            if (window.__yadahPoiPopup) window.__yadahPoiPopup.remove();
+            window.__yadahPoiPopup = new maplibregl.Popup({ closeButton: true, closeOnClick: true, offset: 18 })
+              .setLngLat([poi.lon, poi.lat])
+              .setHTML(`<div style="font-weight:800;color:#0f172a;font-size:14px;">📍 ${String(poi.name).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`)
+              .addTo(map);
+          } catch(e) {}
         });
-
         const startPress = () => {
           pressTimer = setTimeout(() => {
+            longPressTriggered = true;
             const action = prompt(`⚙️ Opciones para "${poi.name}":\n1. Editar Nombre\n2. Mover aquí\n3. Eliminar punto global\n\nEscribe 1, 2 o 3:`, "1");
             if (action === "1") {
               const newName = prompt("Nuevo nombre para el punto:", poi.name);
@@ -1529,18 +1752,21 @@
         const cancelPress = () => { if (pressTimer) clearTimeout(pressTimer); };
         container.addEventListener('mousedown', startPress);
         container.addEventListener('mouseup', cancelPress);
+        container.addEventListener('mouseleave', cancelPress);
         container.addEventListener('touchstart', startPress, { passive: true });
         container.addEventListener('touchend', cancelPress);
+        container.addEventListener('touchmove', cancelPress, { passive: true });
         const marker = new maplibregl.Marker({ element: container }).setLngLat([poi.lon, poi.lat]).addTo(map);
         customPoiMarkers.push(marker);
       });
+      updateZoomResponsiveLabels();
     }
-
+ 
     let currentUnit = localStorage.getItem('yadah_terminal_id');
     const isDriver = () => currentUnit && currentUnit !== 'Modulador' && currentUnit !== 'Clientes';
     const isClientQueue = () => currentUnit === 'Clientes';
     const isModulator = () => currentUnit === 'Modulador';
-
+ 
     const loginScreen = document.getElementById('login-screen');
     const lblUnit = document.getElementById('lbl-unit');
     const lblSpeed = document.getElementById('lbl-speed');
@@ -1566,7 +1792,7 @@
     const fleetListDrawer = document.getElementById('fleet-list-drawer');
     const gpsLockBanner = document.getElementById('gps-lock-banner');
     const btnPtt = document.getElementById('btn-ptt');
-
+ 
     let firstPersonMode = false;
     // En modo explorar, el motorista puede mover y recorrer libremente el mapa sin que el GPS lo recentre.
     let driverMapExploreMode = false;
@@ -1582,13 +1808,13 @@
     let baseUnlocked = false;
     let modulatorActiveAtBase = false;
     let modulatorActivationTime = null;
-
+ 
     const ALL_UNITS = Array.from({ length: 14 }, (_, i) => `Móvil ${String(i + 1).padStart(2, '0')}`);
     const fleetStatusMap = {};
     ALL_UNITS.forEach(id => { fleetStatusMap[id] = { lastSeen: 0, speed: 0, lat: null, lon: null, stoppedSince: null, state: 'offline', arrivalTime: null }; });
-
+ 
     async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
-
+ 
     function parseGoogleMapsLink(inputStr) {
       const matchGeo = inputStr.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
       if (matchGeo) return { lat: parseFloat(matchGeo[1]), lon: parseFloat(matchGeo[2]) };
@@ -1596,7 +1822,7 @@
       if (matchQuery) return { lat: parseFloat(matchQuery[1]), lon: parseFloat(matchQuery[2]) };
       return null;
     }
-
+ 
     function handleSearchInput(query) {
       clearTimeout(searchTimeout);
       if (!query || query.trim().length < 1) { searchSuggestions.style.display = 'none'; searchSuggestions.innerHTML = ''; return; }
@@ -1633,7 +1859,7 @@
         } catch (e) {}
       }, 300);
     }
-
+ 
     function selectSuggestion(lon, lat, displayName, isLocal) {
       document.getElementById('input-destination').value = displayName.split(',')[0];
       searchSuggestions.style.display = 'none';
@@ -1641,7 +1867,7 @@
       lblRouteStats.textContent = `${isLocal ? '📍 [Local]' : '📍'} Destino: ${pendingDestination.label}. ¿Deseas iniciar marcha?`;
       navRouteInfo.style.display = 'flex';
     }
-
+ 
     function openMobileSearch(event) {
       if (event) event.stopPropagation();
       if (!navSearchBar) return;
@@ -1651,7 +1877,7 @@
         if (input) input.focus();
       }, 0);
     }
-
+ 
     function closeMobileSearch(event) {
       if (event) event.stopPropagation();
       if (!navSearchBar) return;
@@ -1660,17 +1886,17 @@
         searchSuggestions.style.display = 'none';
       }
     }
-
+ 
     document.addEventListener('click', (event) => {
       if (window.innerWidth > 720 || !navSearchBar) return;
       if (!navSearchBar.classList.contains('mobile-search-open')) return;
       if (!navSearchBar.contains(event.target)) closeMobileSearch();
     });
-
+ 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && window.innerWidth <= 720) closeMobileSearch();
     });
-
+ 
     async function prepareRouteDestination() {
       searchSuggestions.style.display = 'none';
       const query = document.getElementById('input-destination').value.trim();
@@ -1695,7 +1921,7 @@
         } else { alert("Lugar no encontrado."); navRouteInfo.style.display = 'none'; }
       } catch (err) {}
     }
-
+ 
     function startNavigationMatch() { 
       if(window.__yadahBaseNoNavigation){ if(navRouteInfo) navRouteInfo.style.display='none'; pendingDestination=null; return; } 
       if (!pendingDestination) { alert("Primero selecciona un destino."); return; }
@@ -1703,18 +1929,18 @@
       updateViewButtonUI();
       requestRouteToDestination(pendingDestination.lon, pendingDestination.lat, pendingDestination.label);
     }
-
+ 
     function updateGpsLockState(allowed) {
       gpsPermissionGranted = allowed;
       if (isModulator()) {
         if (lblGpsStatus) { lblGpsStatus.textContent = 'Base Central'; lblGpsStatus.className = 'status-active'; }
-        if (btnPtt) { btnPtt.classList.remove('gps-disabled'); btnPtt.innerHTML = '<span>🎙️</span> PULSAR PARA HABLAR (Espacio)'; }
+        if (btnPtt) { btnPtt.classList.remove('gps-disabled'); btnPtt.innerHTML = '<span>🎙️</span> MANTENER PARA HABLAR'; }
         if (gpsLockBanner) gpsLockBanner.style.display = 'none';
         return;
       }
       if (allowed) {
         if (lblGpsStatus) { lblGpsStatus.textContent = 'Activo'; lblGpsStatus.className = 'status-active'; }
-        if (btnPtt) { btnPtt.classList.remove('gps-disabled'); btnPtt.innerHTML = '<span>🎙️</span> PULSAR PARA HABLAR (Espacio)'; }
+        if (btnPtt) { btnPtt.classList.remove('gps-disabled'); btnPtt.innerHTML = '<span>🎙️</span> MANTENER PARA HABLAR'; }
         if (gpsLockBanner) gpsLockBanner.style.display = 'none';
       } else {
         if (lblGpsStatus) { lblGpsStatus.textContent = 'Denegado/Apagado'; lblGpsStatus.className = 'status-warning'; }
@@ -1722,7 +1948,7 @@
         if (gpsLockBanner) gpsLockBanner.style.display = 'flex';
       }
     }
-
+ 
     function checkAuth(){
       if(currentUnit==='Clientes'){
         if(loginScreen)loginScreen.style.display='none';
@@ -1759,7 +1985,7 @@
     }
     // La sesion se restaura al arrancar, pero esperamos hasta que todo el modulo principal (incluido el mapa y sus funciones) este inicializado.
     // Asi checkAuth no se ejecuta antes de que const map exista.
-
+ 
     function selectUnit(id) {
       currentUnit = id;
       deviceId = `${currentUnit}_${Math.random().toString(16).slice(2, 10)}_${Date.now().toString(16)}`;
@@ -1767,7 +1993,7 @@
       localStorage.setItem('yadah_terminal_id', id);
       checkAuth(); unlockAudioHardware();
     }
-
+ 
     function logoutUnit() {
       if (typeof closeAllRadioPeers === 'function') closeAllRadioPeers();
       radioInitialized = false;
@@ -1781,7 +2007,7 @@
       if(document.querySelector('header'))document.querySelector('header').style.display=''; 
       if(mapContainer)mapContainer.style.display=''; 
       if(document.querySelector('.controls-panel'))document.querySelector('.controls-panel').style.display='';
-
+ 
       silenceSOS(); cancelNavigation(); closeVehicleHistory(); toggleFleetDrawer(false); closeContextMenu();
       baseUnlocked = false; if (btnUnlockBase) { btnUnlockBase.textContent = '🔒'; btnUnlockBase.classList.remove('unlocked'); }
       if (loginScreen) loginScreen.style.display = 'flex';
@@ -1794,7 +2020,7 @@
       if (btnSos) btnSos.style.display = 'none';
       if (btnViewTop) btnViewTop.style.display = 'none';
     }
-
+ 
     function toggleBaseUnlock() {
       if (!isModulator()) return;
       if (!baseUnlocked) {
@@ -1803,7 +2029,7 @@
         else if (pass !== null) alert("❌ Contraseña incorrecta.");
       } else { baseUnlocked = false; if (btnUnlockBase) { btnUnlockBase.textContent = '🔒'; btnUnlockBase.classList.remove('unlocked'); } alert("🔒 Base bloqueada."); }
     }
-
+ 
     function updateViewButtonUI() { if (btnViewMode) { btnViewMode.textContent = driverMapExploreMode ? '🚘 Volver a conducción' : '🗺️ Explorar mapa'; btnViewMode.classList.toggle('active', driverMapExploreMode); } if (btnViewTop) { btnViewTop.textContent = driverMapExploreMode ? '🚘' : '🗺️'; btnViewTop.title = driverMapExploreMode ? 'Volver a vista de conducción' : 'Explorar mapa desde arriba'; btnViewTop.setAttribute('aria-label', btnViewTop.title); btnViewTop.classList.toggle('active', driverMapExploreMode); } }
     function applyNightModeTheme() {
       if (isNightMode) { if (mapContainer) mapContainer.classList.add('map-night-mode'); if (btnThemeMode) { btnThemeMode.textContent = '☀️'; btnThemeMode.classList.add('active'); } }
@@ -1812,17 +2038,17 @@
     }
     if (btnThemeMode) btnThemeMode.addEventListener('click', () => { isNightMode = !isNightMode; applyNightModeTheme(); });
     if (btnTrafficToggle) btnTrafficToggle.addEventListener('click', () => { showTraffic = !showTraffic; btnTrafficToggle.classList.toggle('active', showTraffic); if (map && map.getLayer('google-traffic-layer')) map.setLayoutProperty('google-traffic-layer', 'visibility', showTraffic ? 'visible' : 'none'); });
-
+ 
     function zoomIn() { if (map) map.zoomIn({ duration: 300 }); }
     function zoomOut() { if (map) map.zoomOut({ duration: 300 }); }
     function toggleFullScreen() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(()=>{}); } else if (document.exitFullscreen) document.exitFullscreen(); }
-
+ 
     function formatTimeAgo(ms) {
       const sec = Math.floor(ms / 1000); if (sec < 60) return `${sec}s`;
       const min = Math.floor(sec / 60); if (min < 60) return `${min}m`;
       return `${Math.floor(min / 60)}h ${min % 60}m`;
     }
-
+ 
     function toggleFleetDrawer(show) { if (fleetListDrawer) fleetListDrawer.style.display = show ? 'flex' : 'none'; if (show) renderFleetList(); }
     function renderFleetList() {
       const container = document.getElementById('fleet-items-list'); if (!container) return;
@@ -1837,7 +2063,7 @@
         return `<div class="unit-card-row" onclick="openVehicleHistoryFromList('${unitId}')"><div class="unit-card-info"><b>🚘 ${unitId}</b><div>${detailTxt}</div></div><div>${statusBadge}</div></div>`;
       }).join('');
     }
-
+ 
     function openVehicleHistoryFromList(unitId) {
       if (!isModulator()) return;
       toggleFleetDrawer(false);
@@ -1849,7 +2075,7 @@
       if (statusDiv) statusDiv.textContent = '';
       if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'flex';
     }
-
+ 
     function shareVehicleTrackingLink() {
       if (!activeHistoryUnit) return;
       const clientLink = `${window.location.href.split('?')[0]}?track=${encodeURIComponent(activeHistoryUnit)}`;
@@ -1865,7 +2091,7 @@
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
       window.open(whatsappUrl, '_blank');
     }
-
+ 
     let audioCtx = null;
     function unlockAudioHardware() {
       try {
@@ -1876,7 +2102,7 @@
     }
     window.addEventListener('touchstart', unlockAudioHardware, { passive: true });
     window.addEventListener('click', unlockAudioHardware, { passive: true });
-
+ 
     function playBeep(freq = 880, duration = 0.08) {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1888,7 +2114,7 @@
         osc.start(); osc.stop(audioCtx.currentTime + duration);
       } catch (e) {}
     }
-
+ 
     function playSiren() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1902,11 +2128,11 @@
         osc.start(); osc.stop(audioCtx.currentTime + 0.65);
       } catch (e) {}
     }
-
+ 
     let defaultBaseCoords = [-89.356200, 13.724208];
     const savedBaseCoords = localStorage.getItem('yadah_base_coords');
     if (savedBaseCoords) { try { defaultBaseCoords = JSON.parse(savedBaseCoords); } catch(e){} }
-
+ 
     const map = !trackingUnit ? new maplibregl.Map({
       container: 'map', maxPitch: 85, pitchWithRotate: true, dragRotate: true,
       style: {
@@ -1922,7 +2148,9 @@
       },
       center: defaultBaseCoords, zoom: 16.5, pitch: 0, bearing: 0
     }) : null;
-
+ 
+    if (map) map.on('zoom', updateZoomResponsiveLabels);
+ 
     let permanentBaseMarker = null; let baseBadgeEl = null;
     function addPermanentBaseMarker() {
       if (!map) return;
@@ -1940,22 +2168,34 @@
       addPermanentBaseMarker();
       renderCustomPoiMarkers();
     });
-
-    let lastTapTime = 0; let doubleTapHoldTimer = null; let singleTapHoldTimer = null;
+ 
+    let longPressTimer = null;
+    let longPressStart = null;
     if (map) {
       map.on('touchstart', (e) => {
-        if (e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length > 1) { clearTimeout(singleTapHoldTimer); clearTimeout(doubleTapHoldTimer); return; }
-        const currentTime = new Date().getTime(); const tapLength = currentTime - lastTapTime; closeContextMenu();
-        if (tapLength < 350 && tapLength > 0) {
-          clearTimeout(singleTapHoldTimer); const lngLat = e.lngLat;
-          doubleTapHoldTimer = setTimeout(() => { if (lngLat) triggerContextMenu(lngLat, 'save'); }, 600);
-          lastTapTime = 0;
-        } else {
-          lastTapTime = currentTime; const lngLat = e.lngLat;
-          singleTapHoldTimer = setTimeout(() => { if (lngLat && lastTapTime !== 0) triggerContextMenu(lngLat, 'nav'); }, 650);
+        if (e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length > 1) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+          return;
         }
+        closeContextMenu();
+        longPressStart = e.lngLat;
+        clearTimeout(longPressTimer);
+        longPressTimer = setTimeout(() => {
+          if (longPressStart) triggerContextMenu(longPressStart, 'both');
+          longPressTimer = null;
+        }, 650);
       });
-      map.on('touchmove', () => { clearTimeout(singleTapHoldTimer); clearTimeout(doubleTapHoldTimer); lastTapTime = 0; });
+      map.on('touchmove', () => {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+        longPressStart = null;
+      });
+      map.on('touchend', () => {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+        longPressStart = null;
+      });
       map.on('contextmenu', (e) => { e.preventDefault(); triggerContextMenu(e.lngLat, 'save'); });
       map.on('click', (e) => {
         if (isModulator() && baseUnlocked) {
@@ -1968,13 +2208,27 @@
         }
       });
     }
-
+ 
     function triggerContextMenu(lngLat, mode) {
       if (isModulator() && baseUnlocked) return;
       contextMenuCoords = lngLat; contextMenuMode = mode;
       const titleEl = document.getElementById('menu-title-text'); const actionBtn = document.getElementById('btn-ctx-action'); const assignBtn = document.getElementById('btn-ctx-assign');
-      if (mode === 'nav') { if (titleEl) titleEl.textContent = '📍 Destino Seleccionado'; if (actionBtn) { actionBtn.textContent = '🚀 ¡Ir a este lugar!'; actionBtn.style.background = '#0284c7'; } }
-      else { if (titleEl) titleEl.textContent = '⭐ Nuevo Punto Local'; if (actionBtn) { actionBtn.textContent = '📍 Guardar este punto'; actionBtn.style.background = '#38bdf8'; } }
+      if (mode === 'nav') {
+        if (titleEl) titleEl.textContent = '📍 Destino Seleccionado';
+        if (actionBtn) { actionBtn.textContent = '🚀 ¡Ir a este lugar!'; actionBtn.style.background = '#0284c7'; }
+        const saveBtn = document.getElementById('btn-ctx-save');
+        if (saveBtn) saveBtn.style.display = 'none';
+      } else if (mode === 'save') {
+        if (titleEl) titleEl.textContent = '⭐ Nuevo Punto Local';
+        if (actionBtn) { actionBtn.textContent = '📍 Guardar este punto'; actionBtn.style.background = '#38bdf8'; }
+        const saveBtn = document.getElementById('btn-ctx-save');
+        if (saveBtn) saveBtn.style.display = 'none';
+      } else {
+        if (titleEl) titleEl.textContent = '📍 Selecciona una opción';
+        if (actionBtn) { actionBtn.textContent = '🚀 Ir a este lugar'; actionBtn.style.background = '#0284c7'; }
+        const saveBtn = document.getElementById('btn-ctx-save');
+        if (saveBtn) { saveBtn.style.display = 'block'; saveBtn.textContent = '📍 Guardar este punto'; saveBtn.style.background = '#38bdf8'; saveBtn.style.color = '#030712'; }
+      }
       if (isModulator() && assignBtn) { assignBtn.style.display = 'block'; assignBtn.textContent = '🎯 Asignar a Móvil & Compartir...'; } else if (assignBtn) assignBtn.style.display = 'none';
       if (tempContextMarker) tempContextMarker.remove();
       const el = document.createElement('div'); el.style.fontSize = '2rem'; el.innerHTML = mode === 'nav' ? '🏁' : '📍';
@@ -1982,7 +2236,7 @@
       const ctxMenuEl = document.getElementById('map-context-menu'); if (ctxMenuEl) ctxMenuEl.style.display = 'flex';
       playBeep(700, 0.05);
     }
-
+ 
     function ensureLayersExist() {
       if (!map) return;
       if (!map.getSource('route-trails')) map.addSource('route-trails', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } });
@@ -1991,7 +2245,7 @@
       if (!map.getLayer('nav-active-route-casing')) map.addLayer({ id: 'nav-active-route-casing', type: 'line', source: 'nav-active-route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#0369a1', 'line-width': 10, 'line-opacity': 0.9 } });
       if (!map.getLayer('nav-active-route-layer')) map.addLayer({ id: 'nav-active-route-layer', type: 'line', source: 'nav-active-route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#38bdf8', 'line-width': 6, 'line-opacity': 1.0 } });
     }
-
+ 
     let destinationMarker = null;
     async function requestRouteToDestination(destLon, destLat, label = 'Destino') {
       if (window.__yadahBaseNoNavigation) { if (navRouteInfo) navRouteInfo.style.display='none'; pendingDestination=null; return; }
@@ -2014,7 +2268,7 @@
         }
       } catch (e) {}
     }
-
+ 
     function cancelNavigation() {
       pendingDestination = null; if (destinationMarker) { destinationMarker.remove(); destinationMarker = null; }
       if (navRouteInfo) navRouteInfo.style.display = 'none';
@@ -2022,7 +2276,7 @@
       if (map && map.getSource('nav-active-route')) map.getSource('nav-active-route').setData({ type: 'FeatureCollection', features: [] });
       if (mqttClient && mqttClient.connected && currentUnit) mqttClient.publish('yadah/radio/flota/navigation', JSON.stringify({ unit: currentUnit, canceled: true }));
     }
-
+ 
     function closeVehicleHistory() { activeHistoryUnit = null; if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'none'; if (map && map.getSource('route-trails')) map.getSource('route-trails').setData({ type: 'FeatureCollection', features: [] }); }
 function applyVehicleHistory() {
  if (!isModulator() || !db || !activeHistoryUnit || !map) return;
@@ -2050,9 +2304,26 @@ function applyVehicleHistory() {
   }
  };
  }
+    function updateZoomResponsiveLabels() {
+      if (!map) return;
+      const z = map.getZoom();
+      const t = Math.max(0, Math.min(1, (z - 10) / 6));
+      const scale = 0.55 + (0.45 * t);
+      const opacity = 0.28 + (0.72 * t);
+      const labels = document.querySelectorAll('.zoom-responsive-label');
+      labels.forEach(el => {
+        el.style.transform = `scale(${scale.toFixed(3)})`;
+        el.style.transformOrigin = 'bottom center';
+        el.style.opacity = opacity.toFixed(3);
+        el.style.pointerEvents = t < 0.35 ? 'none' : '';
+      });
+      // Los puntos locales siempre muestran únicamente 📍 en el mapa.
+      // Su nombre se abre mediante un popup al tocar el punto.
+    }
+ 
     function createMarkerElement(unitName) {
       const container = document.createElement('div'); container.className = 'car-marker-container';
-      const badge = document.createElement('div'); badge.className = 'car-badge';
+      const badge = document.createElement('div'); badge.className = 'car-badge zoom-responsive-label';
       badge.innerHTML = `<div><strong>${unitName}</strong></div><div class="unit-speed-txt" style="font-size:0.6rem; color:#38bdf8;">Detenido</div>`;
       container.appendChild(badge);
       const rotator = document.createElement('div'); rotator.className = 'car-svg-rotator';
@@ -2060,17 +2331,17 @@ function applyVehicleHistory() {
       container.appendChild(rotator);
       return { container, rotator, badge };
     }
-
+ 
     const fleetMarkers = {}; let myLastCoords = null; let myHeading = 0; let mySpeed = 0;
     let targetPos = null; let currentDisplayPos = null; let targetHeading = 0; let currentDisplayHeading = 0;
-
+ 
     function getDistanceFromBase(lat, lon) {
       const R = 6371e3; const φ1 = lat * Math.PI/180; const φ2 = defaultBaseCoords[1] * Math.PI/180;
       const Δφ = (defaultBaseCoords[1] - lat) * Math.PI/180; const Δλ = (defaultBaseCoords[0] - lon) * Math.PI/180;
       const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
       return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
     }
-
+ 
     function updateModulatorState(modLat, modLon) {
       const dist = getDistanceFromBase(modLat, modLon);
       const wasActive = modulatorActiveAtBase;
@@ -2087,7 +2358,7 @@ function applyVehicleHistory() {
         }
       }
     }
-
+ 
     function updateVehicleOnMap(unitId, lon, lat, heading, speed = 0, isSos = false) {
       if (!lon || !lat || isNaN(lon) || isNaN(lat) || !map) return;
       const now = Date.now();
@@ -2105,9 +2376,10 @@ function applyVehicleHistory() {
       if (heading !== undefined && heading !== null) fleetMarkers[unitId].rotator.style.transform = `rotate(${heading}deg)`;
       fleetMarkers[unitId].container.classList.toggle('sos-active', isSos);
       savePointToDB(unitId, lon, lat, speed, heading);
+      updateZoomResponsiveLabels();
       refreshFleetStatsCounters();
     }
-
+ 
     function smoothAnimationLoop() {
       if (isDriver() && targetPos && currentDisplayPos && map) {
         currentDisplayPos.lon += (targetPos.lon - currentDisplayPos.lon) * 0.15;
@@ -2127,7 +2399,7 @@ function applyVehicleHistory() {
       requestAnimationFrame(smoothAnimationLoop);
     }
     requestAnimationFrame(smoothAnimationLoop);
-
+ 
     setInterval(() => {
       const now = Date.now();
       ALL_UNITS.forEach(unitId => {
@@ -2139,7 +2411,7 @@ function applyVehicleHistory() {
       refreshFleetStatsCounters();
       if (fleetListDrawer && fleetListDrawer.style.display === 'flex') renderFleetList();
     }, 4000);
-
+ 
     function refreshFleetStatsCounters() {
       let online = 0, atBase = 0, stopped = 0, offline = 0;
       ALL_UNITS.forEach(id => {
@@ -2151,18 +2423,18 @@ function applyVehicleHistory() {
       if (document.getElementById('stat-stopped')) document.getElementById('stat-stopped').textContent = `${stopped} Detenidos`;
       if (document.getElementById('stat-offline')) document.getElementById('stat-offline').textContent = `${offline} Apagados`;
     }
-
+ 
     function toggleDriverView() {
       if (!isDriver() || !map) return;
       // La exploración libre NO depende del GPS: se puede abrir en cualquier momento.
-
+ 
       // Un toque cambia entre conducción automática y exploración libre.
       driverMapExploreMode = !driverMapExploreMode;
       firstPersonMode = !driverMapExploreMode;
       updateViewButtonUI();
       map.resize();
       map.stop();
-
+ 
       if (driverMapExploreMode) {
         // Vista completamente cenital y controles libres: el mapa ya no sigue al GPS.
         map.dragPan.enable();
@@ -2192,7 +2464,7 @@ function applyVehicleHistory() {
     }
     // Los botones de exploración ya llaman toggleDriverView() mediante onclick.
     // No agregamos otro listener aquí para evitar que un toque haga el cambio dos veces.
-
+ 
     function applyCameraPerspective() {
       if (!map) return;
       if (isModulator()) { map.easeTo({ center: defaultBaseCoords, zoom: 16.5, pitch: 0, bearing: 0, offset: [0, 0], duration: 600 }); return; }
@@ -2202,7 +2474,7 @@ function applyVehicleHistory() {
         map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], bearing: myHeading, pitch: 75, zoom: 17.2, offset: [0, window.innerHeight * 0.35 || 220], duration: 600 });
       } else { map.easeTo({ center: [myLastCoords.lon, myLastCoords.lat], zoom: 16.0, pitch: 0, bearing: 0, offset: [0, 0], duration: 600 }); }
     }
-
+ 
     let mqttClient = null;
     const TOPIC_GPS = 'yadah/radio/flota/gps';
     const TOPIC_ALERT = 'yadah/radio/flota/alert'; const TOPIC_PANIC = 'yadah/radio/flota/panic';
@@ -2211,7 +2483,7 @@ function applyVehicleHistory() {
     const TOPIC_POI = 'yadah/radio/flota/poi'; const TOPIC_ASSIGN = 'yadah/radio/flota/assignment';
     const TOPIC_MESSAGES = 'yadah/radio/flota/messages';
     const TOPIC_VOICE_MESSAGE = 'yadah/radio/flota/voice_message';
-
+ 
     function triggerSOS() {
       isSosActive = !isSosActive; if (btnSos) btnSos.classList.toggle('active', isSosActive);
       if (mqttClient && mqttClient.connected && currentUnit) mqttClient.publish(TOPIC_PANIC, JSON.stringify({ unit: currentUnit, active: isSosActive, coords: myLastCoords }));
@@ -2223,7 +2495,7 @@ function applyVehicleHistory() {
       if (sirenInterval) { clearInterval(sirenInterval); sirenInterval = null; }
       activeSosCoords = null;
     }
-
+ 
     function connectNetwork() {
       if (mqttClient && mqttClient.connected) return;
       const opts = { clientId: 'yadah_' + Math.random().toString(16).substring(2, 9), clean: true, reconnectPeriod: 2000 };
@@ -2336,13 +2608,13 @@ function applyVehicleHistory() {
         } catch (e) {}
       });
     }
-
+ 
     function calculateBearing(startLat, startLng, destLat, destLng) {
       const y = Math.sin((destLng - startLng) * Math.PI / 180) * Math.cos(destLat * Math.PI / 180);
       const x = Math.cos(startLat * Math.PI / 180) * Math.sin(destLat * Math.PI / 180) - Math.sin(startLat * Math.PI / 180) * Math.cos(destLat * Math.PI / 180) * Math.cos((destLng - startLng) * Math.PI / 180);
       return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
     }
-
+ 
     let initialCentering = false;
     if (!trackingUnit && navigator.geolocation) {
       navigator.geolocation.watchPosition(
@@ -2362,7 +2634,7 @@ function applyVehicleHistory() {
           mySpeed = Math.round(speedKmh); myLastCoords = { lat, lon, timestamp: now };
           if (lblHeading) lblHeading.textContent = `${myHeading}°`;
           if (lblSpeed) lblSpeed.textContent = `${mySpeed} km/h`;
-
+ 
           if (isModulator()) {
             updateModulatorState(lat, lon);
             if (mqttClient && mqttClient.connected) mqttClient.publish(TOPIC_MODULATOR, JSON.stringify({ lat, lon, timestamp: now }));
@@ -2378,7 +2650,7 @@ function applyVehicleHistory() {
         { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
       );
     } else if (!trackingUnit) { updateGpsLockState(false); }
-
+ 
     function closeMapOptions() {
       const menu = document.getElementById('map-options-menu');
       const trigger = document.getElementById('btn-map-options');
@@ -2403,9 +2675,9 @@ function applyVehicleHistory() {
     document.querySelectorAll('#map-options-menu .btn-float-action').forEach((button) => {
       button.addEventListener('click', () => setTimeout(closeMapOptions, 0));
     });
-
+ 
     if (!trackingUnit && document.getElementById('btn-recenter')) document.getElementById('btn-recenter').addEventListener('click', applyCameraPerspective);
-
+ 
     // ==========================================
     // MÓDULO DE RADIO WEBRTC EN TIEMPO REAL
     // ==========================================
@@ -2415,7 +2687,7 @@ function applyVehicleHistory() {
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' }
     ];
-
+ 
     let deviceId = `${currentUnit || 'guest'}_${Math.random().toString(16).slice(2, 10)}_${Date.now().toString(16)}`;
     let radioLocalStream = null;
     let radioLocalTrack = null;
@@ -2430,7 +2702,7 @@ function applyVehicleHistory() {
     const radioAudioElements = new Map();
     const activeRadioStreams = new Map();
     let radioAudioUnlocked = false;
-
+ 
     function unlockRadioAudio() {
       radioAudioUnlocked = true;
       const mainSpeaker = document.getElementById('radio-speaker');
@@ -2447,7 +2719,7 @@ function applyVehicleHistory() {
         } catch (e) {}
       }
     }
-
+ 
     function initializeRadio() {
       if (radioInitialized || !mqttClient || !mqttClient.connected || !currentUnit) return;
       radioInitialized = true;
@@ -2463,7 +2735,7 @@ function applyVehicleHistory() {
         startRadioDiscovery();
       }
     }
-
+ 
     // GABO COD 26: descubrimiento inicial más rápido y resistente.
     // Repite el hello durante unos segundos para cubrir el caso en que
     // computadora y teléfono entren casi al mismo tiempo y uno de los
@@ -2475,18 +2747,18 @@ function applyVehicleHistory() {
       }
       radioDiscoveryAttempts = 0;
     }
-
+ 
     function radioHasConnectedPeer() {
       for (const pc of radioPeers.values()) {
         if (pc && pc.connectionState === 'connected') return true;
       }
       return false;
     }
-
+ 
     function startRadioDiscovery() {
       if (!mqttClient || !mqttClient.connected || !currentUnit) return;
       stopRadioDiscovery();
-
+ 
       const announce = () => {
         if (!mqttClient || !mqttClient.connected || !currentUnit) {
           stopRadioDiscovery();
@@ -2499,11 +2771,11 @@ function applyVehicleHistory() {
         radioDiscoveryAttempts++;
         sendRadioSignal({ type: 'hello' });
       };
-
+ 
       announce();
       radioDiscoveryTimer = setInterval(announce, 1500);
     }
-
+ 
     function sendRadioSignal(data) {
       if (!mqttClient || !mqttClient.connected || !currentUnit) return;
       mqttClient.publish(RADIO_SIGNAL_TOPIC, JSON.stringify({
@@ -2514,7 +2786,7 @@ function applyVehicleHistory() {
         ...data
       }));
     }
-
+ 
     async function getRadioMicrophone() {
       if (radioLocalTrack && radioLocalTrack.readyState === 'live') {
         radioLocalTrack.enabled = true;
@@ -2533,7 +2805,7 @@ function applyVehicleHistory() {
         radioLocalTrack = radioLocalStream.getAudioTracks()[0] || null;
         if (!radioLocalTrack) return false;
         radioLocalTrack.enabled = true;
-
+ 
         await attachRadioTrackToPeers();
         return true;
       } catch (error) {
@@ -2541,11 +2813,11 @@ function applyVehicleHistory() {
         return false;
       }
     }
-
+ 
     async function attachRadioTrackToPeers() {
       if (!radioLocalTrack || radioLocalTrack.readyState !== 'live' || !radioLocalStream) return false;
       let attached = false;
-
+ 
       for (const [peerId, pc] of radioPeers.entries()) {
         try {
           let sender = pc.getSenders().find(item => item && item.track && item.track.kind === 'audio');
@@ -2553,19 +2825,19 @@ function applyVehicleHistory() {
             const transceiver = pc.getTransceivers().find(item => item && item.sender && item.sender.kind === 'audio');
             sender = transceiver ? transceiver.sender : null;
           }
-
+ 
           if (!sender) {
             sender = pc.addTrack(radioLocalTrack, radioLocalStream);
           } else if (sender.track !== radioLocalTrack) {
             await sender.replaceTrack(radioLocalTrack);
           }
-
+ 
           if (pc.signalingState === 'stable' && pc.connectionState !== 'closed') {
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
             sendRadioSignal({ type: 'renegotiate-offer', target: peerId, offer: pc.localDescription });
           }
-
+ 
           attached = true;
         } catch (error) {
           console.warn('No se pudo conectar el micrófono al peer:', error);
@@ -2573,7 +2845,7 @@ function applyVehicleHistory() {
       }
       return attached;
     }
-
+ 
     async function startRadioTalking(event) {
       if (event) event.preventDefault();
       if (isDriver() && !gpsPermissionGranted) {
@@ -2585,11 +2857,11 @@ function applyVehicleHistory() {
         return;
       }
       if (radioTalking) return;
-
+ 
       radioButtonPressed = true;
       const session = ++radioTalkSession;
       const microphoneReady = await getRadioMicrophone();
-
+ 
       if (!radioButtonPressed || session !== radioTalkSession) {
         if (radioLocalTrack) radioLocalTrack.enabled = false;
         return;
@@ -2599,7 +2871,7 @@ function applyVehicleHistory() {
         if (channelStatus) channelStatus.textContent = '🎙️ MICRÓFONO NO DISPONIBLE';
         return;
       }
-
+ 
       await attachRadioTrackToPeers();
       radioLocalTrack.enabled = true;
       radioTalking = true;
@@ -2615,13 +2887,13 @@ function applyVehicleHistory() {
         mqttClient.publish(TOPIC_ALERT, JSON.stringify({ sender: currentUnit, live: true }));
       }
     }
-
+ 
     function stopRadioTalking(event) {
       if (event) event.preventDefault();
       radioButtonPressed = false;
       radioTalkSession++;
       const wasRadioTalking = radioTalking;
-
+ 
       if (radioLocalTrack) radioLocalTrack.enabled = false;
       radioTalking = false;
       if (btnPtt) btnPtt.classList.remove('active');
@@ -2636,12 +2908,12 @@ function applyVehicleHistory() {
         mqttClient.publish(TOPIC_ALERT, JSON.stringify({ sender: currentUnit, live: false }));
       }
     }
-
+ 
     function queueRadioCandidate(targetDevId, candidate) {
       if (!radioCandidateQueues.has(targetDevId)) radioCandidateQueues.set(targetDevId, []);
       radioCandidateQueues.get(targetDevId).push(candidate);
     }
-
+ 
     async function flushRadioCandidates(targetDevId, pc) {
       const queue = radioCandidateQueues.get(targetDevId) || [];
       radioCandidateQueues.delete(targetDevId);
@@ -2649,17 +2921,17 @@ function applyVehicleHistory() {
         try { await pc.addIceCandidate(candidate); } catch (error) {}
       }
     }
-
+ 
     async function receiveRadioSignal(message) {
       try {
         const data = JSON.parse(message.toString());
         if (!data || data.room !== ROOM_NAME || data.deviceId === deviceId) return;
         if (data.target && data.target !== deviceId) return;
         if (!data.sender || !data.deviceId) return;
-
+ 
         const targetDevId = data.deviceId;
         let pc = radioPeers.get(targetDevId);
-
+ 
         if (data.type === 'hello') {
           if (deviceId < targetDevId) {
             pc = await createRadioPeer(targetDevId, true);
@@ -2696,21 +2968,21 @@ function applyVehicleHistory() {
         console.warn('Señal WebRTC inválida:', error);
       }
     }
-
+ 
     async function createRadioPeer(targetDevId, isInitiator) {
       if (radioPeers.has(targetDevId)) return radioPeers.get(targetDevId);
-
+ 
       const pc = new RTCPeerConnection({ iceServers: STUN_SERVERS });
       radioPeers.set(targetDevId, pc);
-
+ 
       try { pc.addTransceiver('audio', { direction: 'sendrecv' }); } catch (error) {}
-
+ 
       pc.onicecandidate = (event) => {
         if (event.candidate) {
           sendRadioSignal({ type: 'candidate', target: targetDevId, candidate: event.candidate });
         }
       };
-
+ 
       pc.ontrack = (event) => {
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
@@ -2729,7 +3001,7 @@ function applyVehicleHistory() {
           channelStatus.textContent = '▼ RADIO EN VIVO';
         }
       };
-
+ 
       pc.onconnectionstatechange = () => {
         if (pc.connectionState === 'connected') {
           // Ya existe un enlace WebRTC real; dejamos de hacer anuncios de arranque.
@@ -2745,7 +3017,7 @@ function applyVehicleHistory() {
           }, 250);
         }
       };
-
+ 
       if (radioLocalTrack && radioLocalTrack.readyState === 'live') {
         try {
           let sender = pc.getSenders().find(item => item && item.kind === 'audio');
@@ -2753,10 +3025,10 @@ function applyVehicleHistory() {
           else if (sender.track !== radioLocalTrack) await sender.replaceTrack(radioLocalTrack);
         } catch (error) {}
       }
-
+ 
       return pc;
     }
-
+ 
     function closeRadioPeer(targetDevId) {
       const pc = radioPeers.get(targetDevId);
       if (pc) {
@@ -2775,7 +3047,7 @@ function applyVehicleHistory() {
         channelStatus.textContent = '● CANAL LIBRE';
       }
     }
-
+ 
     function closeAllRadioPeers() {
       stopRadioDiscovery();
       for (const targetDevId of Array.from(radioPeers.keys())) closeRadioPeer(targetDevId);
@@ -2787,18 +3059,18 @@ function applyVehicleHistory() {
       radioTalking = false;
       radioButtonPressed = false;
     }
-
+ 
     function bindRadioPTT() {
       if (!btnPtt || btnPtt.dataset.webrtcBound === 'true') return;
       btnPtt.dataset.webrtcBound = 'true';
       let pressed = false;
-
+ 
       const release = (event) => {
         if (!pressed) return;
         pressed = false;
         stopRadioTalking(event);
       };
-
+ 
       btnPtt.addEventListener('pointerdown', (event) => {
         unlockRadioAudio();
         event.preventDefault();
@@ -2812,35 +3084,35 @@ function applyVehicleHistory() {
       btnPtt.addEventListener('lostpointercapture', release);
       document.addEventListener('pointerup', release, true);
       document.addEventListener('pointercancel', release, true);
-
+ 
       window.addEventListener('pointerdown', unlockRadioAudio, { once: false, passive: true });
       window.addEventListener('touchstart', unlockAudioHardware, { once: false, passive: true });
       window.addEventListener('click', unlockAudioHardware, { once: false, passive: true });
-
+ 
       let keyboardPressed = false;
-
+ 
       window.addEventListener('keydown', (event) => {
         const tag = document.activeElement && document.activeElement.tagName;
         if (event.code !== 'Space' || event.repeat || ['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return;
-
+ 
         event.preventDefault();
         event.stopPropagation();
         if (keyboardPressed) return;
-
+ 
         keyboardPressed = true;
         pressed = true;
-
+ 
         // La tecla Espacio usa exactamente el mismo flujo PTT que el botón:
         // desbloquea audio, prepara el micrófono y conecta la pista a los peers.
         unlockRadioAudio();
         void startRadioTalking(event);
       });
-
+ 
       window.addEventListener('keyup', (event) => {
         if (event.code !== 'Space') return;
         event.preventDefault();
         event.stopPropagation();
-
+ 
         if (!keyboardPressed) return;
         keyboardPressed = false;
         release(event);
@@ -2850,7 +3122,7 @@ function applyVehicleHistory() {
         if (document.hidden) release(null);
       });
     }
-
+ 
     // ==========================================
     // SISTEMA DE BUZÓN COMPARTIDO (ESTABLE Y LIMPIO)
     // ==========================================
@@ -2858,28 +3130,28 @@ function applyVehicleHistory() {
     let radioRecorder = null;
     let radioRecordingChunks = [];
     let radioRecordingStartedAt = 0;
-
+ 
     function getMissedRadioMessages() {
       try { return Math.max(0, Number(localStorage.getItem('yadah_missed_radio_messages') || 0)); } catch(e) { return 0; }
     }
-
+ 
     function setMissedRadioMessages(value) {
       const n = Math.max(0, Number(value) || 0);
       try { localStorage.setItem('yadah_missed_radio_messages', String(n)); } catch(e) {}
       const badge = document.getElementById('missed-message-count');
       if (badge) { badge.textContent = n > 99 ? '99+' : String(n); badge.style.display = n > 0 ? 'flex' : 'none'; }
     }
-
+ 
     function addMissedRadioMessage(sender) {
       setMissedRadioMessages(getMissedRadioMessages() + 1);
       try { playBeep(520, 0.08); } catch(e) {}
     }
-
+ 
     function openMessageInbox() {
       setMissedRadioMessages(0);
       toggleHistory(true);
     }
-
+ 
     function toggleConnectedPeople() {
       const panel = document.getElementById('connected-people-panel');
       if (!panel) return;
@@ -2887,7 +3159,7 @@ function applyVehicleHistory() {
       panel.style.display = open ? 'none' : 'block';
       if (!open) renderConnectedPeople();
     }
-
+ 
     function renderConnectedPeople() {
       const list = document.getElementById('connected-people-list');
       const badge = document.getElementById('connected-people-count');
@@ -2897,16 +3169,16 @@ function applyVehicleHistory() {
       if (badge) { badge.textContent = unique.length > 99 ? '99+' : String(unique.length); badge.style.display = unique.length ? 'flex' : 'none'; }
       list.innerHTML = unique.length ? unique.map(n => `<div class="connected-person"><span class="connected-dot"></span><span>${n}</span></div>`).join('') : '<div class="connected-empty">No hay otras personas conectadas al radio.</div>';
     }
-
+ 
     function updateConnectedPeopleBadge() { renderConnectedPeople(); }
-
+ 
     document.addEventListener('click', (e) => {
       const panel = document.getElementById('connected-people-panel');
       const btn = document.getElementById('connected-people-btn');
       if (panel && panel.style.display === 'block' && !panel.contains(e.target) && !btn?.contains(e.target)) panel.style.display = 'none';
     });
     setMissedRadioMessages(getMissedRadioMessages());
-
+ 
     let pendingMessagePhoto = null;
     function populateMessageRecipients() {
       const select = document.getElementById('message-recipient');
@@ -2917,13 +3189,13 @@ function applyVehicleHistory() {
       select.innerHTML = '<option value="all">👥 Toda la flota conectada</option>' + unique.map(n => `<option value="${String(n).replace(/"/g,'&quot;')}">👤 ${n}</option>`).join('');
       if ([...select.options].some(o => o.value === current)) select.value = current;
     }
-
+ 
     function clearMessagePhoto() {
       pendingMessagePhoto = null;
       const input = document.getElementById('message-photo-input'); if (input) input.value = '';
       const preview = document.getElementById('message-photo-preview'); if (preview) preview.style.display = 'none';
     }
-
+ 
     function handleMessagePhoto(file) {
       if (!file || !file.type.startsWith('image/')) return;
       const reader = new FileReader();
@@ -2944,7 +3216,7 @@ function applyVehicleHistory() {
       };
       reader.readAsDataURL(file);
     }
-
+ 
     function saveItemToStorage(item) {
       try {
         let list = [];
@@ -2956,7 +3228,7 @@ function applyVehicleHistory() {
         }
       } catch(e) {}
     }
-
+ 
     function getStoredItems() {
       try {
         const list = JSON.parse(localStorage.getItem(STORAGE_BUZON_KEY) || '[]');
@@ -2964,7 +3236,7 @@ function applyVehicleHistory() {
         return list.filter(item => item && Number(item.timestamp || 0) > cutoff);
       } catch(e) { return []; }
     }
-
+ 
     async function sendTextOrPhotoMessage() {
       const textEl=document.getElementById('message-text'); const select=document.getElementById('message-recipient');
       const body=(textEl?.value||'').trim();
@@ -2975,7 +3247,7 @@ function applyVehicleHistory() {
       saveItemToStorage({...payload, direction:'outgoing'});
       if (textEl) textEl.value=''; clearMessagePhoto(); renderHistory();
     }
-
+ 
     async function receiveTextOrPhotoMessage(data) {
       if (!data || data.type !== 'chat-message' || !data.sender || data.sender === currentUnit) return;
       if (data.target && data.target !== 'all' && data.target !== currentUnit) return;
@@ -2986,13 +3258,13 @@ function applyVehicleHistory() {
       try { playBeep(760,0.08); } catch(e) {}
       renderHistory();
     }
-
+ 
     function toggleHistory(show) {
       const modal = document.getElementById('history-modal');
       if (modal) modal.style.display = show ? 'flex' : 'none';
       if (show) renderHistory();
     }
-
+ 
     function startRadioRecording() {
       try {
         if (!radioLocalStream) return;
@@ -3010,7 +3282,7 @@ function applyVehicleHistory() {
         radioRecorder = null;
       }
     }
-
+ 
     function stopRadioRecording() {
       const recorder = radioRecorder;
       radioRecorder = null;
@@ -3018,7 +3290,7 @@ function applyVehicleHistory() {
       const chunks = radioRecordingChunks.slice();
       const startedAt = radioRecordingStartedAt || Date.now();
       radioRecordingChunks = [];
-
+ 
       recorder.onstop = async () => {
         try {
           const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
@@ -3039,18 +3311,18 @@ function applyVehicleHistory() {
             
             saveItemToStorage(recordItem);
             renderHistory();
-
+ 
             if (mqttClient && mqttClient.connected && currentUnit) {
               mqttClient.publish(TOPIC_VOICE_MESSAGE, JSON.stringify(recordItem), { qos: 0 });
             }
           };
           reader.readAsDataURL(blob);
-
+ 
         } catch (e) {}
       };
       try { if (recorder.state !== 'inactive') recorder.stop(); } catch (e) {}
     }
-
+ 
     async function receiveSharedVoiceMessage(data) {
       if (!data || !data.sender || data.sender === currentUnit || !data.audioBase64) return;
       try {
@@ -3063,7 +3335,7 @@ function applyVehicleHistory() {
         }
       } catch (e) {}
     }
-
+ 
     async function renderHistory() {
       const listContainer = document.getElementById('history-list');
       if (!listContainer) return;
@@ -3093,7 +3365,7 @@ function applyVehicleHistory() {
         populateMessageRecipients();
       } catch(e) { listContainer.textContent='No se pudo cargar el Buzón.'; }
     }
-
+ 
     function playBase64Audio(base64Data, mimeType) {
       if (!base64Data) return;
       try {
@@ -3101,7 +3373,7 @@ function applyVehicleHistory() {
         audio.play().catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
       } catch (e) { alert('No se pudo reproducir esta transmisión.'); }
     }
-
+ 
     async function replayLatestVoice() {
       const btn = document.getElementById('replay-last-audio-btn');
       try {
@@ -3118,13 +3390,13 @@ function applyVehicleHistory() {
         alert('No se pudo reproducir el último audio.');
       }
     }
-
+ 
     // Restaurar la sesion guardada SOLO despues de inicializar el modulo principal.
     // La sesion permanece activa hasta que el usuario pulsa Salir.
     if (!trackingUnit) checkAuth();
     bindRadioPTT();
   </script>
-
+ 
   <script>
   (function(){
     'use strict';
@@ -3134,7 +3406,7 @@ function applyVehicleHistory() {
     let ycState = { version:1, day:'', careers:[] };
     let ycLastSerialized = '';
     let ycInitialized = false;    let ycPanelOpen = true;
-
+ 
     const $ = id => document.getElementById(id);
     const now = () => Date.now();
     const dayKey = ts => new Date(ts).toLocaleDateString('en-CA');
@@ -3142,7 +3414,7 @@ function applyVehicleHistory() {
     const isMod = () => unitName() === 'Modulador';
     const isDriverRole = () => !!unitName() && !isMod();
     const uid = () => (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('yc_'+Date.now()+'_'+Math.random().toString(16).slice(2));
-
+ 
     function freshState(){ return {version:1, day:dayKey(now()), careers:[]}; }
     function normalizeState(st){
       const base=freshState();
@@ -3403,7 +3675,7 @@ function applyVehicleHistory() {
       }
       showCareerTrajectory(id);
     }
-
+ 
     function showCareerTrajectory(id){
       const c=findCareer(id);
       if(!c || c.status!=='done' || !c.driver) return;
@@ -3460,7 +3732,7 @@ function applyVehicleHistory() {
     window.YadahCareers={createCareer,acceptCareer,finishCareer,cancelCareer,render};
   })();
   </script>
-
+ 
   <script>
   (function(){'use strict';
   const TOPIC='yadah/radio/flota/base_queue/v1',STORAGE='yadah_base_queue_v2';let baseNotifyTimer=null,baseNotifySignature='';let state={version:2,day:'',items:[]},client=null,lastRaw='',bound=false,basePanelOpen=false;
@@ -3559,7 +3831,7 @@ function applyVehicleHistory() {
 function renderBaseNotifications(){
     const box=$('yadah-base-notifications'),tab=$('yadah-base-tab'),countEl=$('yadah-base-tab-count');
     if(!box||!tab)return;
-
+ 
     if(mod()||clientRole()){
       clearTimeout(baseNotifyTimer);
       box.classList.remove('open');
@@ -3569,14 +3841,14 @@ function renderBaseNotifications(){
       baseNotifySignature='';
       return;
     }
-
+ 
     window.__yadahPendingBaseAssignments=window.__yadahPendingBaseAssignments||{};
     const map=new Map();
-
+ 
     state.items
       .filter(i=>i&&i.driver===unit()&&['assigned','accepted'].includes(i.status))
       .forEach(i=>map.set(i.id,i));
-
+ 
     Object.keys(window.__yadahPendingBaseAssignments).forEach(id=>{
       const a=window.__yadahPendingBaseAssignments[id];
       if(a&&a.baseQueueId&&!map.has(a.baseQueueId)){
@@ -3590,11 +3862,11 @@ function renderBaseNotifications(){
         });
       }
     });
-
+ 
     const items=Array.from(map.values()).sort(
       (a,b)=>Number(a.assignedAt||a.acceptedAt||0)-Number(b.assignedAt||b.acceptedAt||0)
     );
-
+ 
     if(!items.length){
       clearTimeout(baseNotifyTimer);
       baseNotifySignature='';
@@ -3606,17 +3878,17 @@ function renderBaseNotifications(){
       if(countEl)countEl.style.display='none';
       return;
     }
-
+ 
     const signature=items.map(i=>i.id).sort().join('|');
     const isNewSet=signature!==baseNotifySignature;
     baseNotifySignature=signature;
-
+ 
     box.innerHTML='';
     items.forEach(item=>{
       const card=document.createElement('div');
       card.className='yb-notify-card '+(item.status==='assigned'?'pending':'accepted');
       card.dataset.id=item.id;
-
+ 
       if(item.status==='assigned'){
         card.innerHTML=`<div class="yb-notify-title">🏠 SERVICIO DE BASE PENDIENTE</div>
         <div class="yb-notify-place">${esc(item.place||'Destino de base')}</div>
@@ -3633,20 +3905,20 @@ function renderBaseNotifications(){
       }
       box.appendChild(card);
     });
-
+ 
     box.style.display='flex';
     tab.style.display='flex';
     if(countEl){
       countEl.textContent=String(items.length);
       countEl.style.display='flex';
     }
-
+ 
     if(isNewSet){
       box.classList.add('open');
       tab.classList.add('open');
       const ar=$('yadah-base-tab-arrow');
       if(ar)ar.textContent='‹';
-
+ 
       clearTimeout(baseNotifyTimer);
       baseNotifyTimer=setTimeout(()=>{
         const current=$('yadah-base-notifications');
@@ -3674,13 +3946,13 @@ function renderBaseNotifications(){
     const box=$('yadah-base-notifications');
     if(!tab||tab.dataset.dragBound==='1')return;
     tab.dataset.dragBound='1';
-
+ 
     const defaultTop=window.innerHeight*0.50;
     const storageKey=()=>`yadah_base_tab_top_${typeof unit==='function'?unit():'default'}`;
     let saved=null;
     try{saved=parseFloat(localStorage.getItem(storageKey()));}catch(e){}
     let top=(Number.isFinite(saved)?saved:defaultTop);
-
+ 
     function clamp(v){
       const h=window.innerHeight||800;
       const half=(tab.offsetHeight||112)/2;
@@ -3696,7 +3968,7 @@ function renderBaseNotifications(){
     function refreshClamp(){applyTop(top,false);}
     applyTop(top,false);
     window.addEventListener('resize',refreshClamp,{passive:true});
-
+ 
     let dragging=false,startY=0,startTop=0,moved=false,suppressClick=false;
     tab.addEventListener('pointerdown',e=>{
       if(e.pointerType==='mouse'&&e.button!==0)return;
@@ -3722,7 +3994,7 @@ function renderBaseNotifications(){
     tab.addEventListener('pointercancel',endDrag);
     tab.addEventListener('click',e=>{if(suppressClick){e.preventDefault();e.stopPropagation();suppressClick=false;}},true);
   })();
-
+ 
   const baseTab=$('yadah-base-tab');
   if(baseTab&&!baseTab.dataset.bound){
     baseTab.dataset.bound='1';
@@ -3739,7 +4011,7 @@ function renderBaseNotifications(){
       if(ar)ar.textContent=open?'‹':'›';
     });
   }
-
+ 
   document.addEventListener('click', e => {
     const box = $('yadah-base-notifications');
     const tab = $('yadah-base-tab');
@@ -3751,7 +4023,7 @@ function renderBaseNotifications(){
       if(ar) ar.textContent = '›';
     }
   });
-
+ 
   function init(){load();ensureDay();bind();render();connect();setInterval(()=>{render()},1500)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   })();
