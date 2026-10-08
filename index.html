@@ -928,6 +928,7 @@
     .yc-modal-card{width:min(520px,100%);background:#111827;border-top:2px solid #38bdf8;border-radius:16px 16px 0 0;padding:16px;max-height:82vh;overflow:auto}
     .yc-modal-title{display:flex;justify-content:space-between;align-items:center;color:#38bdf8;font-weight:900;font-size:.98rem;margin-bottom:10px}.yc-close{cursor:pointer;color:#94a3b8;font-size:1.2rem}
     .yc-input-row{display:flex;gap:8px;align-items:stretch}.yc-input{width:100%;padding:11px 12px;background:#030712;color:#fff;border:1px solid #334155;border-radius:8px;outline:none;font-size:.9rem;min-width:0}.yc-mic{width:48px;min-width:48px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#e2e8f0;font-size:1.25rem;cursor:pointer}.yc-mic.active{background:#dc2626;border-color:#f87171;animation:ycMicPulse 1s infinite}.yc-mic.unsupported{opacity:.45}.yc-label{font-size:.72rem;color:#94a3b8;margin:8px 0 5px;display:block}.yc-voice-status{font-size:.68rem;color:#38bdf8;min-height:16px;margin-top:5px}.yc-actions{display:flex;gap:8px;margin-top:12px}.yc-actions button{flex:1;padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.yc-submit{background:#0284c7;color:#fff}.yc-secondary{background:#374151;color:#e2e8f0}@keyframes ycMicPulse{50%{transform:scale(1.04)}}
+    .yc-near-list{margin-top:6px;border-top:1px solid rgba(56,189,248,.22);padding-top:5px;display:flex;flex-direction:column;gap:3px}.yc-near-row{display:flex;justify-content:space-between;gap:8px;font-size:.67rem;color:#cbd5e1}.yc-near-row span:last-child{white-space:nowrap;color:#94a3b8}.yc-nearest{font-size:.73rem}.yc-nearest b{color:#67e8f9}
     #yadah-career-history-list{display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow:auto}.yc-history-item{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:9px 10px}.yc-history-main{font-size:.82rem;font-weight:800;color:#fff}.yc-history-meta{font-size:.68rem;color:#94a3b8;margin-top:3px}.yc-history-actions{display:flex;gap:6px;margin-top:8px}.yc-history-actions button{width:100%;border:1px solid #38bdf8;border-radius:7px;padding:8px;background:#0c4a6e;color:#e0f2fe;font-weight:900;font-size:.72rem;cursor:pointer}.yc-history-actions button:active{background:#0369a1}
     .yc-empty{color:#64748b;font-size:.8rem;text-align:center;padding:14px}
     #yadah-career-tab{position:fixed;right:0;top:var(--career-tab-top,50%);transform:translateY(-50%);z-index:3927;width:48px;min-height:112px;border:1px solid #22d3ee;border-radius:12px 0 0 12px;background:rgba(5,7,11,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);color:#fff;box-shadow:-4px 4px 12px rgba(0,0,0,.45);font-weight:900;cursor:pointer;touch-action:none;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:8px 4px;transition:right .25s ease} #yadah-career-tab.open{right:min(320px,86vw);background:rgba(5,7,11,.48)} #yadah-career-tab-count{min-width:19px;height:19px;border-radius:10px;background:#dc2626;color:#fff;font-size:.65rem;display:none;align-items:center;justify-content:center} #yadah-career-tab-arrow{font-size:30px;line-height:.8} .yadah-career-tab-label{font-size:.62rem;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.5px} @media(max-width:799px){#yadah-career-stack{max-height:42vh;padding:7px}} @media(min-width:800px){#yadah-career-fab{right:18px;bottom:102px}}
@@ -3185,20 +3186,48 @@ function applyVehicleHistory() {
     function speakNewCareer(place){
       try{ if(!('speechSynthesis' in window)) return; const text=('Nuevo pedido en '+String(place||'').trim()).trim(); if(!text) return; window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='es-SV'; u.rate=0.95; u.pitch=1; window.speechSynthesis.speak(u); }catch(e){}
     }
+    function normalizePlaceName(v){
+      return String(v||'').toLocaleLowerCase('es-SV').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ ]/g,'').replace(/\s+/g,' ').trim();
+    }
+    function placeSimilarity(a,b){
+      a=normalizePlaceName(a); b=normalizePlaceName(b);
+      if(!a||!b) return 0;
+      if(a===b) return 1;
+      if(a.startsWith(b)||b.startsWith(a)) return 0.94;
+      const aa=a.split(' '), bb=b.split(' ');
+      const common=aa.filter(w=>bb.includes(w)).length;
+      const ratio=common/Math.max(aa.length,bb.length);
+      return ratio;
+    }
     function getCareerDestinationGeo(place){
       const input=$('yc-place-input');
       const dlat=input?.dataset?.lat, dlon=input?.dataset?.lon;
       if(Number.isFinite(Number(dlat))&&Number.isFinite(Number(dlon))) return {lat:Number(dlat),lon:Number(dlon),source:input.dataset.geoSource||'memoria'};
+      // PRIMERO: punto local compartido. Es la referencia exacta y tiene prioridad absoluta sobre una geocerca.
       try{
-        const poi=(typeof getCustomPOIs==='function'?getCustomPOIs():[]).find(p=>p&&String(p.name||'').trim().toLocaleLowerCase('es-SV')===place.toLocaleLowerCase('es-SV'));
-        if(poi&&Number.isFinite(Number(poi.lat))&&Number.isFinite(Number(poi.lon))) return {lat:Number(poi.lat),lon:Number(poi.lon),source:'punto-local'};
+        const pois=(typeof getCustomPOIs==='function'?getCustomPOIs():[]).filter(p=>p&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon)));
+        let best=null;
+        pois.forEach(p=>{
+          const sim=placeSimilarity(place,p.name);
+          if(!best||sim>best.sim) best={p,sim};
+        });
+        if(best && best.sim>=0.80){
+          return {lat:Number(best.p.lat),lon:Number(best.p.lon),source:'punto-local',pointName:String(best.p.name||place)};
+        }
       }catch(e){}
+      // SEGUNDO: memoria de destino, si ya tiene coordenadas.
+      try{
+        const m=typeof loadDestinationMemory==='function'?loadDestinationMemory():{};
+        let best=null; Object.values(m||{}).forEach(x=>{ if(!x||!x.geo)return; const sim=placeSimilarity(place,x.text); if(!best||sim>best.sim) best={x,sim}; });
+        if(best&&best.sim>=0.88){ const g=best.x.geo; return {lat:Number(g.lat),lon:Number(g.lon),source:g.source||'memoria',pointName:String(best.x.text||place)}; }
+      }catch(e){}
+      // TERCERO: geocerca con ese nombre. Solo se usa si no existe un punto local.
       try{
         const fences=JSON.parse(localStorage.getItem('yadah_geofences_v1')||'[]');
-        const f=fences.find(x=>x&&x.name&&String(x.name).trim().toLocaleLowerCase('es-SV')===place.toLocaleLowerCase('es-SV'));
-        if(f&&Array.isArray(f.points)&&f.points.length>=3){
-          const pts=f.points.map(p=>[Number(p[0]),Number(p[1])]).filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));
-          if(pts.length>=3){ const lon=pts.reduce((a,p)=>a+p[0],0)/pts.length, lat=pts.reduce((a,p)=>a+p[1],0)/pts.length; return {lat,lon,source:'geocerca'}; }
+        let best=null; fences.forEach(f=>{ if(!f||!f.name||!Array.isArray(f.points)||f.points.length<3)return; const sim=placeSimilarity(place,f.name); if(!best||sim>best.sim) best={f,sim}; });
+        if(best&&best.sim>=0.88){
+          const pts=best.f.points.map(p=>[Number(p[0]),Number(p[1])]).filter(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));
+          if(pts.length>=3){ const lon=pts.reduce((a,p)=>a+p[0],0)/pts.length, lat=pts.reduce((a,p)=>a+p[1],0)/pts.length; return {lat,lon,source:'geocerca',pointName:String(best.f.name)}; }
         }
       }catch(e){}
       return null;
@@ -3208,21 +3237,26 @@ function applyVehicleHistory() {
       const R=6371, p1=Number(a.lat)*Math.PI/180,p2=Number(b.lat)*Math.PI/180,dp=(Number(b.lat)-Number(a.lat))*Math.PI/180,dl=(Number(b.lon)-Number(a.lon))*Math.PI/180;
       const h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2; return R*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
     }
-    function getNearestAvailableVehicle(geo){
-      if(!geo||typeof fleetStatusMap==='undefined') return null;
+    function getNearbyVehicles(geo){
+      if(!geo||typeof fleetStatusMap==='undefined') return [];
       const busy=new Set((ycState.careers||[]).filter(c=>c&&c.status==='active'&&c.driver).map(c=>String(c.driver)));
       const candidates=[];
       const units=typeof ALL_UNITS!=='undefined'?ALL_UNITS:[];
-      units.filter(u=>u&&u!=='Modulador').forEach(u=>{
-        if(busy.has(String(u))) return;
+      units.filter(u=>u&&u!=='Modulador'&&u!=='Clientes').forEach(u=>{
         const st=fleetStatusMap[u];
-        if(!st||!['online','stopped','at-base'].includes(st.state)) return;
-        if(Date.now()-Number(st.lastSeen||0)>60000) return;
+        if(!st) return;
+        const age=Date.now()-Number(st.lastSeen||0);
+        if(age>120000) return;
         const d=distanceKm(geo,{lat:st.lat,lon:st.lon});
-        if(Number.isFinite(d)) candidates.push({unit:u,distanceKm:d,state:st.state});
+        if(!Number.isFinite(d)) return;
+        const occupied=busy.has(String(u));
+        candidates.push({unit:u,distanceKm:d,state:st.state||'offline',occupied,lastSeen:st.lastSeen||0});
       });
       candidates.sort((a,b)=>a.distanceKm-b.distanceKm);
-      return candidates[0]||null;
+      return candidates;
+    }
+    function getNearestAvailableVehicle(geo){
+      return getNearbyVehicles(geo).find(v=>!v.occupied) || null;
     }
     function createCareer(place){
       place=(place||'').trim(); if(!place) return alert('Escribe el lugar de la carrera.');
@@ -3270,8 +3304,20 @@ function applyVehicleHistory() {
           action=`<div class="yc-state active">🟡 OCUPADO — ${esc(owner)}</div>`;
           if(c.driver===unitName() || isMod()) action+=`<button class="finish" data-yc-action="finish" data-id="${c.id}">${c.driver===unitName()?'FINALIZAR CARRERA':'Marcar finalizada'}</button>`;
         }
-        const liveNearest=getNearestAvailableVehicle(c.geo);
-        const nearText=c.geo&&liveNearest?`<div class="yc-nearest">🚕 Más cercano: <b>${esc(liveNearest.unit)}</b> · ${liveNearest.distanceKm<1?(liveNearest.distanceKm*1000).toFixed(0)+' m':liveNearest.distanceKm.toFixed(2)+' km'}</div>`:c.geo?'<div class="yc-nearest">📍 Geolocalizado · ningún vehículo disponible</div>':'<div class="yc-nearest">📍 Lugar guardado sin geolocalización</div>';
+        const nearby=c.geo?getNearbyVehicles(c.geo):[];
+        const liveNearest=nearby.find(v=>!v.occupied)||null;
+        let nearText='';
+        if(c.geo){
+          const exactLabel=c.geo.pointName?` · 📍 ${esc(c.geo.pointName)}`:'';
+          if(nearby.length){
+            const rows=nearby.slice(0,8).map(v=>{
+              const dist=v.distanceKm<1?(v.distanceKm*1000).toFixed(0)+' m':v.distanceKm.toFixed(2)+' km';
+              return `<div class="yc-near-row"><span>${v.occupied?'🟡':'🟢'} <b>${esc(v.unit)}</b></span><span>${dist} · ${v.occupied?'OCUPADO':'DISPONIBLE'}</span></div>`;
+            }).join('');
+            const head=liveNearest?`🚕 Disponible más cercano: <b>${esc(liveNearest.unit)}</b> · ${liveNearest.distanceKm<1?(liveNearest.distanceKm*1000).toFixed(0)+' m':liveNearest.distanceKm.toFixed(2)+' km'}`:`🚕 No hay disponibles`;
+            nearText=`<div class="yc-nearest">${head}${exactLabel}<div class="yc-near-list">${rows}</div></div>`;
+          }else nearText=`<div class="yc-nearest">📍 Geolocalizado${exactLabel} · sin posiciones GPS recientes</div>`;
+        }else nearText='<div class="yc-nearest">📍 Lugar guardado sin geolocalización</div>';
         card.innerHTML=`<div class="yc-line"><div class="yc-place">🚕 ${esc(c.place)}</div><div class="yc-time">${fmtTime(c.createdAt)}</div></div>${nearText}${c.status==='pending'?'<div class="yc-state">🔵 PENDIENTE</div>':''}${action}`;
         stack.appendChild(card);
       });
