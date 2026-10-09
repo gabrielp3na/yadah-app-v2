@@ -2668,9 +2668,23 @@ function applyVehicleHistory() {
             const timeSec = (now - myLastCoords.timestamp) / 1000;
             if (timeSec > 0 && dist > 2.5) speedKmh = (dist / timeSec) * 3.6;
           }
-          if (heading === null || isNaN(heading)) {
-            if (myLastCoords && Math.hypot(lat - myLastCoords.lat, lon - myLastCoords.lon) > 0.00002) myHeading = Math.round(calculateBearing(myLastCoords.lat, myLastCoords.lon, lat, lon));
-          } else { myHeading = Math.round(heading); }
+          // Mi propuesta 20: congelar el rumbo cuando el vehículo está detenido.
+          // El GPS puede entregar headings erráticos en reposo; solo actualizamos
+          // la orientación si hay movimiento real suficiente.
+          const previousGpsPoint = myLastCoords;
+          const movedMeters = previousGpsPoint
+            ? Math.hypot(lat - previousGpsPoint.lat, lon - previousGpsPoint.lon) * 111139
+            : 0;
+          const isActuallyMoving = speedKmh >= 3 || (speedKmh >= 1.5 && movedMeters >= 3);
+ 
+          if (isActuallyMoving) {
+            if (heading !== null && !isNaN(heading) && Number(pos.coords.speed || 0) > 0.8) {
+              myHeading = Math.round(heading);
+            } else if (previousGpsPoint && movedMeters >= 2.5) {
+              myHeading = Math.round(calculateBearing(previousGpsPoint.lat, previousGpsPoint.lon, lat, lon));
+            }
+          }
+          // En reposo se conserva el último rumbo válido y el mapa deja de girar.
           mySpeed = Math.round(speedKmh); myLastCoords = { lat, lon, timestamp: now };
           if (lblHeading) lblHeading.textContent = `${myHeading}°`;
           if (lblSpeed) lblSpeed.textContent = `${mySpeed} km/h`;
