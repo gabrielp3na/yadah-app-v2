@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Yadah Radio 3D Flota — Mi propuesta 01</title>
+  <title>Mi propuesta 09 · Yadah Radio 3D Flota — Mi propuesta 01</title>
  
+  <!-- Mi propuesta 18: corrección del CSS del pulso y del elemento real del marcador. -->
   <!-- MapLibre GL JS -->
   <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
@@ -752,18 +753,35 @@
     }
  
     .car-marker-container.sos-active .car-badge {
-    .zoom-responsive-label { transition: transform .18s ease, opacity .18s ease; will-change: transform, opacity; }
-    .yadah-poi-cluster { box-sizing:border-box !important; width:13px !important; min-width:13px !important; max-width:13px !important; height:17px !important; min-height:17px !important; max-height:17px !important; border:0 !important; background:transparent !important; color:inherit !important; cursor:pointer; display:flex !important; align-items:center !important; justify-content:center !important; padding:0 !important; margin:0 !important; appearance:none !important; -webkit-appearance:none !important; outline:none !important; filter:drop-shadow(0 2px 3px rgba(15,23,42,.38)); }
-    .yadah-poi-cluster:active { transform:scale(.94); }
-    .yadah-poi-cluster svg { display:block; width:13px; height:17px; }
-    .poi-zoom-pin { display:none; font-size:20px; line-height:1; filter:drop-shadow(0 1px 2px rgba(0,0,0,.75)); cursor:pointer; }
-    .poi-zoom-label { transition: transform .18s ease, opacity .18s ease; will-change: transform, opacity; }
-    .poi-zoom-hidden { display:none !important; }
-    .poi-zoom-visible { display:block !important; }
       background: #dc2626 !important;
       border-color: #ffffff !important;
       animation: pulse-sos 0.5s infinite alternate;
     }
+    .zoom-responsive-label { transition: transform .18s ease, opacity .18s ease; will-change: transform, opacity; }
+    .yadah-poi-cluster { box-sizing:border-box !important; width:13px !important; min-width:13px !important; max-width:13px !important; height:17px !important; min-height:17px !important; max-height:17px !important; border:0 !important; background:transparent !important; color:inherit !important; cursor:pointer; display:flex !important; align-items:center !important; justify-content:center !important; padding:0 !important; margin:0 !important; appearance:none !important; -webkit-appearance:none !important; outline:none !important; filter:drop-shadow(0 2px 3px rgba(15,23,42,.38)); }
+    .yadah-poi-cluster:active { transform:scale(.94); }
+    .yadah-poi-cluster svg { display:block; width:13px; height:17px; }
+    /* Mi propuesta 19: pulso independiente anclado a coordenadas exactas */
+    .yadah-career-pulse-anchor{width:28px;height:28px;border-radius:50%;border:4px solid #fff;background:rgba(220,38,38,.88);box-shadow:0 0 0 5px rgba(220,38,38,.35),0 0 18px 8px rgba(220,38,38,.8);animation:yadahCareerCoordinatePulse19 .65s infinite alternate;pointer-events:none;}
+    @keyframes yadahCareerCoordinatePulse19{from{transform:scale(.72);opacity:.72;box-shadow:0 0 0 3px rgba(220,38,38,.28),0 0 8px 3px rgba(220,38,38,.55)}to{transform:scale(1.35);opacity:1;box-shadow:0 0 0 9px rgba(220,38,38,.48),0 0 24px 12px rgba(220,38,38,1)}}
+    .poi-zoom-pin { display:none; font-size:20px; line-height:1; filter:drop-shadow(0 1px 2px rgba(0,0,0,.75)); cursor:pointer; }
+ 
+    /* Pulso rojo aplicado al marcador guardado original de la carrera pendiente */
+    @keyframes yadahCareerPanicPulse {
+      from { transform:scale(1); filter:drop-shadow(0 0 3px rgba(220,38,38,.85)); }
+      to   { transform:scale(1.32); filter:drop-shadow(0 0 12px rgba(220,38,38,1)) drop-shadow(0 0 5px rgba(248,113,113,.95)); }
+    }
+    .poi-zoom-pin.yadah-career-near-pulse,
+    .yadah-poi-cluster.yadah-career-near-pulse {
+      animation:yadahCareerPanicPulse .7s infinite alternate !important;
+      transform-origin:center center !important;
+      will-change:transform,filter;
+      position:relative;
+      z-index:20;
+    }
+    .poi-zoom-label { transition: transform .18s ease, opacity .18s ease; will-change: transform, opacity; }
+    .poi-zoom-hidden { display:none !important; }
+    .poi-zoom-visible { display:block !important; }
  
     .car-badge {
       background: #030712;
@@ -935,7 +953,8 @@
     .yc-card.pending{border-color:#38bdf8}.yc-card.active{border-color:#f59e0b}.yc-card.done{border-color:#38bdf8}
     .yc-line{display:flex;justify-content:space-between;gap:8px;align-items:center}.yc-place{font-size:.86rem;font-weight:900;color:#fff}.yc-time{font-size:.68rem;color:#94a3b8;white-space:nowrap}.yc-state{font-size:.67rem;color:#38bdf8;font-weight:800;margin-top:3px}.yc-state.active{color:#f59e0b}.yc-state.done{color:#38bdf8}
     .yc-card button{margin-top:7px;width:100%;border:0;border-radius:7px;padding:8px;font-weight:900;cursor:pointer;background:#0284c7;color:#fff}.yc-card button.cancel{background:#374151;color:#e2e8f0}.yc-card button.finish{background:#0284c7}
-    #yadah-career-modal{position:fixed;inset:0;z-index:3900;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center}
+    /* Mi propuesta 12: animación aplicada al punto guardado de la carrera */
+#yadah-career-modal{position:fixed;inset:0;z-index:3900;background:rgba(0,0,0,.72);display:none;align-items:flex-end;justify-content:center}
     .yc-modal-card{width:min(520px,100%);background:#111827;border-top:2px solid #38bdf8;border-radius:16px 16px 0 0;padding:16px;max-height:82vh;overflow:auto}
     .yc-modal-title{display:flex;justify-content:space-between;align-items:center;color:#38bdf8;font-weight:900;font-size:.98rem;margin-bottom:10px}.yc-close{cursor:pointer;color:#94a3b8;font-size:1.2rem}
     .yc-input-row{display:flex;gap:8px;align-items:stretch}.yc-input{width:100%;padding:11px 12px;background:#030712;color:#fff;border:1px solid #334155;border-radius:8px;outline:none;font-size:.9rem;min-width:0}.yc-mic{width:48px;min-width:48px;border:1px solid #334155;border-radius:8px;background:#1e293b;color:#e2e8f0;font-size:1.25rem;cursor:pointer}.yc-mic.active{background:#dc2626;border-color:#f87171;animation:ycMicPulse 1s infinite}.yc-mic.unsupported{opacity:.45}.yc-label{font-size:.72rem;color:#94a3b8;margin:8px 0 5px;display:block}.yc-voice-status{font-size:.68rem;color:#38bdf8;min-height:16px;margin-top:5px}.yc-actions{display:flex;gap:8px;margin-top:12px}.yc-actions button{flex:1;padding:10px;border:0;border-radius:8px;font-weight:900;cursor:pointer}.yc-submit{background:#0284c7;color:#fff}.yc-secondary{background:#374151;color:#e2e8f0}@keyframes ycMicPulse{50%{transform:scale(1.04)}}
@@ -1601,6 +1620,7 @@
       const { lng, lat } = contextMenuCoords;
       closeContextMenu();
       pendingDestination = { lon: lng, lat: lat, label: 'Punto seleccionado' };
+      setNavigationActionButtonsVisible(true);
       lblRouteStats.textContent = `📍 Destino seleccionado. ¿Deseas iniciar marcha?`;
       navRouteInfo.style.display = 'flex';
     }
@@ -1706,6 +1726,7 @@
             }
           });
           const marker = new maplibregl.Marker({ element: el, anchor: 'center' }).setLngLat(map.unproject([group.point.x, group.point.y])).addTo(map);
+          marker._yadahPoiItems = group.items; marker._yadahPulseEl = el; // El pulso se aplica al marcador visible completo, no al SVG interno.
           customPoiMarkers.push(marker);
           return;
         }
@@ -1757,9 +1778,11 @@
         container.addEventListener('touchend', cancelPress);
         container.addEventListener('touchmove', cancelPress, { passive: true });
         const marker = new maplibregl.Marker({ element: container }).setLngLat([poi.lon, poi.lat]).addTo(map);
+        marker._yadahPoiItems = [poi]; marker._yadahPulseEl = pin;
         customPoiMarkers.push(marker);
       });
       updateZoomResponsiveLabels();
+      if (typeof refreshCareerPulseMarkers === 'function') refreshCareerPulseMarkers();
     }
  
     let currentUnit = localStorage.getItem('yadah_terminal_id');
@@ -1864,6 +1887,7 @@
       document.getElementById('input-destination').value = displayName.split(',')[0];
       searchSuggestions.style.display = 'none';
       pendingDestination = { lon, lat, label: displayName.split(',')[0] };
+      setNavigationActionButtonsVisible(true);
       lblRouteStats.textContent = `${isLocal ? '📍 [Local]' : '📍'} Destino: ${pendingDestination.label}. ¿Deseas iniciar marcha?`;
       navRouteInfo.style.display = 'flex';
     }
@@ -1917,17 +1941,19 @@
         const results = await resp.json();
         if (results && results.length > 0) {
           pendingDestination = { lon: parseFloat(results[0].lon), lat: parseFloat(results[0].lat), label: results[0].display_name.split(',')[0] };
+          setNavigationActionButtonsVisible(true);
           lblRouteStats.textContent = `📍 Destino: ${pendingDestination.label}. ¿Deseas iniciar marcha?`;
         } else { alert("Lugar no encontrado."); navRouteInfo.style.display = 'none'; }
       } catch (err) {}
     }
  
-    function startNavigationMatch() { 
-      if(window.__yadahBaseNoNavigation){ if(navRouteInfo) navRouteInfo.style.display='none'; pendingDestination=null; return; } 
+    function startNavigationMatch() {
+      if(window.__yadahBaseNoNavigation){ if(navRouteInfo) navRouteInfo.style.display='none'; pendingDestination=null; return; }
       if (!pendingDestination) { alert("Primero selecciona un destino."); return; }
+      const destination = { ...pendingDestination };
       firstPersonMode = true;
       updateViewButtonUI();
-      requestRouteToDestination(pendingDestination.lon, pendingDestination.lat, pendingDestination.label);
+      requestRouteToDestination(destination.lon, destination.lat, destination.label);
     }
  
     function updateGpsLockState(allowed) {
@@ -2247,12 +2273,18 @@
     }
  
     let destinationMarker = null;
+    function setNavigationActionButtonsVisible(visible) {
+      const actions = document.querySelector('#nav-route-info .nav-route-actions');
+      if (actions) actions.style.display = visible ? 'flex' : 'none';
+    }
     async function requestRouteToDestination(destLon, destLat, label = 'Destino') {
       if (window.__yadahBaseNoNavigation) { if (navRouteInfo) navRouteInfo.style.display='none'; pendingDestination=null; return; }
       if (!myLastCoords) { alert("Esperando señal de GPS..."); return; }
       if (destinationMarker) destinationMarker.remove();
       const el = document.createElement('div'); el.style.fontSize = '2.2rem'; el.innerHTML = '🏁';
       destinationMarker = new maplibregl.Marker({ element: el }).setLngLat([destLon, destLat]).addTo(map);
+      pendingDestination = null;
+      setNavigationActionButtonsVisible(false);
       try {
         if (lblRouteStats) lblRouteStats.textContent = 'Calculando trayecto...'; if (navRouteInfo) navRouteInfo.style.display = 'flex';
         const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${myLastCoords.lon},${myLastCoords.lat};${destLon},${destLat}?overview=full&geometries=geojson`);
@@ -2265,13 +2297,20 @@
           if (mqttClient && mqttClient.connected && currentUnit) {
             mqttClient.publish('yadah/radio/flota/navigation', JSON.stringify({ unit: currentUnit, geometry: route.geometry, label: label }));
           }
+        } else {
+          if (lblRouteStats) lblRouteStats.textContent = 'No se encontró una ruta para este destino.';
+          setNavigationActionButtonsVisible(true);
         }
-      } catch (e) {}
+      } catch (e) {
+        if (lblRouteStats) lblRouteStats.textContent = 'No se pudo calcular la ruta. Puedes intentarlo de nuevo.';
+        setNavigationActionButtonsVisible(true);
+      }
     }
  
     function cancelNavigation() {
       pendingDestination = null; if (destinationMarker) { destinationMarker.remove(); destinationMarker = null; }
       if (navRouteInfo) navRouteInfo.style.display = 'none';
+      setNavigationActionButtonsVisible(true);
       if (document.getElementById('input-destination')) document.getElementById('input-destination').value = '';
       if (map && map.getSource('nav-active-route')) map.getSource('nav-active-route').setData({ type: 'FeatureCollection', features: [] });
       if (mqttClient && mqttClient.connected && currentUnit) mqttClient.publish('yadah/radio/flota/navigation', JSON.stringify({ unit: currentUnit, canceled: true }));
@@ -2378,6 +2417,7 @@ function applyVehicleHistory() {
       savePointToDB(unitId, lon, lat, speed, heading);
       updateZoomResponsiveLabels();
       refreshFleetStatsCounters();
+      if (typeof refreshCareerPulseMarkers === 'function') refreshCareerPulseMarkers();
     }
  
     function smoothAnimationLoop() {
@@ -3518,7 +3558,17 @@ function applyVehicleHistory() {
       const candidates=[];
       const units=typeof ALL_UNITS!=='undefined'?ALL_UNITS:[];
       units.filter(u=>u&&u!=='Modulador'&&u!=='Clientes').forEach(u=>{
-        const st=fleetStatusMap[u];
+        let st=fleetStatusMap[u];
+        // En el móvil actual, usar también su GPS local: el propio dispositivo
+        // puede no recibir por MQTT el mensaje que acaba de publicar.
+        if(String(u)===String(unitName()) && myLastCoords &&
+           Number.isFinite(Number(myLastCoords.lat)) && Number.isFinite(Number(myLastCoords.lon))){
+          const localAge=Date.now()-Number(myLastCoords.timestamp||0);
+          if(localAge<=120000){
+            st={...(st||{}),lat:Number(myLastCoords.lat),lon:Number(myLastCoords.lon),
+              lastSeen:Number(myLastCoords.timestamp||Date.now()),state:(st&&st.state)||'online'};
+          }
+        }
         if(!st) return;
         const age=Date.now()-Number(st.lastSeen||0);
         if(age>120000) return;
@@ -3529,6 +3579,28 @@ function applyVehicleHistory() {
       });
       candidates.sort((a,b)=>a.distanceKm-b.distanceKm);
       return candidates;
+    }
+    // Mi propuesta 19: marcador de pulso independiente, siempre anclado a las coordenadas exactas de la carrera pendiente.
+    let yadahCareerPulseMarkers = new Map();
+    function refreshCareerPulseMarkers(){
+      if(!map || typeof maplibregl==='undefined') return;
+      const pending=(ycState.careers||[]).filter(c => c && c.status==='pending' && c.geo &&
+        Number.isFinite(Number(c.geo.lat)) && Number.isFinite(Number(c.geo.lon)) &&
+        Math.abs(Number(c.geo.lat))<=90 && Math.abs(Number(c.geo.lon))<=180);
+      const keep=new Set(pending.map(c=>String(c.id)));
+      for(const [id,marker] of yadahCareerPulseMarkers.entries()){
+        if(!keep.has(id)){try{marker.remove();}catch(e){} yadahCareerPulseMarkers.delete(id);}
+      }
+      pending.forEach(c=>{
+        const id=String(c.id), coords=[Number(c.geo.lon),Number(c.geo.lat)];
+        let marker=yadahCareerPulseMarkers.get(id);
+        if(marker){const old=marker.getLngLat();if(Math.abs(old.lng-coords[0])>1e-8||Math.abs(old.lat-coords[1])>1e-8)marker.setLngLat(coords);return;}
+        const pulse=document.createElement('div'); pulse.className='yadah-career-pulse-anchor';
+        pulse.setAttribute('aria-label','Carrera pendiente: '+String(c.place||'destino'));
+        pulse.title='Carrera pendiente: '+String(c.place||'destino');
+        marker=new maplibregl.Marker({element:pulse,anchor:'center'}).setLngLat(coords).addTo(map);
+        yadahCareerPulseMarkers.set(id,marker);
+      });
     }
     function getNearestAvailableVehicle(geo){
       return getNearbyVehicles(geo).find(v=>!v.occupied) || null;
@@ -3566,6 +3638,7 @@ function applyVehicleHistory() {
       ensureDay();
       const stack=$('yadah-career-stack'); const tab=$('yadah-career-tab'); const countEl=$('yadah-career-tab-count'); if(!stack) return;
       const active=ycState.careers.filter(c=>c.status==='pending'||c.status==='active');
+      refreshCareerPulseMarkers();
       stack.innerHTML='';
       if(!active.length){ stack.style.display='none'; if(tab) tab.style.display='none'; return; }
       stack.style.display='flex'; stack.classList.toggle('closed',!ycPanelOpen); if(tab){ tab.style.display='flex'; tab.classList.toggle('open',ycPanelOpen); if(countEl){countEl.textContent=String(active.length); countEl.style.display='flex';} }
