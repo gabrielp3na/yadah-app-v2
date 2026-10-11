@@ -2304,24 +2304,136 @@
       const box = document.getElementById('vh-career-summary');
       if (!box) return;
       if (box.style.display === 'block') { box.style.display = 'none'; return; }
+ 
       const escSummary = v => String(v == null ? '' : v).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-      const getUnit = c => String(c.driver || c.unit || c.vehicle || 'Sin móvil asignado').trim();
-      const getPlace = c => c.place || c.destination || c.destino || 'Destino no registrado';
-      const getStatus = c => c.status === 'done' ? 'Finalizada' : 'Cancelada';
-      let calls = [], base = [];
-      try { const st = JSON.parse(localStorage.getItem('yadah_carreras_state_v1') || 'null'); if (st && Array.isArray(st.careers)) calls = st.careers.filter(c => c && ['done','cancelled'].includes(c.status)).map(c => ({...c, _origin:'LLAMADA'})); } catch(e) {}
-      try { const rows = JSON.parse(localStorage.getItem('yadah_base_queue_history_v1') || '[]'); if (Array.isArray(rows)) base = rows.filter(c => c && ['done','cancelled'].includes(c.status)).map(c => ({...c, _origin:'BASE'})); } catch(e) {}
-      const all = [...base, ...calls].sort((a,b) => Number(b.finishedAt || b.createdAt || 0) - Number(a.finishedAt || a.createdAt || 0));
-      const totals = new Map();
-      all.filter(c => c.status === 'done').forEach(c => {
-        const name = getUnit(c), row = totals.get(name) || {base:0,calls:0,total:0};
-        if (c._origin === 'BASE') row.base++; else row.calls++;
-        row.total++; totals.set(name,row);
+      const normalizeUnit = v => String(v == null ? '' : v)
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, ' ').trim().toLocaleLowerCase('es');
+ 
+      const title = document.querySelector('#vh-unit-name, #vehicle-detail-title');
+      const selectedUnit = String(activeHistoryUnit || (title && title.textContent) || window.currentVehicle || '').replace(/\s+/g, ' ').trim();
+      const selectedKey = normalizeUnit(selectedUnit);
+      const unitPattern = /^(m[oó]vil|movil|unidad)\s*0*(\d+)$/i;
+      const selectedMatch = selectedUnit.match(unitPattern);
+      const sameUnit = value => {
+        const valueKey = normalizeUnit(value);
+        if (valueKey === selectedKey) return true;
+        const match = String(value == null ? '' : value).trim().match(unitPattern);
+        return !!(selectedMatch && match && Number(match[2]) === Number(selectedMatch[2]));
+      };
+      const parseMaybeJSON = key => {
+        try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch(e) { return null; }
+      };
+      const collectArrays = (value, out=[], seen=new Set()) => {
+        if (!value || typeof value !== 'object' || seen.has(value)) return out;
+        seen.add(value);
+        if (Array.isArray(value)) {
+          if (value.some(x => x && typeof x === 'object' && (
+            'status' in x || 'createdAt' in x || 'finishedAt' in x || 'destination' in x || 'place' in x
+          ))) out.push(...value);
+          else value.forEach(x => collectArrays(x,out,seen));
+        } else {
+          Object.values(value).forEach(x => collectArrays(x,out,seen));
+        }
+        return out;
+      };
+      const candidateKeys = [
+        'yadah_carreras_state_v1',
+        'yadah_base_queue_history_v1',
+        'yadah_base_queue_v2',
+        'yadah_careers_v1',
+        'yadah_careers_state_v1'
+      ];
+      const records = [];
+      const seenIds = new Set();
+      candidateKeys.forEach(key => {
+        const value = parseMaybeJSON(key);
+        collectArrays(value).forEach(c => {
+          if (!c || typeof c !== 'object') return;
+          const id = c.id || c.careerId || c.jobId || c.createdAt;
+          const sig = [key, id, c.createdAt, c.finishedAt, c.destination || c.place, c.status].join('|');
+          if (seenIds.has(sig)) return;
+          seenIds.add(sig);
+          records.push({...c, _sourceKey:key});
+        });
       });
-      const sorted = Array.from(totals.entries()).sort((a,b) => b[1].total-a[1].total || a[0].localeCompare(b[0],'es'));
-      const grand = sorted.reduce((n,x) => n+x[1].total,0);
-      const details = all.length ? all.map(c => `<div class="yc-history-item" style="padding:8px 0;border-top:1px solid #263449"><div style="font-weight:800;color:#e2e8f0">${c.status==='done'?'✅':'❌'} ${escSummary(getPlace(c))} <span style="font-size:.68rem;color:#7dd3fc">· ${escSummary(c._origin)}</span></div><div class="vh-summary-muted" style="margin-top:3px">${escSummary(getUnit(c))} · Creada ${escSummary(fmtTime(c.createdAt))} · ${c.finishedAt ? getStatus(c)+' '+escSummary(fmtTime(c.finishedAt)) : getStatus(c)}${c.price != null ? ' · $'+Number(c.price).toFixed(2) : ''}</div></div>`).join('') : '<div class="vh-summary-muted">No hay carreras en el historial.</div>';
-      box.innerHTML = `<div style="font-weight:800;font-size:.85rem;color:#38bdf8;margin-bottom:4px">📊 Resumen e historial detallado</div><div class="vh-summary-muted" style="margin-bottom:8px">${grand} carreras finalizadas contabilizadas · BASE + LLAMADAS</div>` + (sorted.length ? sorted.map(([name,r])=>`<div class="vh-summary-row"><div><b>${escSummary(name)}</b><div class="vh-summary-muted">Base: ${r.base} · Llamadas: ${r.calls}</div></div><div class="vh-summary-total">${r.total}</div></div>`).join('') : '<div class="vh-summary-muted">No hay carreras finalizadas con móvil asignado.</div>') + `<div style="font-weight:800;color:#38bdf8;margin:12px 0 4px">📋 Historial al detalle</div><div class="vh-summary-muted" style="margin-bottom:6px">Se muestran destino, origen, móvil, fecha de creación, estado y tarifa, como en Carreras.</div>${details}<div class="vh-summary-muted" style="margin-top:8px">El conteo solo suma carreras finalizadas; el historial también conserva las canceladas.</div>`;
+      const getUnit = c => {
+        const fields = [
+          'assignedUnit','assignedVehicle','assignedTo','vehicleUnit','unitId','vehicleId',
+          'mobileId','assignedMobile','driverUnit','vehicle','unit','mobile','driver'
+        ];
+        for (const field of fields) {
+          const value = c && c[field];
+          if (typeof value === 'string' && value.trim() && unitPattern.test(value.trim())) return value.trim();
+        }
+        for (const field of ['assignedUnit','assignedVehicle','vehicle','unit','mobile','driver']) {
+          const value = c && c[field];
+          if (value && typeof value === 'object') {
+            const name = value.name || value.label || value.unit || value.vehicle || value.mobile;
+            if (typeof name === 'string' && unitPattern.test(name.trim())) return name.trim();
+          }
+        }
+        return '';
+      };
+      const getOrigin = c => {
+        const explicit = String(c._sourceKey || c.source || c.origin || c.type || '').toLowerCase();
+        return explicit.includes('base') || explicit.includes('queue') ? 'BASE' :
+          (explicit.includes('career') || explicit.includes('llamada') || explicit.includes('call') ? 'LLAMADAS' :
+          (c.source === 'BASE' ? 'BASE' : 'LLAMADAS'));
+      };
+      // One filtered set powers both the counters and this vehicle's own history.
+      const all = records.filter(c => {
+        const assigned = getUnit(c);
+        return selectedKey && assigned && sameUnit(assigned);
+      }).sort((a,b) => Number(b.finishedAt || b.createdAt || 0) - Number(a.finishedAt || a.createdAt || 0));
+      const getStatusLabel = c => {
+        const status = String(c.status || c.state || '').toLowerCase();
+        if (['done','completed','finished','finalizada','finalizado','terminada','terminado'].includes(status)) return 'Finalizada';
+        if (['cancelled','canceled','cancelada','cancelado'].includes(status)) return 'Cancelada';
+        return status ? status.charAt(0).toUpperCase()+status.slice(1) : 'Pendiente';
+      };
+      const isFinalized = c => getStatusLabel(c) === 'Finalizada';
+      const finalized = all.filter(isFinalized);
+      const baseCount = finalized.filter(c => getOrigin(c) === 'BASE').length;
+      const callsCount = finalized.length - baseCount;
+      const getFareValue = c => {
+        const raw = c.price ?? c.fare ?? c.tariff ?? c.amount ?? c.total;
+        if (raw == null || String(raw).trim() === '') return null;
+        const n = Number(String(raw).replace('$','').trim());
+        return Number.isFinite(n) ? n : null;
+      };
+      const totalFare = finalized.reduce((sum,c) => sum + (getFareValue(c) || 0), 0);
+      const getPlace = c => c.place || c.destination || c.destino || c.address || 'Destino no registrado';
+      const formatStamp = value => {
+        if (value == null || value === '') return 'No registrado';
+        try {
+          if (typeof fmtTime === 'function') return fmtTime(value);
+        } catch(e) {}
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString('es-SV');
+      };
+      const historyHtml = all.length ? all.map(c => {
+        const status = getStatusLabel(c);
+        const fare = getFareValue(c);
+        const created = formatStamp(c.createdAt || c.created || c.timestamp);
+        const finished = formatStamp(c.finishedAt || c.completedAt || c.endedAt);
+        return `<div style="padding:9px 0;border-top:1px solid #263449">
+          <div style="font-weight:800;color:#e2e8f0">${status==='Finalizada'?'✅':status==='Cancelada'?'❌':'🕒'} ${escSummary(getPlace(c))} <span style="font-size:.75rem;color:#7dd3fc">· ${getOrigin(c)}</span></div>
+          <div class="vh-summary-muted" style="margin-top:4px">${escSummary(getUnit(c))} · Creada: ${escSummary(created)} · ${escSummary(status)}${c.finishedAt || c.completedAt || c.endedAt ? ': '+escSummary(finished) : ''}${fare != null ? ' · $'+fare.toFixed(2) : ' · Sin tarifa registrada'}</div>
+        </div>`;
+      }).join('') : '<div class="vh-summary-muted" style="padding:8px 0">Este vehículo todavía no tiene carreras en el historial.</div>';
+      box.innerHTML = `<div style="font-weight:800;font-size:.9rem;color:#38bdf8;margin-bottom:8px">📊 Resumen de carreras</div>
+        <div class="vh-summary-muted" style="margin-bottom:10px">Vehículo: <b>${escSummary(selectedUnit || 'No identificado')}</b></div>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px">
+          <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px"><div class="vh-summary-muted">Carreras finalizadas</div><div style="font-size:1.5rem;font-weight:900;color:#7dd3fc">${finalized.length}</div></div>
+          <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px"><div class="vh-summary-muted">Total con tarifa registrada</div><div style="font-size:1.5rem;font-weight:900;color:#7dd3fc">$${totalFare.toFixed(2)}</div></div>
+          <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px"><div style="color:#7dd3fc;font-weight:800">BASE</div><div style="font-size:1.3rem;font-weight:900">${baseCount}</div></div>
+          <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px"><div style="color:#7dd3fc;font-weight:800">LLAMADAS</div><div style="font-size:1.3rem;font-weight:900">${callsCount}</div></div>
+        </div>
+        <div style="font-weight:800;font-size:.9rem;color:#38bdf8;margin:12px 0 4px">📋 Historial de este vehículo</div>
+        <div class="vh-summary-muted" style="margin-bottom:6px">Solo carreras asignadas a ${escSummary(selectedUnit || 'este vehículo')}, con sus horarios, estado y tarifa cuando está registrada.</div>
+        ${historyHtml}
+        <div class="vh-summary-muted" style="margin-top:8px">Las carreras sin tarifa registrada cuentan como carreras, pero no aumentan el total generado. Las canceladas aparecen en el historial y no se suman al conteo de finalizadas.</div>`;
       box.style.display = 'block';
     }
     window.toggleVehicleCareerSummary = toggleVehicleCareerSummary;
@@ -4130,72 +4242,3 @@ function renderBaseNotifications(){
 })();
 </script>
  
-<!-- GABO COD 53: manejador independiente para asegurar que el resumen se abra -->
-<script>
-(function () {
-  function yadahEscape(v) {
-    return String(v == null ? '' : v).replace(/[&<>"']/g, function (m) {
-      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]);
-    });
-  }
-  function yadahTime(v) {
-    if (v == null || v === '') return 'Hora no registrada';
-    var n = Number(v); var d = new Date(Number.isFinite(n) ? (n < 100000000000 ? n * 1000 : n) : v);
-    return isNaN(d.getTime()) ? yadahEscape(v) : d.toLocaleString('es-SV', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  }
-  function yadahGetRecords(key) {
-    try {
-      var value = JSON.parse(localStorage.getItem(key) || '[]');
-      if (Array.isArray(value)) return value;
-      if (value && Array.isArray(value.careers)) return value.careers;
-      if (value && Array.isArray(value.rows)) return value.rows;
-      if (value && Array.isArray(value.history)) return value.history;
-    } catch (e) {}
-    return [];
-  }
-  window.toggleVehicleCareerSummary = function () {
-    var box = document.getElementById('vh-career-summary');
-    if (!box) { alert('No se encontró el panel del resumen.'); return; }
-    if (box.dataset.open === 'yes') {
-      box.dataset.open = 'no'; box.style.display = 'none'; return;
-    }
-    try {
-      var calls = yadahGetRecords('yadah_carreras_state_v1');
-      var base = yadahGetRecords('yadah_base_queue_history_v1');
-      calls = calls.filter(function(c){return c && typeof c === 'object';}).map(function(c){return Object.assign({},c,{_origin:'LLAMADAS'});});
-      base = base.filter(function(c){return c && typeof c === 'object';}).map(function(c){return Object.assign({},c,{_origin:'BASE'});});
-      var all = base.concat(calls).filter(function(c){
-        var st=String(c.status || c.estado || '').toLowerCase();
-        return ['done','completed','finished','finalizada','finalizado','cancelled','canceled','cancelada','cancelado'].indexOf(st)>=0;
-      });
-      function unit(c){return String(c.driver || c.unit || c.vehicle || c.movil || c.mobile || 'Sin móvil asignado');}
-      function place(c){return c.place || c.destination || c.destino || c.address || c.direccion || 'Destino no registrado';}
-      function status(c){var s=String(c.status || c.estado || '').toLowerCase();return ['done','completed','finished','finalizada','finalizado'].indexOf(s)>=0?'Finalizada':'Cancelada';}
-      function created(c){return c.createdAt || c.created_at || c.timestamp || c.fecha || c.date || '';}
-      function finished(c){return c.finishedAt || c.finished_at || c.completedAt || c.completed_at || '';}
-      function fare(c){var v=c.price != null ? c.price : (c.fare != null ? c.fare : c.tarifa);return v == null || v === '' ? '' : ' · $'+(Number(v)||0).toFixed(2);}
-      all.sort(function(a,b){return Number(finished(b)||created(b)||0)-Number(finished(a)||created(a)||0);});
-      var totals={};
-      all.forEach(function(c){if(status(c)!=='Finalizada')return;var n=unit(c);if(!totals[n])totals[n]={base:0,calls:0,total:0};if(c._origin==='BASE')totals[n].base++;else totals[n].calls++;totals[n].total++;});
-      var names=Object.keys(totals).sort(function(a,b){return totals[b].total-totals[a].total || a.localeCompare(b,'es');});
-      var total=names.reduce(function(n,k){return n+totals[k].total;},0);
-      var html='<div style="font-weight:800;font-size:.9rem;color:#38bdf8;margin-bottom:4px">📊 Resumen de carreras finalizadas</div>'+
-        '<div style="color:#94a3b8;margin-bottom:8px">'+total+' carreras contabilizadas · BASE + LLAMADAS</div>'+
-        (names.length ? names.map(function(n){var r=totals[n];return '<div style="display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #263449"><div><b>'+yadahEscape(n)+'</b><div style="color:#94a3b8">Base: '+r.base+' · Llamadas: '+r.calls+'</div></div><b style="color:#67e8f9">'+r.total+'</b></div>';}).join('') : '<div style="color:#94a3b8">No hay carreras finalizadas reconocidas en los registros locales.</div>')+
-        '<div style="font-weight:800;color:#38bdf8;margin:12px 0 4px">📋 Historial al detalle</div>'+
-        (all.length ? all.map(function(c){return '<div style="padding:8px 0;border-top:1px solid #263449"><div style="font-weight:800;color:#e2e8f0">'+(status(c)==='Finalizada'?'✅':'❌')+' '+yadahEscape(place(c))+' <span style="font-size:.72rem;color:#7dd3fc">· '+c._origin+'</span></div><div style="color:#94a3b8;font-size:.72rem;margin-top:3px">'+yadahEscape(unit(c))+' · Creada: '+yadahEscape(yadahTime(created(c)))+' · '+status(c)+(finished(c)?' '+yadahEscape(yadahTime(finished(c))):'')+yadahEscape(fare(c))+'</div></div>';}).join('') : '<div style="color:#94a3b8">No se encontraron registros detallados en el historial local.</div>')+
-        '<div style="color:#94a3b8;font-size:.72rem;margin-top:8px">Solo las finalizadas se suman al conteo; las canceladas aparecen en el historial.</div>';
-      box.innerHTML=html;
-      box.style.display='block'; box.style.visibility='visible'; box.style.opacity='1'; box.dataset.open='yes';
-      box.style.maxHeight='45vh'; box.style.overflowY='auto';
-      var card=document.getElementById('vehicle-history-card'); if(card){card.style.display='flex';card.style.zIndex='99999';}
-    } catch (e) {
-      box.innerHTML='<div style="color:#fca5a5;font-weight:700">No se pudo cargar el resumen.</div><div style="color:#cbd5e1;font-size:.75rem">Cierre esta ventana y vuelva a intentarlo.</div>';
-      box.style.display='block'; box.dataset.open='yes';
-    }
-  };
-})();
-</script>
- 
-</body>
-</html>
