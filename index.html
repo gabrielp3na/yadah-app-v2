@@ -58,7 +58,18 @@
       <span id="vh-unit-name">Móvil</span>
       <span style="cursor:pointer; color:#94a3b8; font-size:1.1rem;" onclick="closeVehicleHistory()">✕</span>
     </div>
-    <div style="font-size:0.75rem; color:#94a3b8;">Trazar ruta de las últimas 24 horas:</div>
+    <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:6px;">Seleccioná el período del recorrido:</div>
+    <div id="vh-range-options" style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:6px 0 9px;">
+      <label style="font-size:0.7rem; color:#cbd5e1; display:flex; flex-direction:column; gap:4px;">Fecha
+        <input id="vh-history-date" type="date" style="width:100%; box-sizing:border-box; background:#0b1220; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:7px;">
+      </label>
+      <label style="font-size:0.7rem; color:#cbd5e1; display:flex; flex-direction:column; gap:4px;">Desde
+        <input id="vh-history-from" type="time" value="08:00" style="width:100%; box-sizing:border-box; background:#0b1220; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:7px;">
+      </label>
+      <label style="font-size:0.7rem; color:#cbd5e1; display:flex; flex-direction:column; gap:4px; grid-column:2;">Hasta
+        <input id="vh-history-to" type="time" value="09:00" style="width:100%; box-sizing:border-box; background:#0b1220; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:7px;">
+      </label>
+    </div>
     <div class="vh-actions">
       <button class="btn-vh btn-vh-apply" onclick="applyVehicleHistory()">Ver Recorrido 🗺️</button>
       <button class="btn-vh btn-vh-apply" onclick="shareVehicleTrackingLink()">Compartir recorrido 📲</button>
@@ -895,7 +906,12 @@
       activeHistoryUnit = unitId;
       document.getElementById('vh-unit-name').textContent = unitId;
       const rangeBox = document.getElementById('vh-range-options');
-      if (rangeBox) rangeBox.style.display = 'none';
+      if (rangeBox) rangeBox.style.display = 'grid';
+      const historyDateInput = document.getElementById('vh-history-date');
+      if (historyDateInput) {
+        const now = new Date();
+        historyDateInput.value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      }
       const statusDiv = document.getElementById('vh-status-info');
       if (statusDiv) statusDiv.textContent = '';
       const summaryBox = document.getElementById('vh-career-summary');
@@ -1350,30 +1366,43 @@
     function closeVehicleHistory() { activeHistoryUnit = null; const summary=document.getElementById('vh-career-summary'); if(summary){summary.style.display='none';summary.innerHTML='';} if (vehicleHistoryCard) vehicleHistoryCard.style.display = 'none'; if (map && map.getSource('route-trails')) map.getSource('route-trails').setData({ type: 'FeatureCollection', features: [] }); }
 function applyVehicleHistory() {
  if (!isModulator() || !db || !activeHistoryUnit || !map) return;
- const startTime = Date.now() - (24 * 60 * 60 * 1000);
- const tx = db.transaction([STORE_NAME], 'readonly'); const store = tx.objectStore(STORE_NAME); const req = store.openCursor();
+ const dateValue = document.getElementById('vh-history-date')?.value;
+ const fromValue = document.getElementById('vh-history-from')?.value;
+ const toValue = document.getElementById('vh-history-to')?.value;
+ const statusDiv = document.getElementById('vh-status-info');
+ if (!dateValue || !fromValue || !toValue) {
+  if (statusDiv) { statusDiv.textContent = 'Seleccioná fecha, hora inicial y hora final.'; statusDiv.style.color = '#ef4444'; }
+  return;
+ }
+ const startTime = new Date(`${dateValue}T${fromValue}:00`).getTime();
+ const endTime = new Date(`${dateValue}T${toValue}:00`).getTime();
+ if (!Number.isFinite(startTime) || !Number.isFinite(endTime) || endTime <= startTime) {
+  if (statusDiv) { statusDiv.textContent = 'La hora final debe ser posterior a la hora inicial.'; statusDiv.style.color = '#ef4444'; }
+  return;
+ }
+ const tx = db.transaction([STORE_NAME], 'readonly');
+ const req = tx.objectStore(STORE_NAME).openCursor();
  const historyPoints = [];
  req.onsuccess = (e) => {
   const cursor = e.target.result;
   if (cursor) {
    const val = cursor.value;
    const ts = Number(val.timestamp), lon = Number(val.lon), lat = Number(val.lat);
-   if (val.unit === activeHistoryUnit && ts >= startTime && Number.isFinite(ts) && Number.isFinite(lon) && Number.isFinite(lat)) historyPoints.push({ timestamp: ts, lon, lat });
+   if (val.unit === activeHistoryUnit && Number.isFinite(ts) && ts >= startTime && ts <= endTime && Number.isFinite(lon) && Number.isFinite(lat)) historyPoints.push({ timestamp: ts, lon, lat });
    cursor.continue();
   } else {
    historyPoints.sort((a,b) => a.timestamp - b.timestamp);
    const historyCoords = historyPoints.map(p => [p.lon, p.lat]);
    ensureLayersExist();
    if (map.getSource('route-trails')) map.getSource('route-trails').setData({ type:'FeatureCollection', features: historyCoords.length >= 2 ? [{ type:'Feature', geometry:{ type:'LineString', coordinates:historyCoords }, properties:{} }] : [] });
-   const statusDiv = document.getElementById('vh-status-info');
    if (statusDiv) {
-    statusDiv.textContent = historyCoords.length < 2 ? 'Sin historial en 24h.' : `¡Mostrando ${historyCoords.length} puntos en orden cronológico!`;
+    statusDiv.textContent = historyCoords.length < 2 ? `Sin recorrido registrado de ${fromValue} a ${toValue}.` : `Mostrando ${historyCoords.length} puntos: ${fromValue}–${toValue}.`;
     statusDiv.style.color = historyCoords.length < 2 ? '#ef4444' : '#0284c7';
     if (historyCoords.length >= 2) map.flyTo({ center:historyCoords[historyCoords.length-1], zoom:16, pitch:0, bearing:0 });
    }
   }
  };
- }
+}
     function updateZoomResponsiveLabels() {
       if (!map) return;
       const z = map.getZoom();
