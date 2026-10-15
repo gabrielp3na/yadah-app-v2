@@ -2594,12 +2594,41 @@ function applyVehicleHistory() {
       } catch(e) { listContainer.textContent='No se pudo cargar el Buzón.'; }
     }
 
+    // Solo puede sonar una reproducción del buzón a la vez.
+    let yadahHistoryAudioPlaying = null;
+    function playSingleHistoryAudio(base64Data, onFinish) {
+      if (!base64Data) return Promise.resolve();
+      try {
+        // Al iniciar otro audio, detener inmediatamente el que estaba sonando.
+        if (yadahHistoryAudioPlaying) {
+          const previous = yadahHistoryAudioPlaying;
+          yadahHistoryAudioPlaying = null;
+          previous.pause();
+          try { previous.currentTime = 0; } catch (e) {}
+          previous.onended = null;
+          previous.onerror = null;
+        }
+        const audio = new Audio(base64Data);
+        yadahHistoryAudioPlaying = audio;
+        const cleanup = () => {
+          if (yadahHistoryAudioPlaying === audio) yadahHistoryAudioPlaying = null;
+          if (typeof onFinish === 'function') onFinish();
+        };
+        audio.onended = cleanup;
+        audio.onerror = cleanup;
+        return audio.play().catch(error => {
+          cleanup();
+          throw error;
+        });
+      } catch (e) {
+        if (typeof onFinish === 'function') onFinish();
+        return Promise.reject(e);
+      }
+    }
+
     function playBase64Audio(base64Data, mimeType) {
       if (!base64Data) return;
-      try {
-        const audio = new Audio(base64Data);
-        audio.play().catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
-      } catch (e) { alert('No se pudo reproducir esta transmisión.'); }
+      playSingleHistoryAudio(base64Data).catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
     }
 
     async function replayLatestVoice() {
@@ -2608,11 +2637,8 @@ function applyVehicleHistory() {
         const records = getStoredItems();
         const lastVoice = records.find(item => item && item.type !== 'chat-message' && item.audioBase64);
         if (!lastVoice) { alert('No hay un audio de radio guardado.'); return; }
-        const audio = new Audio(lastVoice.audioBase64);
         if (btn) btn.style.opacity = '0.55';
-        audio.onended = () => { if (btn) btn.style.opacity = ''; };
-        audio.onerror = () => { if (btn) btn.style.opacity = ''; };
-        await audio.play();
+        await playSingleHistoryAudio(lastVoice.audioBase64, () => { if (btn) btn.style.opacity = ''; });
       } catch (e) {
         if (btn) btn.style.opacity = '';
         alert('No se pudo reproducir el último audio.');
@@ -2950,8 +2976,22 @@ function applyVehicleHistory() {
       try{ ycRecognition.start(); }catch(e){ stopCareerVoice(); setVoiceStatus('⚠️ No se pudo iniciar el micrófono.'); }
     }
     function openNew(){
-      stopCareerVoice(); $('yc-modal-title').textContent='🚕 Nueva carrera'; $('yc-form-view').style.display='block'; $('yc-history-view').style.display='none'; $('yc-place-input').value=''; setVoiceStatus(''); if(window.YadahUndefinedTrips&&typeof window.YadahUndefinedTrips.renderHistory==='function') window.YadahUndefinedTrips.renderHistory(list);
-      $('yadah-career-modal').style.display='flex';
+      stopCareerVoice();
+      const modal=$('yadah-career-modal');
+      const title=$('yc-modal-title');
+      const form=$('yc-form-view');
+      const history=$('yc-history-view');
+      const input=$('yc-place-input');
+      if(!modal||!form||!history||!input){console.error('No se encontraron los elementos del formulario de nueva carrera.');return;}
+      if(title)title.textContent='🚕 Nueva carrera';
+      form.style.display='block';
+      history.style.display='none';
+      input.value='';
+      setVoiceStatus('');
+      const dropdown=$('yc-place-dropdown');
+      if(dropdown){dropdown.style.display='none';dropdown.innerHTML='';}
+      modal.style.display='flex';
+      setTimeout(()=>{try{input.focus();}catch(e){}},50);
     }
     function careerTrajectoryRange(c){
       const start=Number(c.startedAt||c.acceptedAt||c.createdAt||0);
