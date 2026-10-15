@@ -1294,6 +1294,27 @@
           records.push({...c, _sourceKey:key});
         });
       });
+      // Incluir también las carreras sin definición generadas por el polígono de Base Central.
+      // Se leen desde el mismo almacenamiento que alimenta el historial del motorista.
+      const undefinedTrips = parseMaybeJSON('yadah_undefined_trips_v1');
+      if (undefinedTrips && typeof undefinedTrips === 'object') {
+        Object.values(undefinedTrips).forEach(c => {
+          if (!c || typeof c !== 'object' || !c.id) return;
+          const sig = ['yadah_undefined_trips_v1', c.id].join('|');
+          if (seenIds.has(sig)) return;
+          seenIds.add(sig);
+          records.push({
+            ...c,
+            unit: c.unit || c.driver || c.assignedUnit || '',
+            place: c.place || 'Carrera sin definición',
+            source: 'SIN DEFINICIÓN',
+            _sourceKey: 'yadah_undefined_trips_v1',
+            createdAt: c.createdAt || c.startedAt || c.timestamp || null,
+            finishedAt: c.finishedAt || null,
+            status: ['done','completed','finished'].includes(String(c.status||'').toLowerCase()) ? 'done' : (c.status || 'active')
+          });
+        });
+      }
       const getUnit = c => {
         const fields = [
           'assignedUnit','assignedVehicle','assignedTo','vehicleUnit','unitId','vehicleId',
@@ -1314,6 +1335,7 @@
       };
       const getOrigin = c => {
         const explicit = String(c._sourceKey || c.source || c.origin || c.type || '').toLowerCase();
+        if (explicit.includes('undefined_trip') || explicit.includes('sin definición') || explicit.includes('sin definicion')) return 'SIN DEFINICIÓN';
         return explicit.includes('base') || explicit.includes('queue') ? 'BASE' :
           (explicit.includes('career') || explicit.includes('llamada') || explicit.includes('call') ? 'LLAMADAS' :
           (c.source === 'BASE' ? 'BASE' : 'LLAMADAS'));
@@ -1322,7 +1344,7 @@
       const all = records.filter(c => {
         const assigned = getUnit(c);
         return selectedKey && assigned && sameUnit(assigned);
-      }).sort((a,b) => Number(b.finishedAt || b.createdAt || 0) - Number(a.finishedAt || a.createdAt || 0));
+      }).sort((a,b) => Number(b.finishedAt || b.completedAt || b.endedAt || b.createdAt || b.startedAt || 0) - Number(a.finishedAt || a.completedAt || a.endedAt || a.createdAt || a.startedAt || 0));
       const getStatusLabel = c => {
         const status = String(c.status || c.state || '').toLowerCase();
         if (['done','completed','finished','finalizada','finalizado','terminada','terminado'].includes(status)) return 'Finalizada';
@@ -1332,7 +1354,8 @@
       const isFinalized = c => getStatusLabel(c) === 'Finalizada';
       const finalized = all.filter(isFinalized);
       const baseCount = finalized.filter(c => getOrigin(c) === 'BASE').length;
-      const callsCount = finalized.length - baseCount;
+      const callsCount = finalized.filter(c => getOrigin(c) === 'LLAMADAS').length;
+      const undefinedCount = finalized.filter(c => getOrigin(c) === 'SIN DEFINICIÓN').length;
       const getFareValue = c => {
         const raw = c.price ?? c.fare ?? c.tariff ?? c.amount ?? c.total;
         if (raw == null || String(raw).trim() === '') return null;
@@ -1352,11 +1375,13 @@
       const historyHtml = all.length ? all.map(c => {
         const status = getStatusLabel(c);
         const fare = getFareValue(c);
-        const created = formatStamp(c.createdAt || c.created || c.timestamp);
+        const created = formatStamp(c.createdAt || c.created || c.timestamp || c.startedAt);
         const finished = formatStamp(c.finishedAt || c.completedAt || c.endedAt);
-        const trajectoryButton = getOrigin(c)==='LLAMADAS' && status==='Finalizada' && c.id
-          ? `<button type="button" onclick="window.openCallTrajectory('${escSummary(c.id)}')" style="margin-top:7px;border:1px solid #38bdf8;border-radius:8px;padding:7px 10px;background:#0c4a6e;color:#e0f2fe;font-weight:700">🗺️ Ver trayectoria de la llamada</button>`
-          : '';
+        const trajectoryButton = getOrigin(c)==='SIN DEFINICIÓN' && c.id
+          ? `<button type="button" onclick="window.YadahUndefinedTrips&&window.YadahUndefinedTrips.showTrajectory('${escSummary(c.id)}')" style="margin-top:7px;border:1px solid #38bdf8;border-radius:8px;padding:7px 10px;background:#0c4a6e;color:#e0f2fe;font-weight:700">🗺️ Ver trayectoria</button>`
+          : (getOrigin(c)==='LLAMADAS' && status==='Finalizada' && c.id
+            ? `<button type="button" onclick="window.openCallTrajectory('${escSummary(c.id)}')" style="margin-top:7px;border:1px solid #38bdf8;border-radius:8px;padding:7px 10px;background:#0c4a6e;color:#e0f2fe;font-weight:700">🗺️ Ver trayectoria de la llamada</button>`
+            : '');
         return `<div style="padding:9px 0;border-top:1px solid #263449">
           <div style="font-weight:800;color:#e2e8f0">${status==='Finalizada'?'✅':status==='Cancelada'?'❌':'🕒'} ${escSummary(getPlace(c))} <span style="font-size:.75rem;color:#7dd3fc">· ${getOrigin(c)}</span></div>
           <div class="vh-summary-muted" style="margin-top:4px">${escSummary(getUnit(c))} · Creada: ${escSummary(created)} · ${escSummary(status)}${c.finishedAt || c.completedAt || c.endedAt ? ': '+escSummary(finished) : ''}${fare != null ? ' · $'+fare.toFixed(2) : ' · Sin tarifa registrada'}</div>
@@ -1370,6 +1395,7 @@
           <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px"><div class="vh-summary-muted">Total con tarifa registrada</div><div style="font-size:1.5rem;font-weight:900;color:#7dd3fc">$${totalFare.toFixed(2)}</div></div>
           <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px"><div style="color:#7dd3fc;font-weight:800">BASE</div><div style="font-size:1.3rem;font-weight:900">${baseCount}</div></div>
           <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px"><div style="color:#7dd3fc;font-weight:800">LLAMADAS</div><div style="font-size:1.3rem;font-weight:900">${callsCount}</div></div>
+          <div style="background:#111827;border:1px solid #334155;border-radius:10px;padding:12px;grid-column:1/-1"><div style="color:#7dd3fc;font-weight:800">SIN DEFINICIÓN</div><div style="font-size:1.3rem;font-weight:900">${undefinedCount}</div></div>
         </div>
         <div style="font-weight:800;font-size:.9rem;color:#38bdf8;margin:12px 0 4px">📋 Historial de este vehículo</div>
         <div class="vh-summary-muted" style="margin-bottom:6px">Solo carreras asignadas a ${escSummary(selectedUnit || 'este vehículo')}, con sus horarios, estado y tarifa cuando está registrada.</div>
