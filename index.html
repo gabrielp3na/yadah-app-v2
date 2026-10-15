@@ -3425,7 +3425,15 @@ function renderBaseNotifications(){
       client.on('connect',()=>{client.subscribe(TOPIC_ROOT+'+',{qos:1});Object.values(records).forEach(safePublish);if(active)safePublish(active);});
       client.on('message',(topic,msg)=>{
         if(!topic.startsWith(TOPIC_ROOT))return;
-        try{const r=JSON.parse(msg.toString());if(!r||!r.id||!r.unit||!Array.isArray(r.points))return;const old=records[r.id];if(!old||Number(r.updatedAt||0)>=Number(old.updatedAt||0)){records[r.id]=r;if(active&&active.id===r.id)active=r;persist();}}
+        try{const r=JSON.parse(msg.toString());if(!r||!r.id||!r.unit||!Array.isArray(r.points))return;const old=records[r.id];if(!old||Number(r.updatedAt||0)>=Number(old.updatedAt||0)){
+            records[r.id]=r;if(active&&active.id===r.id)active=r;persist();
+            const list=document.getElementById('yadah-career-history-list');
+            const historyView=document.getElementById('yc-history-view');
+            if(list&&historyView&&historyView.style.display!=='none'){
+              const prior=list.querySelector('[data-ud-history-block]');if(prior)prior.remove();
+              renderHistory(list);
+            }
+          }}
         catch(e){}
       });
       client.on('error',()=>{});
@@ -3433,7 +3441,12 @@ function renderBaseNotifications(){
   }
   function baseFence(){
     const fences=window.YadahGeofences?.getFences?.()||[];
-    return fences.find(f=>String(f.name||'').trim().toLocaleLowerCase('es-SV')==='base')||null;
+    // Aceptar el nombre que aparece en el mapa del usuario: "Base Central",
+    // además de "Base". No tomar sectores que no estén relacionados con Base.
+    return fences.find(f=>{
+      const name=String(f.name||'').trim().toLocaleLowerCase('es-SV');
+      return name==='base'||name==='base central'||/^base(?:\s|[-_])/.test(name);
+    })||null;
   }
   function insideBase(lon,lat){const f=baseFence();if(!f||!Array.isArray(f.points)||f.points.length<3)return null;return window.YadahGeofences.inside([lon,lat],f.points);}
   function hasAssignment(unit){
@@ -3477,10 +3490,11 @@ function renderBaseNotifications(){
   }
   function renderHistory(list){
     if(!list)return;
+    const prior=list.querySelector('[data-ud-history-block]');if(prior)prior.remove();
     const all=Object.values(records).sort((a,b)=>Number(b.startedAt||0)-Number(a.startedAt||0));
     if(!all.length)return;
     const html=all.map(r=>`<div class="yc-history-item"><div class="yc-history-main">${r.status==='done'?'✅':'🟠'} Carrera sin definición <span style="font-size:.65rem;color:#7dd3fc">· Geocerca Base</span></div><div class="yc-history-meta">${esc(r.unit)} · Salida ${new Date(r.startedAt).toLocaleString('es-SV')}${r.finishedAt?' · Regreso '+new Date(r.finishedAt).toLocaleString('es-SV'):' · Aún abierta'} · ${Array.isArray(r.points)?r.points.length:0} puntos GPS</div><div class="yc-history-actions"><button type="button" data-ud-trajectory="${esc(r.id)}">🗺️ VER TRAYECTORIA</button></div></div>`).join('');
-    const wrapper=document.createElement('div');wrapper.innerHTML=`<div style="margin:12px 0 6px;font-weight:900;color:#7dd3fc">🚕 CARRERAS SIN DEFINICIÓN</div>${html}`;list.appendChild(wrapper);
+    const wrapper=document.createElement('div');wrapper.setAttribute('data-ud-history-block','1');wrapper.innerHTML=`<div style="margin:12px 0 6px;font-weight:900;color:#7dd3fc">🚕 CARRERAS SIN DEFINICIÓN</div>${html}`;list.appendChild(wrapper);
   }
   function showTrajectory(id){
     const r=records[id];if(!r||!Array.isArray(r.points)||r.points.length<2){alert('Todavía no hay suficientes puntos GPS sincronizados para mostrar esta trayectoria.');return;}
