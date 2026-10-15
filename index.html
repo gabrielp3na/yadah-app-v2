@@ -208,6 +208,12 @@
         <span>Últimas Transmisiones (24h)</span>
         <span style="cursor:pointer; color:#94a3b8; font-size:1.1rem; padding:4px;" onclick="toggleHistory(false)">✕</span>
       </div>
+      <div id="yadah-audio-controls" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:5px 2px;">
+        <button type="button" id="yadah-audio-pause" class="btn-play-audio" style="padding:7px 10px">⏸ Pausar</button>
+        <button type="button" id="yadah-audio-speed" class="btn-play-audio" style="padding:7px 10px">1× Velocidad</button>
+        <button type="button" id="yadah-audio-loop" class="btn-play-audio" style="padding:7px 10px">⏮ Cola anterior: No</button>
+        <span id="yadah-audio-status" style="font-size:.68rem;color:#94a3b8">Control del audio seleccionado</span>
+      </div>
       <div class="message-composer">
         <div class="message-recipient-row">
           <span style="font-size:.72rem;color:#94a3b8;">Enviar a:</span>
@@ -1732,6 +1738,7 @@ function applyVehicleHistory() {
             const alertData = JSON.parse(text);
             if (alertData.sender !== currentUnit && channelStatus) {
               if (alertData.live === true) {
+                pauseHistoryAudioForRadio();
                 channelStatus.className = 'channel-status receiving';
                 channelStatus.textContent = `▼ TRANSMITIENDO: ${alertData.sender}`;
                 playBeep(660, 0.06);
@@ -1744,6 +1751,7 @@ function applyVehicleHistory() {
                 }, 5000);
               } else if (alertData.live === false) {
                 clearTimeout(window.yadahRemoteTalkTimer);
+                resumeHistoryAudioAfterRadio();
                 if (!radioTalking) {
                   channelStatus.className = 'channel-status';
                   channelStatus.textContent = '● CANAL LIBRE';
@@ -2208,6 +2216,7 @@ function applyVehicleHistory() {
       };
 
       pc.ontrack = (event) => {
+        pauseHistoryAudioForRadio();
         const stream = (event.streams && event.streams[0]) || (event.track ? new MediaStream([event.track]) : null);
         if (!stream) return;
         const senderName = targetDevId.split('_')[0];
@@ -2584,7 +2593,7 @@ function applyVehicleHistory() {
             const dir=document.createElement('div'); dir.style.cssText='font-size:.62rem;color:#64748b;margin-top:5px;'; dir.textContent=item.direction==='outgoing'?'Enviado':'Recibido'; info.appendChild(dir);
             row.appendChild(info);
           } else {
-            const button=document.createElement('button'); button.className='btn-play-audio'; button.textContent='▶ Reproducir'; button.onclick=()=>playBase64Audio(item.audioBase64, item.mimeType); row.append(info,button);
+            const button=document.createElement('button'); button.className='btn-play-audio'; button.textContent='▶ Reproducir'; button.onclick=()=>playBase64Audio(item.audioBase64, item.mimeType, item); row.append(info,button);
           }
           listContainer.appendChild(row);
         });
@@ -2594,41 +2603,129 @@ function applyVehicleHistory() {
       } catch(e) { listContainer.textContent='No se pudo cargar el Buzón.'; }
     }
 
-    // Solo puede sonar una reproducción del buzón a la vez.
+    // Controles de audio del buzón: una sola reproducción a la vez y prioridad al radio en vivo.
     let yadahHistoryAudioPlaying = null;
+    let yadahHistoryAudioPausedByRadio = false;
+    let yadahAudioPlaybackRate = 1;
+    let yadahAudioQueueEnabled = false;
+    let yadahAudioQueue = [];
+    let yadahAudioQueueIndex = -1;
+    let yadahAudioResumeAfterRadio = false;
+    let yadahAudioLastSource = null;
+
+    function updateYadahAudioControls() {
+      const pauseBtn = document.getElementById('yadah-audio-pause');
+      const speedBtn = document.getElementById('yadah-audio-speed');
+      const loopBtn = document.getElementById('yadah-audio-loop');
+      const status = document.getElementById('yadah-audio-status');
+      if (pauseBtn) pauseBtn.textContent = yadahHistoryAudioPlaying && !yadahHistoryAudioPlaying.paused ? '⏸ Pausar' : '▶ Continuar';
+      if (speedBtn) speedBtn.textContent = `${yadahAudioPlaybackRate}× Velocidad`;
+      if (loopBtn) { loopBtn.textContent = `⏮ Cola anterior: ${yadahAudioQueueEnabled ? 'Sí' : 'No'}`; loopBtn.style.borderColor = yadahAudioQueueEnabled ? '#38bdf8' : ''; }
+      if (status && !yadahHistoryAudioPausedByRadio) status.textContent = yadahHistoryAudioPlaying ? 'Audio seleccionado' : 'Control del audio seleccionado';
+    }
+
+    function pauseHistoryAudioForRadio() {
+      const audio = yadahHistoryAudioPlaying;
+      if (audio && !audio.paused) {
+        yadahAudioResumeAfterRadio = true;
+        yadahHistoryAudioPausedByRadio = true;
+        audio.pause();
+        const status = document.getElementById('yadah-audio-status');
+        if (status) status.textContent = '📻 Radio en vivo: audio pausado';
+        updateYadahAudioControls();
+      }
+    }
+
+    function resumeHistoryAudioAfterRadio() {
+      if (!yadahAudioResumeAfterRadio || !yadahHistoryAudioPlaying) return;
+      const audio = yadahHistoryAudioPlaying;
+      yadahAudioResumeAfterRadio = false;
+      yadahHistoryAudioPausedByRadio = false;
+      audio.play().then(() => { updateYadahAudioControls(); }).catch(() => {
+        const status = document.getElementById('yadah-audio-status');
+        if (status) status.textContent = 'Radio finalizado. Toque Continuar para reanudar.';
+        updateYadahAudioControls();
+      });
+    }
+
+    function stopHistoryAudio(reset = true) {
+      const audio = yadahHistoryAudioPlaying;
+      yadahHistoryAudioPlaying = null;
+      yadahAudioResumeAfterRadio = false;
+      yadahHistoryAudioPausedByRadio = false;
+      if (audio) {
+        audio.onended = null; audio.onerror = null;
+        try { audio.pause(); if (reset) audio.currentTime = 0; } catch (e) {}
+        audio.loop = false;
+      }
+      updateYadahAudioControls();
+    }
+
     function playSingleHistoryAudio(base64Data, onFinish) {
       if (!base64Data) return Promise.resolve();
       try {
-        // Al iniciar otro audio, detener inmediatamente el que estaba sonando.
-        if (yadahHistoryAudioPlaying) {
-          const previous = yadahHistoryAudioPlaying;
-          yadahHistoryAudioPlaying = null;
-          previous.pause();
-          try { previous.currentTime = 0; } catch (e) {}
-          previous.onended = null;
-          previous.onerror = null;
-        }
+        stopHistoryAudio(true);
+        yadahAudioLastSource = base64Data;
         const audio = new Audio(base64Data);
         yadahHistoryAudioPlaying = audio;
-        const cleanup = () => {
-          if (yadahHistoryAudioPlaying === audio) yadahHistoryAudioPlaying = null;
-          if (typeof onFinish === 'function') onFinish();
+        audio.playbackRate = yadahAudioPlaybackRate;
+        audio.loop = false;
+        const cleanup = (endedNormally = false) => {
+          if (yadahHistoryAudioPlaying === audio) {
+            yadahHistoryAudioPlaying = null;
+            yadahAudioResumeAfterRadio = false;
+            yadahHistoryAudioPausedByRadio = false;
+          }
+          if (typeof onFinish === 'function') onFinish(endedNormally);
+          updateYadahAudioControls();
         };
-        audio.onended = cleanup;
-        audio.onerror = cleanup;
-        return audio.play().catch(error => {
-          cleanup();
-          throw error;
+        audio.onended = () => cleanup(true);
+        audio.onerror = () => cleanup(false);
+        updateYadahAudioControls();
+        return audio.play().then(() => { updateYadahAudioControls(); }).catch(error => {
+          cleanup(false); throw error;
         });
       } catch (e) {
-        if (typeof onFinish === 'function') onFinish();
+        if (typeof onFinish === 'function') onFinish(false);
         return Promise.reject(e);
       }
     }
 
-    function playBase64Audio(base64Data, mimeType) {
+    function playNextOlderHistoryAudio() {
+      if (!yadahAudioQueueEnabled || yadahAudioQueueIndex < 0) return;
+      yadahAudioQueueIndex--;
+      if (yadahAudioQueueIndex >= 0) {
+        const item = yadahAudioQueue[yadahAudioQueueIndex];
+        if (item && item.audioBase64) {
+          const status = document.getElementById('yadah-audio-status');
+          if (status) status.textContent = `Cola anterior: ${yadahAudioQueueIndex + 1} de ${yadahAudioQueue.length}`;
+          playSingleHistoryAudio(item.audioBase64, ended => {
+            if (ended && yadahAudioQueueEnabled) playNextOlderHistoryAudio();
+          }).catch(() => {});
+          return;
+        }
+        playNextOlderHistoryAudio();
+      } else {
+        const status = document.getElementById('yadah-audio-status');
+        if (status) status.textContent = 'Terminó la cola de audios anteriores';
+        yadahAudioQueue = [];
+        yadahAudioQueueIndex = -1;
+        updateYadahAudioControls();
+      }
+    }
+
+    function playBase64Audio(base64Data, mimeType, selectedItem) {
       if (!base64Data) return;
-      playSingleHistoryAudio(base64Data).catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
+      if (yadahAudioQueueEnabled && selectedItem) {
+        const records = getStoredItems().sort((a, b) => Number(a.timestamp || 0) - Number(b.timestamp || 0));
+        const selectedIndex = records.findIndex(item => (item.id && selectedItem.id && item.id === selectedItem.id) || (Number(item.timestamp || 0) === Number(selectedItem.timestamp || 0) && item.sender === selectedItem.sender && item.audioBase64 === selectedItem.audioBase64));
+        const olderVoices = records.slice(0, selectedIndex + 1).filter(item => item && item.type !== 'chat-message' && item.audioBase64);
+        yadahAudioQueue = olderVoices;
+        yadahAudioQueueIndex = olderVoices.length - 1;
+        const status = document.getElementById('yadah-audio-status');
+        if (status) status.textContent = `Cola anterior: ${olderVoices.length} audios`;
+        playSingleHistoryAudio(base64Data, ended => { if (ended && yadahAudioQueueEnabled) playNextOlderHistoryAudio(); }).catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.'));
+      } else { yadahAudioQueue = []; yadahAudioQueueIndex = -1; playSingleHistoryAudio(base64Data).catch(() => alert('Toca Reproducir nuevamente para iniciar el audio.')); }
     }
 
     async function replayLatestVoice() {
@@ -2644,6 +2741,44 @@ function applyVehicleHistory() {
         alert('No se pudo reproducir el último audio.');
       }
     }
+
+    function bindYadahAudioControls() {
+      const pauseBtn = document.getElementById('yadah-audio-pause');
+      const speedBtn = document.getElementById('yadah-audio-speed');
+      const loopBtn = document.getElementById('yadah-audio-loop');
+      if (pauseBtn && pauseBtn.dataset.bound !== '1') {
+        pauseBtn.dataset.bound = '1';
+        pauseBtn.addEventListener('click', () => {
+          const audio = yadahHistoryAudioPlaying;
+          if (!audio) { if (yadahAudioLastSource) playSingleHistoryAudio(yadahAudioLastSource).catch(() => {}); return; }
+          if (audio.paused) {
+            yadahAudioResumeAfterRadio = false; yadahHistoryAudioPausedByRadio = false;
+            audio.play().catch(() => {});
+          } else { yadahAudioResumeAfterRadio = false; audio.pause(); }
+          updateYadahAudioControls();
+        });
+      }
+      if (speedBtn && speedBtn.dataset.bound !== '1') {
+        speedBtn.dataset.bound = '1';
+        speedBtn.addEventListener('click', () => {
+          yadahAudioPlaybackRate = yadahAudioPlaybackRate === 1 ? 2 : 1;
+          if (yadahHistoryAudioPlaying) yadahHistoryAudioPlaying.playbackRate = yadahAudioPlaybackRate;
+          updateYadahAudioControls();
+        });
+      }
+      if (loopBtn && loopBtn.dataset.bound !== '1') {
+        loopBtn.dataset.bound = '1';
+        loopBtn.addEventListener('click', () => {
+          yadahAudioQueueEnabled = !yadahAudioQueueEnabled;
+          if (!yadahAudioQueueEnabled) { yadahAudioQueue = []; yadahAudioQueueIndex = -1; }
+          updateYadahAudioControls();
+          const status = document.getElementById('yadah-audio-status');
+          if (status) status.textContent = yadahAudioQueueEnabled ? 'Al reproducir, seguirá con los audios anteriores' : 'Se reproducirá solo el audio seleccionado';
+        });
+      }
+      updateYadahAudioControls();
+    }
+    bindYadahAudioControls();
 
     // Restaurar la sesion guardada SOLO despues de inicializar el modulo principal.
     // La sesion permanece activa hasta que el usuario pulsa Salir.
