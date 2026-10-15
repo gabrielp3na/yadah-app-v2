@@ -3425,7 +3425,15 @@ function renderBaseNotifications(){
   const unitNow=()=>String(window.currentUnit||document.getElementById('terminal-id')?.value||localStorage.getItem('yadah_terminal_id')||'').trim();
   const isMod=()=>unitNow()==='Modulador';
   function load(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'{}');if(x&&typeof x==='object')records=x;}catch(e){records={};}}
-  function persist(){try{localStorage.setItem(STORAGE,JSON.stringify(records));}catch(e){}}
+  function persist(){
+    try{localStorage.setItem(STORAGE,JSON.stringify(records));}catch(e){}
+    // Refrescar el historial si ya está visible, incluso al cerrar una carrera.
+    try{
+      const list=document.getElementById('yadah-career-history-list');
+      const historyView=document.getElementById('yc-history-view');
+      if(list&&historyView&&historyView.style.display!=='none')renderHistory(list);
+    }catch(e){}
+  }
   function safePublish(record){
     if(!client||!client.connected||!record)return;
     try{client.publish(unitTopic(record.unit),JSON.stringify(record),{qos:1,retain:true});}catch(e){}
@@ -3485,47 +3493,39 @@ function renderBaseNotifications(){
     records[active.id]=active;outsideCount=0;insideCount=0;lastPublish=0;persist();safePublish(active);
   }
   function onGps(unit,lat,lon,ts){
-    unit=String(unit||'').trim();
-    lat=Number(lat);lon=Number(lon);
-    if(!unit||!Number.isFinite(lat)||!Number.isFinite(lon))return;
-    const state=insideBase(lon,lat);
-    if(state===null)return; // El polígono Base debe estar disponible para decidir.
-    const t=Number(ts)||Date.now();
-
-    // Recuperar siempre el viaje abierto de ESTA unidad; el GPS puede llegar
-    // antes de que el usuario abra el historial o después de cambiar de pantalla.
-    if(active&&String(active.unit)!==unit){
-      if(active.status==='active'){records[active.id]=active;persist();}
-      active=null;outsideCount=0;insideCount=0;lastPublish=0;
-    }
-    if(!active){
-      active=Object.values(records).find(r=>r&&r.status==='active'&&String(r.unit).trim()===unit)||null;
-    }
-
-    if(!active){
-      if(state===true){outsideCount=0;return;}
-      // Crear la carrera al confirmar salida con dos lecturas GPS fuera del polígono.
-      if(hasAssignment(unit)){outsideCount=0;return;}
+    if(!Number.isFinite(Number(lat))||!Number.isFinite(Number(lon)))return;
+    const state=insideBase(Number(lon),Number(lat));
+    if(state===null)return; // No inventar salida si el polígono Base no está sincronizado.
+    const assigned=hasAssignment(unit);
+    // Un callback de otra unidad no debe borrar ni cerrar la carrera activa de esta unidad.
+    if(active&&String(active.unit)!==String(unit))return;
+    if(!active&&state===false&&!assigned){
       outsideCount++;
-      if(outsideCount>=2){newTrip(unit,lon,lat,t);}
+      if(outsideCount>=2)newTrip(unit,Number(lon),Number(lat),Number(ts)||Date.now());
       return;
     }
-
+    if(!active&&state===true){outsideCount=0;return;}
+    if(!active)return;
+    const t=Number(ts)||Date.now();
     const last=active.points[active.points.length-1];
-    if(!last||t-Number(last.timestamp||0)>=2500||Math.abs(lon-Number(last.lon))+Math.abs(lat-Number(last.lat))>0.000015){
-      active.points.push({lon,lat,timestamp:t});
+    if(!last||t-last.timestamp>=2500||Math.abs(Number(lon)-last.lon)+Math.abs(Number(lat)-last.lat)>0.000015){
+      active.points.push({lon:Number(lon),lat:Number(lat),timestamp:t});
       if(active.points.length>MAX_POINTS)active.points=active.points.slice(-MAX_POINTS);
     }
     active.updatedAt=t;
-    if(state===true)insideCount++;else insideCount=0;
+    if(state===true){insideCount++;}else insideCount=0;
     if(insideCount>=2){
       active.status='done';active.finishedAt=t;active.returnedToBase=true;active.updatedAt=t;
-      records[active.id]=active;persist();safePublish(active);
-      active=null;insideCount=0;outsideCount=0;lastPublish=0;
-      // Actualizar el historial inmediatamente si está abierto.
-      const list=document.getElementById('yadah-career-history-list');
-      const historyView=document.getElementById('yc-history-view');
-      if(list&&historyView&&historyView.style.display!=='none')renderHistory(list);
+      records[active.id]=active;
+      const completed=active;
+      persist();
+      safePublish(completed);
+      active=null;insideCount=0;outsideCount=0;
+      // Asegurar que el bloque de carreras sin definición se actualice en el historial visible.
+      try{
+        const list=document.getElementById('yadah-career-history-list');
+        if(list)renderHistory(list);
+      }catch(e){}
       return;
     }
     records[active.id]=active;persist();
