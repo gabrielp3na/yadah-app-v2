@@ -3009,8 +3009,13 @@ function applyVehicleHistory() {
       const done=ycState.careers.filter(c=>c.status==='done'||c.status==='cancelled').map(c=>({...c,origin:'Llamada'}));
       let baseDone=[];
       try{const saved=JSON.parse(localStorage.getItem('yadah_base_queue_history_v1')||'[]');if(Array.isArray(saved))baseDone=saved.filter(c=>c&&c.id&&['done','cancelled'].includes(c.status)).map(c=>({...c,origin:'Cola de base'}));}catch(e){}
-      const all=[...done,...baseDone].sort((a,b)=>Number(b.finishedAt||b.createdAt||0)-Number(a.finishedAt||a.createdAt||0));
-      list.innerHTML=all.length?all.map(c=>`<div class="yc-history-item"><div class="yc-history-main">${c.status==='done'?'✅':'❌'} ${esc(c.place)} <span style="font-size:.65rem;color:#7dd3fc">· ${esc(c.origin||'Llamada')}</span></div><div class="yc-history-meta">Creada ${fmtTime(c.createdAt)} · ${c.driver?esc(c.driver):'Sin asignar'} · ${c.finishedAt?(c.status==='done'?'Finalizada ':'Cancelada ')+fmtTime(c.finishedAt):'Cancelada'}${c.price!=null?' · $'+Number(c.price).toFixed(2):''}</div>${c.origin!=='Cola de base'&&c.status==='done'&&c.driver?`<div class="yc-history-actions"><button type="button" data-yc-action="trajectory" data-id="${c.id}">🗺️ VER TRAYECTORIA</button></div>`:''}</div>`).join(''):'<div class="yc-empty">No hay carreras finalizadas o canceladas.</div>';
+      let undefinedTrips=[];
+      try{
+        const saved=JSON.parse(localStorage.getItem('yadah_undefined_trips_v1')||'{}');
+        if(saved&&typeof saved==='object')undefinedTrips=Object.values(saved).filter(c=>c&&c.id).map(c=>({...c,origin:'Geocerca Base',place:'Carrera sin definición',driver:c.unit,createdAt:c.startedAt,finishedAt:c.finishedAt||null,undefinedTrip:true}));
+      }catch(e){}
+      const all=[...done,...baseDone,...undefinedTrips].sort((a,b)=>Number(b.createdAt||b.startedAt||0)-Number(a.createdAt||a.startedAt||0));
+      list.innerHTML=all.length?all.map(c=>`<div class="yc-history-item"><div class="yc-history-main">${(c.status==='done'||(c.undefinedTrip&&c.finishedAt))?'✅':(c.status==='cancelled'?'❌':'🟠')} ${esc(c.place)} <span style="font-size:.65rem;color:#7dd3fc">· ${esc(c.origin||'Llamada')}</span></div><div class="yc-history-meta">${c.undefinedTrip?`${esc(c.driver||'Unidad')} · Salida ${fmtTime(c.startedAt)}${c.finishedAt?' · Regreso '+fmtTime(c.finishedAt):' · Aún abierta'} · ${(c.points||[]).length} puntos GPS`:`Creada ${fmtTime(c.createdAt)} · ${c.driver?esc(c.driver):'Sin asignar'} · ${c.finishedAt?(c.status==='done'?'Finalizada ':'Cancelada ')+fmtTime(c.finishedAt):'Cancelada'}${c.price!=null?' · $'+Number(c.price).toFixed(2):''}`}</div>${c.undefinedTrip?`<div class="yc-history-actions"><button type="button" data-yc-action="undefined-trajectory" data-id="${esc(c.id)}">🗺️ VER TRAYECTORIA</button></div>`:(c.origin!=='Cola de base'&&c.status==='done'&&c.driver?`<div class="yc-history-actions"><button type="button" data-yc-action="trajectory" data-id="${c.id}">🗺️ VER TRAYECTORIA</button></div>`:'')}</div>`).join(''):'<div class="yc-empty">No hay carreras finalizadas o canceladas.</div>';
       $('yadah-career-modal').style.display='flex';
     }
     function closeModal(){ stopCareerVoice(); $('yadah-career-modal').style.display='none'; }
@@ -3030,7 +3035,15 @@ function applyVehicleHistory() {
       $('yc-mic')?.addEventListener('click',startCareerVoice);
       $('yadah-career-modal')?.addEventListener('click',e=>{if(e.target.id==='yadah-career-modal')closeModal();});
       $('yadah-career-stack')?.addEventListener('click',e=>{const b=e.target.closest('[data-yc-action]');if(!b)return; const id=b.dataset.id; if(b.dataset.ycAction==='accept')acceptCareer(id); else if(b.dataset.ycAction==='finish')finishCareer(id); else if(b.dataset.ycAction==='cancel')cancelCareer(id);});
-      $('yadah-career-history-list')?.addEventListener('click',e=>{const b=e.target.closest('[data-yc-action="trajectory"]');if(!b)return; requestCareerTrajectory(b.dataset.id);});
+      $('yadah-career-history-list')?.addEventListener('click',e=>{
+        const b=e.target.closest('[data-yc-action]');if(!b)return;
+        if(b.dataset.ycAction==='trajectory')requestCareerTrajectory(b.dataset.id);
+        else if(b.dataset.ycAction==='undefined-trajectory'){
+          const id=b.dataset.id;
+          closeModal();
+          setTimeout(()=>window.YadahUndefinedTrips?.showTrajectory?.(id),150);
+        }
+      });
       $('yadah-career-tab')?.addEventListener('click',()=>{ycPanelOpen=!ycPanelOpen; const stack=$('yadah-career-stack'); const tab=$('yadah-career-tab'); if(stack) stack.classList.toggle('closed',!ycPanelOpen); if(tab) tab.classList.toggle('open',ycPanelOpen);});
     }
     function init(){ if(ycInitialized)return; ycInitialized=true; loadLocal(); ensureDay(); bind(); render(); connect(); }
@@ -3532,23 +3545,51 @@ function renderBaseNotifications(){
     if(active.points.length%4===0||t-lastPublish>12000){safePublish(active);lastPublish=t;}
   }
   function renderHistory(list){
+    // El historial principal ya incorpora estas carreras y las ordena junto a las demás.
+    // Esta función se conserva por compatibilidad con las llamadas existentes.
     if(!list)return;
-    const prior=list.querySelector('[data-ud-history-block]');if(prior)prior.remove();
-    const all=Object.values(records).sort((a,b)=>Number(b.startedAt||0)-Number(a.startedAt||0));
-    if(!all.length)return;
-    const html=all.map(r=>`<div class="yc-history-item"><div class="yc-history-main">${r.status==='done'?'✅':'🟠'} Carrera sin definición <span style="font-size:.65rem;color:#7dd3fc">· Geocerca Base</span></div><div class="yc-history-meta">${esc(r.unit)} · Salida ${new Date(r.startedAt).toLocaleString('es-SV')}${r.finishedAt?' · Regreso '+new Date(r.finishedAt).toLocaleString('es-SV'):' · Aún abierta'} · ${Array.isArray(r.points)?r.points.length:0} puntos GPS</div><div class="yc-history-actions"><button type="button" data-ud-trajectory="${esc(r.id)}">🗺️ VER TRAYECTORIA</button></div></div>`).join('');
-    const wrapper=document.createElement('div');wrapper.setAttribute('data-ud-history-block','1');wrapper.innerHTML=`<div style="margin:12px 0 6px;font-weight:900;color:#7dd3fc">🚕 CARRERAS SIN DEFINICIÓN</div>${html}`;list.appendChild(wrapper);
+    const modal=document.getElementById('yadah-career-modal');
+    if(modal&&modal.style.display==='flex'){
+      const title=document.getElementById('yc-modal-title');
+      if(title&&title.textContent.includes('Historial')) {
+        const refresh=document.querySelector('[data-yc-action="refresh-history"]');
+        if(refresh)refresh.click();
+      }
+    }
   }
   function showTrajectory(id){
-    const r=records[id];if(!r||!Array.isArray(r.points)||r.points.length<2){alert('Todavía no hay suficientes puntos GPS sincronizados para mostrar esta trayectoria.');return;}
-    if(typeof ensureLayersExist==='function')ensureLayersExist();
-    if(!window.map||!map.getSource('route-trails')){alert('No se encontró la capa del mapa para dibujar la trayectoria.');return;}
-    const coords=r.points.filter(p=>Number.isFinite(Number(p.lon))&&Number.isFinite(Number(p.lat))).map(p=>[Number(p.lon),Number(p.lat)]);
-    if(coords.length<2){alert('No hay suficientes puntos GPS válidos.');return;}
-    map.getSource('route-trails').setData({type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'LineString',coordinates:coords},properties:{unit:r.unit,careerId:r.id,kind:'undefined-trip'}}]});
-    const bounds=new maplibregl.LngLatBounds();coords.forEach(p=>bounds.extend(p));map.fitBounds(bounds,{padding:80,maxZoom:17,duration:700});
-    const card=document.getElementById('vehicle-history-card');if(card)card.style.display='flex';
-    const status=document.getElementById('vh-status-info');if(status)status.textContent=`🚕 ${r.unit} · Carrera sin definición · ${coords.length} puntos GPS · ${new Date(r.startedAt).toLocaleString('es-SV')} → ${r.finishedAt?new Date(r.finishedAt).toLocaleString('es-SV'):'en curso'}`;
+    const r=records[id];
+    if(!r||!Array.isArray(r.points)||r.points.length<2){
+      alert('Esta carrera no tiene suficientes puntos GPS guardados en este dispositivo para dibujar la trayectoria.');
+      return;
+    }
+    const activeMap=(typeof map!=='undefined'&&map)?map:window.map;
+    if(!activeMap){alert('El mapa todavía no está disponible.');return;}
+    const draw=()=>{
+      try{
+        if(!activeMap.getSource('route-trails')){
+          activeMap.addSource('route-trails',{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+        }
+        if(!activeMap.getLayer('route-trails-layer')){
+          activeMap.addLayer({id:'route-trails-layer',type:'line',source:'route-trails',
+            layout:{'line-join':'round','line-cap':'round'},
+            paint:{'line-color':'#22d3ee','line-width':6,'line-opacity':0.95}});
+        }
+        const coords=r.points.filter(p=>Number.isFinite(Number(p.lon))&&Number.isFinite(Number(p.lat))).map(p=>[Number(p.lon),Number(p.lat)]);
+        if(coords.length<2){alert('No hay suficientes puntos GPS válidos para dibujar la trayectoria.');return;}
+        activeMap.getSource('route-trails').setData({type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'LineString',coordinates:coords},properties:{unit:r.unit,careerId:r.id,kind:'undefined-trip'}}]});
+        const bounds=new maplibregl.LngLatBounds();coords.forEach(pt=>bounds.extend(pt));
+        activeMap.fitBounds(bounds,{padding:80,maxZoom:17,duration:700});
+        const card=document.getElementById('vehicle-history-card');if(card)card.style.display='flex';
+        const status=document.getElementById('vh-status-info');
+        if(status)status.textContent=`🚕 ${r.unit} · Carrera sin definición · ${coords.length} puntos GPS · ${new Date(r.startedAt).toLocaleString('es-SV')} → ${r.finishedAt?new Date(r.finishedAt).toLocaleString('es-SV'):'en curso'}`;
+      }catch(e){console.error('Error dibujando trayectoria sin definición:',e);alert('No se pudo dibujar la trayectoria. Revise que el mapa haya terminado de cargar y vuelva a intentarlo.');}
+    };
+    if(typeof activeMap.isStyleLoaded==='function'&&!activeMap.isStyleLoaded()){
+      activeMap.once('load',draw);
+    }else if(typeof activeMap.isStyleLoaded==='function'&&!activeMap.isStyleLoaded()){
+      activeMap.once('idle',draw);
+    }else draw();
   }
   document.addEventListener('click',e=>{const b=e.target.closest('[data-ud-trajectory]');if(b)showTrajectory(b.getAttribute('data-ud-trajectory'));});
   load();
