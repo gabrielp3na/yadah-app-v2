@@ -3325,11 +3325,52 @@ function renderBaseNotifications(){
 (function(){
   'use strict';
   const KEY='yadah_geofences_v1';
-  let fences=load(); let drawing=false; let points=[]; let tempMarkers=[]; let tempLine=null; let tempFill=null;
+  const SYNC_TOPIC='yadah/radio/flota/geofences/v1';
+  let fences=load(); let fenceSyncClient=null; let gotRemoteFences=false; let syncFallbackTimer=null; let drawing=false; let points=[]; let tempMarkers=[]; let tempLine=null; let tempFill=null;
   const panel=()=>document.getElementById('geofence-panel');
   const status=()=>document.getElementById('gf-status');
   function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]').filter(x=>x&&x.id&&Array.isArray(x.points)&&x.points.length>=3)}catch(e){return[]}}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(fences))}catch(e){}}
+  function save(broadcast=true){try{localStorage.setItem(KEY,JSON.stringify(fences))}catch(e){}
+    if(broadcast && fenceSyncClient && fenceSyncClient.connected){
+      fenceSyncClient.publish(SYNC_TOPIC,JSON.stringify({type:'sync',updatedAt:Date.now(),fences}),{qos:1,retain:true});
+    }
+  }
+  function applyRemoteFences(incoming){
+    if(!Array.isArray(incoming))return;
+    fences=incoming.filter(x=>x&&x.id&&typeof x.name==='string'&&Array.isArray(x.points)&&x.points.length>=3);
+    save(false); render();
+  }
+  function connectFenceSync(){
+    if(typeof mqtt==='undefined'||!mqtt||!mqtt.connect)return;
+    try{
+      fenceSyncClient=mqtt.connect('wss://broker.emqx.io:8084/mqtt',{
+        clientId:'yadah_geofence_'+Math.random().toString(16).slice(2,12),
+        clean:true,reconnectPeriod:3000,connectTimeout:10000
+      });
+      fenceSyncClient.on('connect',()=>{
+        gotRemoteFences=false;
+        fenceSyncClient.subscribe(SYNC_TOPIC,{qos:1},()=>{
+          clearTimeout(syncFallbackTimer);
+          syncFallbackTimer=setTimeout(()=>{
+            if(gotRemoteFences)return;
+            // Si el broker todavía no tiene geocercas, inicializarlo con las locales.
+            if(fences.length) save(true);
+          },1800);
+        });
+      });
+      fenceSyncClient.on('message',(topic,message)=>{
+        if(topic!==SYNC_TOPIC)return;
+        try{
+          const packet=JSON.parse(message.toString());
+          if(packet&&packet.type==='sync'&&Array.isArray(packet.fences)){
+            gotRemoteFences=true; clearTimeout(syncFallbackTimer);
+            applyRemoteFences(packet.fences);
+          }
+        }catch(e){}
+      });
+      fenceSyncClient.on('error',()=>{});
+    }catch(e){}
+  }
   function color(i){const c=['#38bdf8','#22c55e','#f59e0b','#a78bfa','#f472b6','#2dd4bf'];return c[i%c.length]}
   function pointLngLat(e){const p=map.unproject(e.point);return [p.lng,p.lat]}
   function render(){
@@ -3343,16 +3384,16 @@ function renderBaseNotifications(){
   function clearTemp(){tempMarkers.forEach(m=>m.remove());tempMarkers=[];if(tempLine&&map.getLayer('gf-temp-line'))map.removeLayer('gf-temp-line');if(tempFill&&map.getLayer('gf-temp-fill'))map.removeLayer('gf-temp-fill');if(map.getSource('gf-temp'))map.removeSource('gf-temp');tempLine=tempFill=null;points=[]}
   function redrawTemp(){if(!map)return;const coords=points.slice();if(coords.length>1)coords.push(coords[0]);const data={type:'FeatureCollection',features:coords.length>=2?[{type:'Feature',geometry:{type:'LineString',coordinates:coords},properties:{}}]:[]};if(coords.length>=3)data.features.push({type:'Feature',geometry:{type:'Polygon',coordinates:[coords]},properties:{}});if(map.getSource('gf-temp'))map.getSource('gf-temp').setData(data);else{map.addSource('gf-temp',{type:'geojson',data});map.addLayer({id:'gf-temp-fill',type:'fill',source:'gf-temp',filter:['==','$type','Polygon'],paint:{'fill-color':'#38bdf8','fill-opacity':0.12}});map.addLayer({id:'gf-temp-line',type:'line',source:'gf-temp',filter:['==','$type','LineString'],paint:{'line-color':'#38bdf8','line-width':3,'line-dasharray':[2,1]}})}}
   function start(){if(!isModulator()){alert('Solo el Modulador puede administrar sectores.');return}const name=document.getElementById('geofence-name').value.trim();if(!name){alert('Escriba primero el nombre del sector.');return}clearTemp();drawing=true;map.getCanvas().classList.add('geofence-drawing');document.getElementById('gf-finish').disabled=true;status().textContent='Toque el mapa para colocar los puntos. Mínimo 3.'}
-  function finish(){if(!drawing||points.length<3){alert('Debe colocar al menos 3 puntos.');return}const name=document.getElementById('geofence-name').value.trim();if(!name){alert('Escriba el nombre del sector.');return}fences.push({id:'gf_'+Date.now()+'_'+Math.random().toString(16).slice(2),name,points:points.slice()});save();drawing=false;map.getCanvas().classList.remove('geofence-drawing');clearTemp();render();status().textContent='Sector guardado correctamente.';panel().classList.remove('open');document.getElementById('geofence-name').value='';document.getElementById('gf-finish').disabled=true}
+  function finish(){if(!drawing||points.length<3){alert('Debe colocar al menos 3 puntos.');return}const name=document.getElementById('geofence-name').value.trim();if(!name){alert('Escriba el nombre del sector.');return}fences.push({id:'gf_'+Date.now()+'_'+Math.random().toString(16).slice(2),name,points:points.slice()});save(true);drawing=false;map.getCanvas().classList.remove('geofence-drawing');clearTemp();render();status().textContent='Sector guardado correctamente.';panel().classList.remove('open');document.getElementById('geofence-name').value='';document.getElementById('gf-finish').disabled=true}
   function cancel(){drawing=false;map.getCanvas().classList.remove('geofence-drawing');clearTemp();status().textContent='Listo.'}
   function inside(pt,poly){let x=pt[0],y=pt[1],inside=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){let xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];let hit=((yi>y)!=(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi)+xi);if(hit)inside=!inside}return inside}
   function detect(){if(!myLastCoords||!fences.length)return;const p=[myLastCoords.lon,myLastCoords.lat];const found=fences.find(f=>inside(p,f.points));const b=document.getElementById('geofence-sector-badge');if(found){b.textContent='📍 Sector: '+found.name;b.style.display='block'}else b.style.display='none'}
-  window.yadahDeleteGeofence=function(id){if(!confirm('¿Eliminar este sector?'))return;fences=fences.filter(f=>f.id!==id);save();render()};
+  window.yadahDeleteGeofence=function(id){if(!confirm('¿Eliminar este sector?'))return;fences=fences.filter(f=>f.id!==id);save(true);render()};
   document.getElementById('btn-geofences')?.addEventListener('click',()=>{if(!isModulator()){alert('Solo el Modulador puede administrar sectores.');return}panel().classList.toggle('open');render()});
   document.getElementById('gf-close')?.addEventListener('click',()=>{if(drawing){cancel()} panel().classList.remove('open');});
   document.addEventListener('click',(e)=>{if(!drawing){const p=panel();const b=document.getElementById('btn-geofences');if(p?.classList.contains('open') && !p.contains(e.target) && e.target!==b && !b?.contains(e.target)) p.classList.remove('open');}});
   document.getElementById('gf-new')?.addEventListener('click',start);document.getElementById('gf-finish')?.addEventListener('click',finish);document.getElementById('gf-cancel')?.addEventListener('click',cancel);
-  if(map){map.on('click',e=>{if(!drawing)return;points.push(pointLngLat(e));const m=new maplibregl.Marker({color:'#38bdf8'}).setLngLat(points[points.length-1]).addTo(map);tempMarkers.push(m);redrawTemp();document.getElementById('gf-finish').disabled=points.length<3;status().textContent=`Puntos colocados: ${points.length}`});map.on('load',render)}
-  setInterval(detect,1500);setTimeout(render,1000);
+  if(map){map.on('style.load',render);map.on('click',e=>{if(!drawing)return;points.push(pointLngLat(e));const m=new maplibregl.Marker({color:'#38bdf8'}).setLngLat(points[points.length-1]).addTo(map);tempMarkers.push(m);redrawTemp();document.getElementById('gf-finish').disabled=points.length<3;status().textContent=`Puntos colocados: ${points.length}`});map.on('load',render)}
+  connectFenceSync();setInterval(detect,1500);setTimeout(render,1000);
 })();
 </script>
