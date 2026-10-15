@@ -1454,8 +1454,12 @@ function applyVehicleHistory() {
 
     function updateModulatorState(modLat, modLon) {
       const dist = getDistanceFromBase(modLat, modLon);
+      const polygonBaseState = (typeof window.YadahBaseRangeStatus === 'function')
+        ? window.YadahBaseRangeStatus(Number(modLon), Number(modLat)) : false;
+      // The drawn Base Central geofence is the only valid base range.
+      const isAtBase = polygonBaseState === true;
       const wasActive = modulatorActiveAtBase;
-      if (dist <= 18) { modulatorActiveAtBase = true; if (!wasActive) modulatorActivationTime = Date.now(); }
+      if (isAtBase) { modulatorActiveAtBase = true; if (!wasActive) modulatorActivationTime = Date.now(); }
       else { modulatorActiveAtBase = false; modulatorActivationTime = null; }
       if (baseBadgeEl) {
         const iconRotator = document.getElementById('base-icon-rotator');
@@ -1474,7 +1478,13 @@ function applyVehicleHistory() {
       const now = Date.now();
       if (!fleetStatusMap[unitId]) fleetStatusMap[unitId] = {};
       const u = fleetStatusMap[unitId]; u.lastSeen = now; u.speed = speed; u.lat = lat; u.lon = lon;
-      if (getDistanceFromBase(lat, lon) <= 18) { if (u.state !== 'at-base') { u.state = 'at-base'; u.arrivalTime = now; } }
+      // Si existe el perímetro dibujado de Base Central, usarlo para el estado En Base.
+      // Solo recurrir al radio antiguo si todavía no hay un polígono válido.
+      const polygonBaseState = (typeof window.YadahBaseRangeStatus === 'function')
+        ? window.YadahBaseRangeStatus(Number(lon), Number(lat)) : false;
+      // Base Central is defined ONLY by the manually drawn geofence. No meter-radius fallback.
+      const isAtBase = polygonBaseState === true;
+      if (isAtBase) { if (u.state !== 'at-base') { u.state = 'at-base'; u.arrivalTime = now; } }
       else { if (speed > 3) { u.state = 'online'; u.stoppedSince = null; u.arrivalTime = null; } else { u.state = 'stopped'; if (!u.stoppedSince) u.stoppedSince = now; } }
       let speedTxt = u.state === 'at-base' ? `En Base (${u.arrivalTime ? new Date(u.arrivalTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''})` : u.state === 'online' ? `${Math.round(speed)} km/h` : `Detenido hace ${formatTimeAgo(now - u.stoppedSince)}`;
       if (!fleetMarkers[unitId]) {
@@ -3451,6 +3461,8 @@ function renderBaseNotifications(){
     })||null;
   }
   function insideBase(lon,lat){const f=baseFence();if(!f||!Array.isArray(f.points)||f.points.length<3)return null;return window.YadahGeofences.inside([lon,lat],f.points);}
+  // Publicar la misma comprobación para que el mapa de flota use el polígono guardado.
+  window.YadahBaseRangeStatus=(lon,lat)=>insideBase(Number(lon),Number(lat));
   function hasAssignment(unit){
     try{
       if(window.YadahCareers?.hasActiveCareerForUnit?.(unit))return true;
